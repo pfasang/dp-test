@@ -1,0 +1,17 @@
+# Git ignore file
+#.gitignore
+
+# VS Code configuration
+.vscode/
+
+# Transpiled TS to JS
+dist/
+
+# Package json lock
+package-lock.json
+
+# Node modules
+node_modules/
+
+# Temporary data sources
+.idea/
