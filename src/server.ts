@@ -1,10 +1,13 @@
 import {authUser, loginMiddleware} from "./middlewares/validationMiddleware";
+import 'reflect-metadata';
+import { Photon } from '@generated/photon'
 
 const express = require('express');
 const bodyParser = require("body-parser");
 import * as router from "./routers";
 
 const app = express();
+const photon = new Photon();
 
 const port = process.env.PORT || 3000;
 
@@ -13,8 +16,8 @@ app
     .use(bodyParser.urlencoded({ extended: true }))
     .use(bodyParser.json())
     .use(router.authRouter)
-    .use(authUser)
-    .use(router.userRouter);
+    .use(authUser);
+    //.use(router.userRouter);
 
 app.listen(port);
 console.log(`App is running on port: ${port}`);

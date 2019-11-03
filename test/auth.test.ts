@@ -1,7 +1,5 @@
 import * as chai from 'chai';
 import {port} from '../src/server';
-import knex from '../src/database/knex';
-
 const app = 'http://localhost:' + port;
 const chaiHttp = require('chai-http');
 const expect = chai.expect, validEmail = 'john.doe@latasna.com', validPassword = '12345678', wrongEmail="wrong email", wrongPassword = "wrong password", authUrl = "/auth";
@@ -10,9 +8,9 @@ chai.use(chaiHttp);
 
 describe("Authorization tests", ()=> {
     before(async () => {
-        await knex.migrate.rollback();
+        /*await knex.migrate.rollback();
         await knex.migrate.latest();
-        await knex.seed.run();
+        await knex.seed.run();*/
     });
 
     describe("Login with correct parameters", ()=> {

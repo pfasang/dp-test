@@ -1,0 +1,11 @@
+type User {
+  id: ID! @id
+  username: String! @unique
+  password: String!
+  userRole: Int!
+  isRemoved: Boolean @default(value: false)
+  isActive: Boolean @default(value: true)
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
+

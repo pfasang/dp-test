@@ -1,0 +1,10 @@
+endpoint: http://localhost:4466
+datamodel:
+  - src/database/migration/user.prisma
+
+seed:
+  run: ts-node ./src/database/seeds/seed.ts
+
+generate:
+  - generator: typescript-client
+    output: ./src/generated/prisma-client/

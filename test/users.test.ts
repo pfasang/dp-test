@@ -1,7 +1,6 @@
 import * as chai from 'chai';
 import chaiHttp = require('chai-http');
 import {port} from '../src/server';
-import knex from "../src/database/knex";
 import {login, randomFields} from './utilities/testHelper';
 import * as Joi from '@hapi/joi';
 import {
@@ -22,9 +21,9 @@ let readerToken: string;
 describe('User tests', () => {
 
     before(async () => {
-        await knex.migrate.rollback();
+        /*await knex.migrate.rollback();
         await knex.migrate.latest();
-        await knex.seed.run();
+        await knex.seed.run();*/
         let res = await login(validEmail, validPassword)
         adminToken = res.body.token;
         res = await login(validReaderEmail, validReaderPassword)
