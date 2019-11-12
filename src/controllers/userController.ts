@@ -1,23 +1,21 @@
+import {prisma, User} from "../generated/prisma-client";
+
 const Joi = require('@hapi/joi');
 import {userRole} from "../utilities/enums";
 import {userCreateInputValidation, userEditInputValidation} from '../utilities/validation/userValidation';
+import {userFragments} from "../database/fragments/fragments";
+
 
 /***
  * Function to get all users from table users
  * @param res
  * @returns {Promise<void>} Returns all users information in array of JSON's
  */
-export const allUsersbyAdmin = async (req, res) => {
-    //check if user is admin
-    const inputUserRole = req.user.userRole;
-    if(inputUserRole!=userRole.admin) {
-        return res.status(403).json();
-    }
-
+export const allUsersByAdmin = async (req, res) => {
     //get all users from database
-    const users = undefined;
-    //const users = await new User().where({isRemoved:false}).fetchAll();
-    if(!users) {
+    const users: User[] = await prisma.users({where: {isRemoved: false}}).$fragment(userFragments);
+
+    if (!users) {
         return res.status(404).json();
     }
     res.status(200).send(users);
@@ -29,20 +27,13 @@ export const allUsersbyAdmin = async (req, res) => {
  * @param res
  * @returns {Promise<void>} Returns user information in JSON
  */
-export const detailofUser = async (req, res) => {
-    //check if user is admin
-    const inputUserRole = req.user.userRole;
-    if(inputUserRole!=userRole.admin) {
-        return res.status(403).json();
-    }
-
+export const detailOfUser = async (req, res) => {
     //get id number from url
     const userID = req.params.id;
 
     //get user with given ID
-    const user = undefined;
-    //const user = await new User().where({id : userID}).fetch();
-    if(!user) {
+    const user: User = await prisma.user({id: userID}).$fragment(userFragments);
+    if (!user) {
         return res.status(404).json();
     }
     res.status(200).send(user);
@@ -66,9 +57,9 @@ export const createUser = async (req, res) => {
         return res.status(400).json();
     }
 
-    //check if is email in use
-    const inputEmail = req.body.email;
-    //const user = await new User().where({email : inputEmail}).fetch();
+    //check if is username in use
+    const inputUsername = req.body.username;
+    //const user = await new User().where({username : inputUsername}).fetch();
     if(user) {
         return res.status(400).json();
     }
@@ -118,32 +109,32 @@ export const updateUser = async (req, res) => {
     res.status(200).json(updatedUser);*/
 };
 
-export const changePass = async (req,res) => {
-   /* //check if user is admin
-    const inputUserRole = req.user.userRole;
-    if(inputUserRole!=userRole.admin) {
-        return res.status(403).json();
-    }
+export const changePass = async (req, res) => {
+    /* //check if user is admin
+     const inputUserRole = req.user.userRole;
+     if(inputUserRole!=userRole.admin) {
+         return res.status(403).json();
+     }
 
-    if (!req.body.password) {
-        return res.status(400).json();
-    }
+     if (!req.body.password) {
+         return res.status(400).json();
+     }
 
-    //get id number from url
-    const userID = req.params.id;
+     //get id number from url
+     const userID = req.params.id;
 
-    //get user with given ID
-    const user = await new User().where({id : userID}).fetch();
-    if(!user) {
-        return res.status(404).json();
-    }
-    //update user in database
-    const passUser = await Bookshelf.transaction(async (trx) => {
-        req.body.password = await User.hashPassword(req.body.password);
-        const updatedUser = await user.save(req.body, {method:"update", transacting:trx,  patch: true});
-        return updatedUser;
-    });
-    return res.status(202).json();*/
+     //get user with given ID
+     const user = await new User().where({id : userID}).fetch();
+     if(!user) {
+         return res.status(404).json();
+     }
+     //update user in database
+     const passUser = await Bookshelf.transaction(async (trx) => {
+         req.body.password = await User.hashPassword(req.body.password);
+         const updatedUser = await user.save(req.body, {method:"update", transacting:trx,  patch: true});
+         return updatedUser;
+     });
+     return res.status(202).json();*/
 }
 
 /**
@@ -172,26 +163,26 @@ export const deactivateUser = async (req, res) => {
  * @returns {Promise<void>} Returns status code 200 in case of success and user info in JSON
  */
 export const userActivation = async (req, res, state: boolean) => {
-/*    //check if user is admin
-    const inputUserRole = req.user.userRole;
-    if(inputUserRole!=userRole.admin) {
-        return res.status(403).json();
-    }
+    /*    //check if user is admin
+        const inputUserRole = req.user.userRole;
+        if(inputUserRole!=userRole.admin) {
+            return res.status(403).json();
+        }
 
-    //get id number from url
-    const userID = req.params.id;
+        //get id number from url
+        const userID = req.params.id;
 
-    //get user with given ID
-    const user = await new User().where({id : userID}).fetch();
-    if(!user) {
-        return res.status(404).json();
-    }
+        //get user with given ID
+        const user = await new User().where({id : userID}).fetch();
+        if(!user) {
+            return res.status(404).json();
+        }
 
-    //activate/deactivate user
-    const activationUser = await Bookshelf.transaction(async (trx) => {
-        return await user.save({isActive: state}, {method:"update", transacting:trx, patch: true});
-    });
-    res.status(200).json(activationUser);*/
+        //activate/deactivate user
+        const activationUser = await Bookshelf.transaction(async (trx) => {
+            return await user.save({isActive: state}, {method:"update", transacting:trx, patch: true});
+        });
+        res.status(200).json(activationUser);*/
 };
 
 /**
@@ -201,24 +192,24 @@ export const userActivation = async (req, res, state: boolean) => {
  * @returns {Promise<void>} Returns status code 204 in case of success
  */
 export const deleteUser = async (req, res) => {
-/*    //check if user is admin
-    const inputUserRole = req.user.userRole;
-    if(inputUserRole!=userRole.admin) {
-        return res.status(403).json();
-    }
+    /*    //check if user is admin
+        const inputUserRole = req.user.userRole;
+        if(inputUserRole!=userRole.admin) {
+            return res.status(403).json();
+        }
 
-    //get id number from url
-    const userID = req.params.id;
+        //get id number from url
+        const userID = req.params.id;
 
-    //get user with given ID
-    const user = await new User().where({id : userID}).fetch();
-    if(!user) {
-        return res.status(404).json();
-    }
+        //get user with given ID
+        const user = await new User().where({id : userID}).fetch();
+        if(!user) {
+            return res.status(404).json();
+        }
 
-    //deactivate and set delete flag for user
-    const deleteUser = await Bookshelf.transaction(async (trx) => {
-        return await user.save({isActive: false, isRemoved: true}, {method:"update", transacting:trx, patch: true});
-    });
-    res.status(200).json(deleteUser);*/
+        //deactivate and set delete flag for user
+        const deleteUser = await Bookshelf.transaction(async (trx) => {
+            return await user.save({isActive: false, isRemoved: true}, {method:"update", transacting:trx, patch: true});
+        });
+        res.status(200).json(deleteUser);*/
 };

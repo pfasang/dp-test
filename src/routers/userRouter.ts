@@ -1,19 +1,22 @@
 import * as express from "express";
 import {
-    allUsersbyAdmin,
-    detailofUser,
+    allUsersByAdmin,
+    detailOfUser,
     createUser,
     updateUser,
     deleteUser,
     activateUser,
     deactivateUser,
-    changePass
+    changePass,
 } from "../controllers/userController";
+import {
+    adminPermission, authorPermission
+} from "../middlewares/permissionMiddleware";
 
 const router = express.Router();
 
-router.get("/users", allUsersbyAdmin);
-router.get("/users/:id", detailofUser);
+router.get("/users", adminPermission, allUsersByAdmin);
+router.get("/users/:id", authorPermission, detailOfUser);
 router.post("/users", createUser);
 router.put("/users/:id", updateUser);
 router.patch("/users/:id/password", changePass);
