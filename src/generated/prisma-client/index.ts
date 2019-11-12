@@ -201,7 +201,7 @@ export interface UserCreateInput {
   id?: Maybe<ID_Input>;
   username: String;
   password: String;
-  userRole: Int;
+  userRole?: Maybe<Int>;
   isRemoved?: Maybe<Boolean>;
   isActive?: Maybe<Boolean>;
 }
@@ -263,7 +263,7 @@ export interface UserPreviousValues {
   id: ID_Output;
   username: String;
   password: String;
-  userRole: Int;
+  userRole?: Int;
   isRemoved?: Boolean;
   isActive?: Boolean;
   createdAt: DateTimeOutput;
@@ -380,7 +380,7 @@ export interface User {
   id: ID_Output;
   username: String;
   password: String;
-  userRole: Int;
+  userRole?: Int;
   isRemoved?: Boolean;
   isActive?: Boolean;
   createdAt: DateTimeOutput;

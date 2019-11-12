@@ -55,7 +55,7 @@ type User {
   id: ID!
   username: String!
   password: String!
-  userRole: Int!
+  userRole: Int
   isRemoved: Boolean
   isActive: Boolean
   createdAt: DateTime!
@@ -72,7 +72,7 @@ input UserCreateInput {
   id: ID
   username: String!
   password: String!
-  userRole: Int!
+  userRole: Int
   isRemoved: Boolean
   isActive: Boolean
 }
@@ -105,7 +105,7 @@ type UserPreviousValues {
   id: ID!
   username: String!
   password: String!
-  userRole: Int!
+  userRole: Int
   isRemoved: Boolean
   isActive: Boolean
   createdAt: DateTime!
