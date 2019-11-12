@@ -7,11 +7,11 @@ let app = 'http://localhost:' + port;
 chai.use(chaiHttp)
 
 //test login function
-export const login = (email: string, password: string) => {
+export const login = async (username: string, password: string) => {
     return chai.request(app)
         .post('/auth')
         .send({
-            email: email,
+            username: username,
             password: password
         });
 }

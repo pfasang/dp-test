@@ -1,127 +1,122 @@
-import * as chai from 'chai';
 import {port} from '../src/server';
+import {seedUsers} from "../src/database/seeds/seedFunctions";
+import {
+    userTestOutput,
+} from '../src/utilities/validation/userValidation';
+
 const app = 'http://localhost:' + port;
+const chai = require('chai');
 const chaiHttp = require('chai-http');
-const expect = chai.expect, validEmail = 'john.doe@latasna.com', validPassword = '12345678', wrongEmail="wrong email", wrongPassword = "wrong password", authUrl = "/auth";
+const expect = chai.expect, validUsername = "john.doe@latasna.com", validPassword = "12345678",
+    wrongUsername = "wrong username", wrongPassword = "wrong password", authUrl = "/auth";
 chai.use(chaiHttp);
 
+const jsonType = 'application/json';
 
-describe("Authorization tests", ()=> {
+describe("Authorization tests", () => {
     before(async () => {
-        /*await knex.migrate.rollback();
-        await knex.migrate.latest();
-        await knex.seed.run();*/
+        await seedUsers();
     });
 
-    describe("Login with correct parameters", ()=> {
-        it("returns 200", async() => {
+    describe("Login with correct parameters", () => {
+        it("returns 200", async () => {
             const res = await chai.request(app)
                 .post(authUrl)
-                .send({email: validEmail, password : validPassword});
-            expect(res.type).to.eq("application/json");
-            expect(res.body).to.have.property('token');
-            expect(res.body.user).to.be.an('object');
-            expect(res.body.user).to.have.property('id');
-            expect(res.body.user).to.have.property('firstName');
-            expect(res.body.user).to.have.property('lastName');
-            expect(res.body.user).to.have.property('email');
-            expect(res.body.user).to.have.property('userRole');
-            expect(res.body.user).to.have.property('isActive');
-            expect(res.body.user).to.have.property('createdAt');
-            expect(res.body.user).to.have.property('modifiedAt');
-            expect(res.body.user).to.not.have.property('password');
+                .send({username: validUsername, password: validPassword});
             expect(res.status).to.eq(200);
+            const {error} = userTestOutput.validate(res.body.user);
+            expect(error).to.eq(undefined);
             return res;
         });
     });
 
-    describe("Login with missing parameters", ()=> {
-        describe("Missing email", ()=> {
+    describe("Login with missing parameters", () => {
+        describe("Missing username", () => {
             it("returns 401", () => {
                 return chai.request(app)
                     .post(authUrl)
-                    .send({password : validPassword})
+                    .send({password: validPassword})
                     .catch(err => {
-                        expect(err.response.type).to.eq("application/json");
+                        expect(err.response.type).to.eq(jsonType);
                         expect(err.status).to.eq(401);
                     });
             });
         });
-        describe("Missing password", ()=> {
+        describe("Missing password", () => {
             it("returns 401", () => {
                 return chai.request(app)
                     .post(authUrl)
-                    .send({email : validEmail})
+                    .send({username: validUsername})
                     .catch(err => {
-                        expect(err.response.type).to.eq("application/json");
+                        expect(err.response.type).to.eq(jsonType);
                         expect(err.status).to.eq(401);
                     });
             });
         });
-        describe("Missing email and password", ()=> {
+        describe("Missing username and password", () => {
             it("returns 401", () => {
                 return chai.request(app)
                     .post(authUrl)
                     .catch(err => {
-                        expect(err.response.type).to.eq("application/json");
+                        expect(err.response.type).to.eq(jsonType);
                         expect(err.status).to.eq(401);
                     });
             });
         });
     });
-    describe("Login with wrong parameters", ()=> {
+    describe("Login with wrong parameters", () => {
 
-        describe("Wrong email", ()=> {
+        describe("Wrong username", () => {
             it("returns 401", () => {
                 return chai.request(app)
                     .post(authUrl)
-                    .send({email: wrongEmail})
+                    .send({username: wrongUsername})
                     .catch(err => {
-                        expect(err.response.type).to.eq("application/json");
+                        expect(err.response.type).to.eq(jsonType);
                         expect(err.status).to.eq(401);
                     });
             });
         });
-        describe("Wrong password", ()=> {
+        describe("Wrong password", () => {
             it("returns 401", () => {
                 return chai.request(app)
                     .post(authUrl)
-                    .send({password : wrongPassword})
+                    .send({password: wrongPassword})
                     .catch(err => {
-                        expect(err.response.type).to.eq("application/json");
+                        expect(err.response.type).to.eq(jsonType);
                         expect(err.status).to.eq(401);
                     });
             });
         });
-        describe("Wrong email and password", ()=> {
+        describe("Wrong username and password", () => {
             it("returns 401", () => {
                 return chai.request(app)
                     .post(authUrl)
-                    .send({email : wrongEmail, password : wrongPassword})
+                    .send({username: wrongUsername, password: wrongPassword})
                     .catch(err => {
-                        expect(err.response.type).to.eq("application/json");
+                        expect(err.response.type).to.eq(jsonType);
                         expect(err.status).to.eq(401);
                     });
             });
         });
-        describe("Wrong email and valid password", ()=> {
+        describe("Wrong username and valid password", () => {
             it("returns 401", () => {
                 return chai.request(app)
                     .post(authUrl)
-                    .send({email : wrongEmail, password : validPassword})
+                    .send({username: wrongUsername, password: validPassword})
                     .catch(err => {
-                        expect(err.response.type).to.eq("application/json");
+                        expect(err.response.type).to.eq(jsonType);
                         expect(err.status).to.eq(401);
                     });
             });
         });
-        describe("Valid email and wrong password", ()=> {
+        describe("Valid username and wrong password", () => {
             it("returns 401", () => {
                 return chai.request(app)
                     .post(authUrl)
-                    .send({email : validEmail, password : wrongPassword})
+                    .send({username: validUsername, password: wrongPassword})
                     .catch(err => {
-                        expect(err.response.type).to.eq("application/json");
+                        expect(err.response.type).to.eq(jsonType);
                         expect(err.status).to.eq(401);
                     });
             });

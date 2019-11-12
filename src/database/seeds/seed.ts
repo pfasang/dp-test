@@ -1,10 +1,8 @@
-const { users } = require("./dev/users");
-import { prisma } from '../../generated/prisma-client'
+import {seedUsers} from "./seedFunctions";
 
-async function main() {
-    users.forEach(async (item) => {
-        const newUser = await prisma.createUser(item);
-    });
-}
+const main = async () => {
+    await seedUsers();
+};
 
 main().catch((e) => console.error(e));
+
