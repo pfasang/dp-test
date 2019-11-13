@@ -4,6 +4,7 @@ const Joi = require('@hapi/joi');
 import {userRole} from "../utilities/enums";
 import {userCreateInputValidation, userEditInputValidation} from '../utilities/validation/userValidation';
 import {userFragments} from "../database/fragments/fragments";
+import {hashPassword} from "../middlewares/jwtHelper";
 
 
 /***
@@ -46,31 +47,20 @@ export const detailOfUser = async (req, res) => {
  * @returns {Promise<void>} Returns user information in JSON object
  */
 export const createUser = async (req, res) => {
-    //check if user is admin
-    /*const inputUserRole = req.user.userRole;
-    if(inputUserRole!=userRole.admin) {
-        return res.status(403).json();
-    }
     //Validate user input
-    const validatedBody = Joi.validate(req.body, userCreateInputValidation);
+    const validatedBody = userCreateInputValidation.validate(req.body);
     if (validatedBody.error) {
         return res.status(400).json();
     }
 
-    //check if is username in use
-    const inputUsername = req.body.username;
-    //const user = await new User().where({username : inputUsername}).fetch();
-    if(user) {
+    try {
+        req.body.password = await hashPassword(req.body.password);
+        const user: User = await prisma.createUser(req.body).$fragment(userFragments);
+        res.status(201).json(user);
+    }
+    catch (e) {
         return res.status(400).json();
     }
-
-    //add user to database
-    const newUser = await Bookshelf.transaction(async (trx) => {
-        req.body.password = await User.hashPassword(req.body.password);
-        const newUser = await new User(req.body).save(null, {transacting:trx, returning: "*"});
-        return newUser;
-    });
-    res.status(201).json(newUser);*/
 };
 
 /**
@@ -96,7 +86,7 @@ export const updateUser = async (req, res) => {
     }
 
     //Validate user input
-    const validatedBody = Joi.validate(req.body, userEditInputValidation);
+    const validatedBody = userEditInputValidation.validate(req.body);
     if (validatedBody.error) {
         return res.status(400).json();
     }

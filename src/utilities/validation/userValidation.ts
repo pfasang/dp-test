@@ -3,8 +3,6 @@ import * as Joi from '@hapi/joi'
 export const userCreateInputValidation = Joi.object({
     username: Joi.string().email().required(),
     password: Joi.string().regex(/^[a-zA-Z0-9_-]{6,30}$/).required(),
-    isActive: Joi.boolean(),
-    isRemoved: Joi.boolean(),
     userRole: Joi.number().integer().min(1).max(3).required()
 });
 

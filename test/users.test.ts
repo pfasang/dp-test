@@ -119,11 +119,10 @@ describe('User tests', () => {
         });
     });
 
-    xdescribe("POST Create User", () => {
+    describe("POST Create User", () => {
         const inputBody = {
-            username: 'jan.horvath@latasna.com',
+            username: 'create.user@latasna.com',
             password: "12345678",
-            isActive: true,
             userRole: userRole.employee
         }
 
@@ -146,7 +145,7 @@ describe('User tests', () => {
         });
 
         describe("Wrong userRole", () => {
-            const createInput: any = {...inputBody, username: "jan.horvath1@gmail.com"};
+            const createInput: any = {...inputBody, username: "create.user2@gmail.com"};
 
             it("returns 403", () => {
                 return chai.request(app)

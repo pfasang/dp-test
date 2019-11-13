@@ -1,5 +1,6 @@
 import * as jwt from 'jsonwebtoken';
 import {prisma} from "../generated/prisma-client";
+import * as bcrypt from 'bcrypt';
 
 interface IToken {
     id: number,
@@ -39,3 +40,14 @@ export const verifyUser = async (req, res, next) => {
     req.user = user;
     next();
 };
+
+export const hashPassword = async (password: string) => {
+    try {
+        const genSalt = await bcrypt.genSalt(10);
+        const hash = await bcrypt.hash(password, genSalt);
+        return hash;
+    }
+    catch(err) {
+        throw err;
+    }
+}
