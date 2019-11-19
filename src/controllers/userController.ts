@@ -17,7 +17,7 @@ export const allUsersByAdmin = async (req, res) => {
     const users: User[] = await prisma.users({where: {isRemoved: false}}).$fragment(userFragments);
 
     if (!users) {
-        return res.status(404).json();
+        return res.status(404).send({error: "Users not found."});
     }
     res.status(200).send(users);
 };
@@ -35,7 +35,7 @@ export const detailOfUser = async (req, res) => {
     //get user with given ID
     const user: User = await prisma.user({id: userID}).$fragment(userFragments);
     if (!user) {
-        return res.status(404).json();
+        return res.status(404).send({error: "User not found."});
     }
     res.status(200).send(user);
 };
@@ -50,7 +50,7 @@ export const createUser = async (req, res) => {
     //Validate user input
     const validatedBody = userCreateInputValidation.validate(req.body);
     if (validatedBody.error) {
-        return res.status(400).json();
+        return res.status(400).send({error: "Validation error."});
     }
 
     try {
@@ -58,7 +58,7 @@ export const createUser = async (req, res) => {
         const user: User = await prisma.createUser(req.body).$fragment(userFragments);
         res.status(201).json(user);
     } catch (e) {
-        return res.status(400).json();
+        return res.status(400).send({error: e});
     }
 };
 
@@ -75,7 +75,7 @@ export const updateUser = async (req, res) => {
     //Validate user input
     const {error} = userEditInputValidation.validate(req.body);
     if (error) {
-        return res.status(400).json();
+        return res.status(400).send({error: "Validation error."});
     }
 
     try {
@@ -85,7 +85,7 @@ export const updateUser = async (req, res) => {
         }).$fragment(userFragments);
         res.status(200).json(updatedUser);
     } catch (e) {
-        return res.status(404).json();
+        return res.status(404).send({error: e});
     }
 };
 
@@ -94,7 +94,7 @@ export const changePass = async (req, res) => {
     const userID = req.params.id;
 
     if (!req.body.password) {
-        return res.status(400).json();
+        return res.status(400).send({error: "Missing password field."});
     }
 
     try {
@@ -105,7 +105,7 @@ export const changePass = async (req, res) => {
         }).$fragment(userFragments);
         return res.status(202).json();
     } catch (e) {
-        return res.status(404).json();
+        return res.status(404).send({error: e});
     }
 
 };
@@ -146,7 +146,7 @@ export const userActivation = async (req, res, state: boolean) => {
         }).$fragment(userFragments);
         res.status(200).json(updatedUser);
     } catch (e) {
-        return res.status(404).json();
+        return res.status(404).send({error: e});
     }
 };
 
@@ -168,6 +168,6 @@ export const deleteUser = async (req, res) => {
         delete deletedUser["password"];
         res.status(200).json(deletedUser);
     } catch (e) {
-        return res.status(404).json();
+        return res.status(404).send({error: e});
     }
 };

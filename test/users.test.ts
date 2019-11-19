@@ -36,40 +36,36 @@ describe('User tests', () => {
     const jsonType = 'application/json';
     describe('GET all users', () => {
         describe('Correct GET all users', () => {
-            it('returns 200', () => {
-                return chai.request(app)
+            it('returns 200', async () => {
+                const res = await chai.request(app)
                     .get(baseUrl)
-                    .set('token', adminToken)
-                    .then(res => {
-                        expect(res.status).to.eq(200);
-                        expect(res.type).to.eq(jsonType);
-                        expect(res.body).to.be.an('array');
-                        const {error} = userListTestOutput.validate(res.body);
-                        expect(error).to.eq(undefined);
-                    });
+                    .set('token', adminToken);
+                expect(res.type).to.eq(jsonType);
+                expect(res.status).to.eq(200);
+                const {error} = userListTestOutput.validate(res.body);
+                expect(error).to.eq(undefined);
+                expect(res.body.error).to.eq(undefined);
             });
         });
 
         describe('Wrong userRole', () => {
-            it('returns 403', () => {
-                return chai.request(app)
+            it('returns 403', async () => {
+                const res = await chai.request(app)
                     .get(baseUrl)
-                    .set('token', readerToken)
-                    .catch(err => {
-                        expect(err.status).to.eq(403);
-                        expect(err.response.type).to.eq(jsonType);
-                    });
+                    .set('token', readerToken);
+                expect(res.status).to.eq(403);
+                expect(res.type).to.eq(jsonType);
+                expect(res.body.error).to.not.eq(undefined);
             });
         });
 
         describe('No token set', () => {
-            it('returns 401', () => {
-                return chai.request(app)
-                    .get(baseUrl)
-                    .catch(err => {
-                        expect(err.status).to.eq(401);
-                        expect(err.response.type).to.eq(jsonType);
-                    });
+            it('returns 401', async () => {
+                const res = await chai.request(app)
+                    .get(baseUrl);
+                expect(res.status).to.eq(401);
+                expect(res.type).to.eq(jsonType);
+                expect(res.body.error).to.not.eq(undefined);
             });
         });
     });
@@ -79,40 +75,37 @@ describe('User tests', () => {
         describe("Detail by admin", () => {
 
             describe("Correct GET detail", () => {
-                it("returns 200", () => {
-                    return chai.request(app)
+                it("returns 200", async () => {
+                    const res = await chai.request(app)
                         .get(`${baseUrl}/${adminUser.id}`)
-                        .set("token", adminToken)
-                        .then(res => {
-                            expect(res.status).to.eq(200);
-                            expect(res.type).to.eq(jsonType);
-                            const {error} = userTestOutput.validate(res.body);
-                            expect(error).to.eq(undefined);
-                        });
+                        .set("token", adminToken);
+                    expect(res.status).to.eq(200);
+                    expect(res.type).to.eq(jsonType);
+                    const {error} = userTestOutput.validate(res.body);
+                    expect(error).to.eq(undefined);
+                    expect(res.body.error).to.eq(undefined);
                 });
             });
 
             describe("Wrong userRole", () => {
-                it("returns 403", () => {
-                    return chai.request(app)
+                it("returns 403", async () => {
+                    const res = await chai.request(app)
                         .get(`${baseUrl}/${adminUser.id}`)
-                        .set("token", readerToken)
-                        .catch(err => {
-                            expect(err.status).to.eq(403);
-                            expect(err.response.type).to.eq(jsonType);
-                        });
+                        .set("token", readerToken);
+                    expect(res.status).to.eq(403);
+                    expect(res.type).to.eq(jsonType);
+                    expect(res.body.error).to.not.eq(undefined);
                 });
             });
 
             describe("Wrong ID in URL", () => {
-                it("returns 404", () => {
-                    return chai.request(app)
+                it("returns 404", async () => {
+                    const res = await chai.request(app)
                         .get(`${baseUrl}/0`)
-                        .set("token", adminToken)
-                        .catch(err => {
-                            expect(err.status).to.eq(404);
-                            expect(err.response.type).to.eq(jsonType);
-                        });
+                        .set("token", adminToken);
+                    expect(res.status).to.eq(404);
+                    expect(res.type).to.eq(jsonType);
+                    expect(res.body.error).to.not.eq(undefined);
                 });
             });
         });
@@ -123,95 +116,78 @@ describe('User tests', () => {
             username: 'create.user@latasna.com',
             password: "12345678",
             userRole: userRole.employee
-        }
+        };
 
         describe("All correct fields", () => {
             const createInput: any = {...inputBody};
 
-            it("returns 201", () => {
-                return chai.request(app)
+            it("returns 201", async () => {
+                const res = await chai.request(app)
                     .post(baseUrl)
                     .set("token", adminToken)
-                    .send(createInput)
-                    .then(res => {
-                        expect(res.status).to.eq(201);
-                        expect(res.type).to.eq(jsonType);
-                        expect(res.body).to.be.an("object");
-                        const {error} = userTestOutput.validate(res.body);
-                        expect(error).to.eq(undefined);
-                    });
+                    .send(createInput);
+                expect(res.status).to.eq(201);
+                expect(res.type).to.eq(jsonType);
+                expect(res.body).to.be.an("object");
+                const {error} = userTestOutput.validate(res.body);
+                expect(error).to.eq(undefined);
+                expect(res.body.error).to.eq(undefined);
             });
         });
 
         describe("Wrong userRole", () => {
             const createInput: any = {...inputBody, username: "create.user2@gmail.com"};
 
-            it("returns 403", () => {
-                return chai.request(app)
+            it("returns 403", async () => {
+                const res = await chai.request(app)
                     .post(baseUrl)
                     .set("token", readerToken)
-                    .send(createInput)
-                    .then(res => {
-                        expect(res.status).to.not.eq(201);
-                    })
-                    .catch(err => {
-                        expect(err.status).to.eq(403);
-                        expect(err.response.type).to.eq(jsonType);
-                    });
+                    .send(createInput);
+                expect(res.status).to.eq(403);
+                expect(res.type).to.eq(jsonType);
+                expect(res.body.error).to.not.eq(undefined);
             });
         });
 
         describe("username is already in use", () => {
             const createInput: any = {...inputBody};
 
-            it("returns 400", () => {
-                return chai.request(app)
+            it("returns 400", async () => {
+                const res = await chai.request(app)
                     .post(baseUrl)
                     .set("token", adminToken)
-                    .send(createInput)
-                    .then(res => {
-                        expect(res.status).to.not.eq(201);
-                    })
-                    .catch(err => {
-                        expect(err.status).to.eq(400);
-                        expect(err.response.type).to.eq(jsonType);
-                    });
+                    .send(createInput);
+                expect(res.status).to.eq(400);
+                expect(res.type).to.eq(jsonType);
+                expect(res.body.error).to.not.eq(undefined);
             });
         });
 
         describe("Wrong username field", () => {
             const createInput: any = {...inputBody, username: "jan.horvath1"};
 
-            it("returns 400", () => {
-                return chai.request(app)
+            it("returns 400", async () => {
+                const res = await chai.request(app)
                     .post(baseUrl)
                     .set("token", adminToken)
-                    .send(createInput)
-                    .then(res => {
-                        expect(res.status).to.not.eq(201);
-                    })
-                    .catch(err => {
-                        expect(err.status).to.eq(400);
-                        expect(err.response.type).to.eq(jsonType);
-                    });
+                    .send(createInput);
+                expect(res.status).to.eq(400);
+                expect(res.type).to.eq(jsonType);
+                expect(res.body.error).to.not.eq(undefined);
             });
         });
 
         describe("Missing fields", () => {
             const createInput: any = randomFields({...inputBody});
 
-            it("returns 400", () => {
-                return chai.request(app)
+            it("returns 400", async () => {
+                const res = await chai.request(app)
                     .post(baseUrl)
                     .set("token", adminToken)
                     .send(createInput)
-                    .then(res => {
-                        expect(res.status).to.not.eq(201);
-                    })
-                    .catch(err => {
-                        expect(err.status).to.eq(400);
-                        expect(err.response.type).to.eq(jsonType);
-                    });
+                expect(res.status).to.eq(400);
+                expect(res.type).to.eq(jsonType);
+                expect(res.body.error).to.not.eq(undefined);
             });
         });
     });
@@ -259,6 +235,7 @@ describe('User tests', () => {
                         .send(inputBody);
                     expect(res.status).to.eq(404);
                     expect(res.type).to.eq(jsonType);
+                    expect(res.body.error).to.not.eq(undefined);
                 });
             });
 
@@ -282,6 +259,7 @@ describe('User tests', () => {
                         .send({userRole: "xxx"});
                     expect(res.status).to.eq(400);
                     expect(res.type).to.eq(jsonType);
+                    expect(res.body.error).to.not.eq(undefined);
                 });
             });
 
@@ -305,6 +283,7 @@ describe('User tests', () => {
                         .send(inputBody);
                     expect(res.status).to.eq(403);
                     expect(res.type).to.eq(jsonType);
+                    expect(res.body.error).to.not.eq(undefined);
                 });
             });
         });
@@ -326,15 +305,13 @@ describe('User tests', () => {
                     userID = createRes.body.id;
                 });
                 it("returns 202", async () => {
-
-                    const res = await
-                        chai.request(app)
-                            .patch(`${baseUrl}/${userID}/password`)
-                            .set("token", adminToken)
-                            .send({password: "56789012"});
+                    const res = await chai.request(app)
+                        .patch(`${baseUrl}/${userID}/password`)
+                        .set("token", adminToken)
+                        .send({password: "56789012"});
                     expect(res.status).to.eq(202);
                     expect(res.type).to.eq(jsonType);
-                    return res;
+                    expect(res.body.error).to.eq(undefined);
                 });
             });
 
@@ -346,6 +323,7 @@ describe('User tests', () => {
                         .send({password: "56789012"})
                     expect(res.status).to.eq(404);
                     expect(res.type).to.eq(jsonType);
+                    expect(res.body.error).to.not.eq(undefined);
                 });
             });
 
@@ -370,6 +348,7 @@ describe('User tests', () => {
                         .send({password: "56789012"})
                     expect(res.status).to.eq(403);
                     expect(res.type).to.eq(jsonType);
+                    expect(res.body.error).to.not.eq(undefined);
                 });
             });
         });
@@ -390,11 +369,10 @@ describe('User tests', () => {
                 });
                 it("returns 202", async () => {
                     authorToken = await login(inputBody.username, inputBody.password);
-                    const res = await
-                        chai.request(app)
-                            .patch(`${baseUrl}/${userID}/password`)
-                            .set("token", authorToken.body.token)
-                            .send({password: "56789012"});
+                    const res = await chai.request(app)
+                        .patch(`${baseUrl}/${userID}/password`)
+                        .set("token", authorToken.body.token)
+                        .send({password: "56789012"});
                     expect(res.status).to.eq(202);
                     expect(res.type).to.eq(jsonType);
                 });
@@ -432,22 +410,17 @@ describe('User tests', () => {
                     expect(res.type).to.eq(jsonType);
                     const {error} = activeUserTestOutput.validate(res.body);
                     expect(error).to.eq(undefined);
-                    return res;
                 });
             });
 
             describe("Wrong ID in URL", () => {
-                it("returns 404", () => {
-                    return chai.request(app)
+                it("returns 404", async () => {
+                    const res = await chai.request(app)
                         .patch(`${baseUrl}/000/activate`)
                         .set("token", adminToken)
-                        .then(res => {
-                            expect(res.status).to.not.eq(200);
-                        })
-                        .catch(err => {
-                            expect(err.status).to.eq(404);
-                            expect(err.response.type).to.eq(jsonType);
-                        });
+                    expect(res.status).to.eq(404);
+                    expect(res.type).to.eq(jsonType);
+                    expect(res.body.error).to.not.eq(undefined);
                 });
             });
 
@@ -471,6 +444,7 @@ describe('User tests', () => {
                         .set("token", readerToken);
                     expect(res.status).to.eq(403);
                     expect(res.type).to.eq(jsonType);
+                    expect(res.body.error).to.not.eq(undefined);
                 });
             });
         });
@@ -504,22 +478,17 @@ describe('User tests', () => {
                     expect(res.type).to.eq(jsonType);
                     const {error} = deactiveUserTestOutput.validate(res.body);
                     expect(error).to.eq(undefined);
-                    return res;
                 });
             });
 
             describe("Wrong ID in URL", () => {
-                it("returns 404", () => {
-                    return chai.request(app)
+                it("returns 404", async () => {
+                    const res = await chai.request(app)
                         .patch(`${baseUrl}/000/deactivate`)
                         .set("token", adminToken)
-                        .then(res => {
-                            expect(res.status).to.not.eq(200);
-                        })
-                        .catch(err => {
-                            expect(err.status).to.eq(404);
-                            expect(err.response.type).to.eq(jsonType);
-                        });
+                    expect(res.status).to.eq(404);
+                    expect(res.type).to.eq(jsonType);
+                    expect(res.body.error).to.not.eq(undefined);
                 });
             });
 
@@ -543,6 +512,7 @@ describe('User tests', () => {
                         .set("token", readerToken);
                     expect(res.status).to.eq(403);
                     expect(res.type).to.eq(jsonType);
+                    expect(res.body.error).to.not.eq(undefined);
                 });
             });
         });
@@ -577,17 +547,13 @@ describe('User tests', () => {
         });
 
         describe("Wrong ID in URL", () => {
-            it("returns 404", () => {
-                return chai.request(app)
+            it("returns 404", async () => {
+                const res = await chai.request(app)
                     .patch(`${baseUrl}/999999/remove`)
                     .set("token", adminToken)
-                    .then(res => {
-                        expect(res.status).to.not.eq(200);
-                    })
-                    .catch(err => {
-                        expect(err.status).to.eq(404);
-                        expect(err.response.type).to.eq(jsonType);
-                    });
+                expect(res.status).to.eq(404);
+                expect(res.type).to.eq(jsonType);
+                expect(res.body.error).to.not.eq(undefined);
             });
         });
 
@@ -612,6 +578,7 @@ describe('User tests', () => {
                     .set("token", readerToken);
                 expect(res.status).to.eq(403);
                 expect(res.type).to.eq(jsonType);
+                expect(res.body.error).to.not.eq(undefined);
             });
         });
     });

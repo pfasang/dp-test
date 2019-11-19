@@ -14,18 +14,18 @@ export const auth = async (req, res) => {
     const inputPassword = req.body.password;
     //check if username and password are set
     if (!inputUsername || !inputPassword) {
-        return res.status(401).json();
+        return res.status(401).send({error: 'Missing required email and password fields'});
     }
     //check if user exists
     const user: User = await prisma.user({username: inputUsername});
     if (!user || !user.isActive) {
-        return res.status(401).json();
+        return res.status(401).send({error: 'User is inactive or doesn\'t exist'});
 
     }
     //check if password is correct
     const isCorrectPassword = await bcrypt.compare(inputPassword, user.password);
     if (!isCorrectPassword) {
-        return res.status(401).json();
+        return res.status(401).send({error: 'Password is missing'});
     }
     delete user['password'];
     delete user['isRemoved'];

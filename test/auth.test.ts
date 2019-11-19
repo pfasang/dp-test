@@ -26,99 +26,90 @@ describe("Authorization tests", () => {
             expect(res.status).to.eq(200);
             const {error} = userTestOutput.validate(res.body.user);
             expect(error).to.eq(undefined);
-            return res;
+            expect(res.body.error).to.eq(undefined);
         });
     });
-
     describe("Login with missing parameters", () => {
         describe("Missing username", () => {
-            it("returns 401", () => {
-                return chai.request(app)
+            it("returns 401", async () => {
+                const res = await chai.request(app)
                     .post(authUrl)
-                    .send({password: validPassword})
-                    .catch(err => {
-                        expect(err.response.type).to.eq(jsonType);
-                        expect(err.status).to.eq(401);
-                    });
+                    .send({password: validPassword});
+                expect(res.type).to.eq(jsonType);
+                expect(res.status).to.eq(401);
+                expect(res.body.error).to.not.eq(undefined);
             });
         });
         describe("Missing password", () => {
-            it("returns 401", () => {
-                return chai.request(app)
+            it("returns 401", async () => {
+                const res = await chai.request(app)
                     .post(authUrl)
-                    .send({username: validUsername})
-                    .catch(err => {
-                        expect(err.response.type).to.eq(jsonType);
-                        expect(err.status).to.eq(401);
-                    });
+                    .send({username: validUsername});
+                expect(res.type).to.eq(jsonType);
+                expect(res.status).to.eq(401);
+                expect(res.body.error).to.not.eq(undefined);
             });
         });
         describe("Missing username and password", () => {
-            it("returns 401", () => {
-                return chai.request(app)
-                    .post(authUrl)
-                    .catch(err => {
-                        expect(err.response.type).to.eq(jsonType);
-                        expect(err.status).to.eq(401);
-                    });
+            it("returns 401", async () => {
+                const res = await chai.request(app)
+                    .post(authUrl);
+                expect(res.type).to.eq(jsonType);
+                expect(res.status).to.eq(401);
+                expect(res.body.error).to.not.eq(undefined);
             });
         });
     });
     describe("Login with wrong parameters", () => {
 
         describe("Wrong username", () => {
-            it("returns 401", () => {
-                return chai.request(app)
+            it("returns 401", async () => {
+                const res = await chai.request(app)
                     .post(authUrl)
                     .send({username: wrongUsername})
-                    .catch(err => {
-                        expect(err.response.type).to.eq(jsonType);
-                        expect(err.status).to.eq(401);
-                    });
+                expect(res.type).to.eq(jsonType);
+                expect(res.status).to.eq(401);
+                expect(res.body.error).to.not.eq(undefined);
             });
         });
         describe("Wrong password", () => {
-            it("returns 401", () => {
-                return chai.request(app)
+            it("returns 401", async () => {
+                const res = await chai.request(app)
                     .post(authUrl)
                     .send({password: wrongPassword})
-                    .catch(err => {
-                        expect(err.response.type).to.eq(jsonType);
-                        expect(err.status).to.eq(401);
-                    });
+                expect(res.type).to.eq(jsonType);
+                expect(res.status).to.eq(401);
+                expect(res.body.error).to.not.eq(undefined);
             });
         });
         describe("Wrong username and password", () => {
-            it("returns 401", () => {
-                return chai.request(app)
+            it("returns 401", async () => {
+                const res = await chai.request(app)
                     .post(authUrl)
                     .send({username: wrongUsername, password: wrongPassword})
-                    .catch(err => {
-                        expect(err.response.type).to.eq(jsonType);
-                        expect(err.status).to.eq(401);
-                    });
+                expect(res.type).to.eq(jsonType);
+                expect(res.status).to.eq(401);
+                expect(res.body.error).to.not.eq(undefined);
             });
         });
         describe("Wrong username and valid password", () => {
-            it("returns 401", () => {
-                return chai.request(app)
+            it("returns 401", async () => {
+                const res = await chai.request(app)
                     .post(authUrl)
                     .send({username: wrongUsername, password: validPassword})
-                    .catch(err => {
-                        expect(err.response.type).to.eq(jsonType);
-                        expect(err.status).to.eq(401);
-                    });
+                expect(res.type).to.eq(jsonType);
+                expect(res.status).to.eq(401);
+                expect(res.body.error).to.not.eq(undefined);
             });
         });
         describe("Valid username and wrong password", () => {
-            it("returns 401", () => {
-                return chai.request(app)
+            it("returns 401", async () => {
+                const res = await chai.request(app)
                     .post(authUrl)
                     .send({username: validUsername, password: wrongPassword})
-                    .catch(err => {
-                        expect(err.response.type).to.eq(jsonType);
-                        expect(err.status).to.eq(401);
-                    });
+                expect(res.type).to.eq(jsonType);
+                expect(res.status).to.eq(401);
+                expect(res.body.error).to.not.eq(undefined);
             });
         });
     });

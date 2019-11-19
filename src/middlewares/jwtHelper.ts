@@ -19,20 +19,20 @@ export const verifyUser = async (req, res, next) => {
     //get token from request
     let token = req.body.token || req.query.token || req.headers['token'];
     if (!token) {
-        return res.status(401).json();
+        return res.status(401).send({error: 'Token doesn\'t found.'});
     }
     try {
         //jsonwebtoken function to verify token
         uToken = <IToken> jwt.verify(token, 'MySecret');
     }
     catch(err) {
-        return res.status(401).send(err);
+        return res.status(401).send({error: 'Wrong token.'});
     }
 
     //get user from database
     const user = await prisma.user({id: uToken.id});
     if (!user) {
-        return res.status(401).json();
+        return res.status(401).send({error: 'User not found.'});
     }
 
     //save user object to request
