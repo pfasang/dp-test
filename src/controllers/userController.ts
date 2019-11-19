@@ -57,8 +57,7 @@ export const createUser = async (req, res) => {
         req.body.password = await hashPassword(req.body.password);
         const user: User = await prisma.createUser(req.body).$fragment(userFragments);
         res.status(201).json(user);
-    }
-    catch (e) {
+    } catch (e) {
         return res.status(400).json();
     }
 };
@@ -70,62 +69,46 @@ export const createUser = async (req, res) => {
  * @returns {Promise<void>} Returns updated user information in JSON object
  */
 export const updateUser = async (req, res) => {
-    //check if user is admin
-    /*const inputUserRole = req.user.userRole;
-    if(inputUserRole!=userRole.admin) {
-        return res.status(403).json();
-    }
-
     //get id number from url
     const userID = req.params.id;
 
-    //get user with given ID
-    const user = await new User().where({id : userID}).fetch();
-    if(!user) {
-        return res.status(404).json();
-    }
-
     //Validate user input
-    const validatedBody = userEditInputValidation.validate(req.body);
-    if (validatedBody.error) {
+    const {error} = userEditInputValidation.validate(req.body);
+    if (error) {
         return res.status(400).json();
     }
 
-    //update user in database
-    const updatedUser = await Bookshelf.transaction(async (trx) => {
-        const updatedUser = await user.save(req.body, {method:"update", transacting:trx,  patch: true});
-        return updatedUser;
-    });
-    res.status(200).json(updatedUser);*/
+    try {
+        const updatedUser: User = await prisma.updateUser({
+            data: req.body,
+            where: {id: userID}
+        }).$fragment(userFragments);
+        res.status(200).json(updatedUser);
+    } catch (e) {
+        return res.status(404).json();
+    }
 };
 
 export const changePass = async (req, res) => {
-    /* //check if user is admin
-     const inputUserRole = req.user.userRole;
-     if(inputUserRole!=userRole.admin) {
-         return res.status(403).json();
-     }
+    //get id number from url
+    const userID = req.params.id;
 
-     if (!req.body.password) {
-         return res.status(400).json();
-     }
+    if (!req.body.password) {
+        return res.status(400).json();
+    }
 
-     //get id number from url
-     const userID = req.params.id;
+    try {
+        req.body.password = await hashPassword(req.body.password);
+        await prisma.updateUser({
+            data: {password: req.body.password},
+            where: {id: userID}
+        }).$fragment(userFragments);
+        return res.status(202).json();
+    } catch (e) {
+        return res.status(404).json();
+    }
 
-     //get user with given ID
-     const user = await new User().where({id : userID}).fetch();
-     if(!user) {
-         return res.status(404).json();
-     }
-     //update user in database
-     const passUser = await Bookshelf.transaction(async (trx) => {
-         req.body.password = await User.hashPassword(req.body.password);
-         const updatedUser = await user.save(req.body, {method:"update", transacting:trx,  patch: true});
-         return updatedUser;
-     });
-     return res.status(202).json();*/
-}
+};
 
 /**
  * Function to activate user
@@ -153,26 +136,18 @@ export const deactivateUser = async (req, res) => {
  * @returns {Promise<void>} Returns status code 200 in case of success and user info in JSON
  */
 export const userActivation = async (req, res, state: boolean) => {
-    /*    //check if user is admin
-        const inputUserRole = req.user.userRole;
-        if(inputUserRole!=userRole.admin) {
-            return res.status(403).json();
-        }
+    //get id number from url
+    const userID = req.params.id;
 
-        //get id number from url
-        const userID = req.params.id;
-
-        //get user with given ID
-        const user = await new User().where({id : userID}).fetch();
-        if(!user) {
-            return res.status(404).json();
-        }
-
-        //activate/deactivate user
-        const activationUser = await Bookshelf.transaction(async (trx) => {
-            return await user.save({isActive: state}, {method:"update", transacting:trx, patch: true});
-        });
-        res.status(200).json(activationUser);*/
+    try {
+        const updatedUser: User = await prisma.updateUser({
+            data: {isActive: state},
+            where: {id: userID}
+        }).$fragment(userFragments);
+        res.status(200).json(updatedUser);
+    } catch (e) {
+        return res.status(404).json();
+    }
 };
 
 /**
@@ -182,24 +157,17 @@ export const userActivation = async (req, res, state: boolean) => {
  * @returns {Promise<void>} Returns status code 204 in case of success
  */
 export const deleteUser = async (req, res) => {
-    /*    //check if user is admin
-        const inputUserRole = req.user.userRole;
-        if(inputUserRole!=userRole.admin) {
-            return res.status(403).json();
-        }
+    //get id number from url
+    const userID = req.params.id;
 
-        //get id number from url
-        const userID = req.params.id;
-
-        //get user with given ID
-        const user = await new User().where({id : userID}).fetch();
-        if(!user) {
-            return res.status(404).json();
-        }
-
-        //deactivate and set delete flag for user
-        const deleteUser = await Bookshelf.transaction(async (trx) => {
-            return await user.save({isActive: false, isRemoved: true}, {method:"update", transacting:trx, patch: true});
+    try {
+        const deletedUser: User = await prisma.updateUser({
+            data: {isActive: false, isRemoved: true},
+            where: {id: userID}
         });
-        res.status(200).json(deleteUser);*/
+        delete deletedUser["password"];
+        res.status(200).json(deletedUser);
+    } catch (e) {
+        return res.status(404).json();
+    }
 };

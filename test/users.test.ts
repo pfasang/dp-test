@@ -1,17 +1,17 @@
 import * as chai from 'chai';
-import chaiHttp = require('chai-http');
 import {port} from '../src/server';
 import {userRole} from "../src/utilities/enums";
 import {login, randomFields} from './utilities/testHelper';
-import * as Joi from '@hapi/joi';
 import {
-    userListTestOutput,
-    userTestOutput,
     activeUserTestOutput,
-    removedUserTestOutput
+    deactiveUserTestOutput,
+    removedUserTestOutput,
+    userListTestOutput,
+    userTestOutput
 } from '../src/utilities/validation/userValidation';
 import {seedUsers} from "../src/database/seeds/seedFunctions";
 import {User} from "../src/generated/prisma-client";
+import chaiHttp = require('chai-http');
 
 let app = 'http://localhost:' + port;
 
@@ -19,8 +19,7 @@ chai.use(chaiHttp);
 const expect = chai.expect, validUsername = 'john.doe@latasna.com', validPassword = '12345678',
     validReaderUsername = 'jozef.dressel@latasna.com', validReaderPassword = '12345678';
 
-let res, adminToken: string, readerToken: string;
-let adminUser: User;
+let res, adminToken: string, readerToken: string, userID: string, adminUser: User, inputBody, createRes;
 
 describe('User tests', () => {
 
@@ -217,120 +216,117 @@ describe('User tests', () => {
         });
     });
 
-    xdescribe("PUT Update User", () => {
-        const inputBody = {
-            username: 'user.toupdate@latasna.com',
-            password: '12345678',
-            isActive: true,
-            userRole: userRole.employee
-        };
-        let userID: number;
-
+    describe("PUT Update User", () => {
         describe("Update by admin", () => {
+            before(async () => {
+                inputBody = {
+                    username: 'user.toupdate@latasna.com',
+                    password: '12345678',
+                    userRole: userRole.employee
+                };
+                createRes = await chai.request(app)
+                    .post(baseUrl)
+                    .set("token", adminToken)
+                    .send(inputBody);
+                userID = createRes.body.id;
+            });
             describe("Correct UPDATE", () => {
                 it("returns 200", async () => {
-                    const createRes = await
-                        chai.request(app)
-                            .post(baseUrl)
-                            .set("token", adminToken)
-                            .send(inputBody);
-                    userID = createRes.body.id;
-                    inputBody.username = "user.update@latasna.com";
-                    delete inputBody.password;
                     const res = await
                         chai.request(app)
-                            .put(`${baseUrl}/${userID}`)
+                            .patch(`${baseUrl}/${userID}`)
                             .set("token", adminToken)
-                            .send(inputBody);
+                            .send({userRole: userRole.admin});
                     expect(res.status).to.eq(200);
                     expect(res.type).to.eq(jsonType);
                     const {error} = userTestOutput.validate(res.body);
                     expect(error).to.eq(undefined);
-                    return res;
                 });
             });
 
             describe("Wrong ID in URL", () => {
-                inputBody.username = "juro.horvath@latasna.com";
-                it("returns 404", () => {
-                    return chai.request(app)
-                        .put(`${baseUrl}/999999`)
+                before(() => {
+                    inputBody = {
+                        username: 'wrongid.update@latasna.com',
+                        userRole: userRole.employee
+                    };
+                });
+
+                it("returns 404", async () => {
+                    const res = await chai.request(app)
+                        .patch(`${baseUrl}/0`)
                         .set("token", adminToken)
-                        .send(inputBody)
-                        .then(res => {
-                            expect(res.status).to.not.eq(200);
-                        })
-                        .catch(err => {
-                            expect(err.status).to.eq(404);
-                            expect(err.response.type).to.eq(jsonType);
-                        });
+                        .send(inputBody);
+                    expect(res.status).to.eq(404);
+                    expect(res.type).to.eq(jsonType);
                 });
             });
 
             describe("Wrong fields", () => {
-                const inputBody = {
-                    username: 'wrong.fields@latasna.com',
-                    password: "12345678",
-                    isActive: true,
-                    userRole: userRole.employee
-                };
-                it("returns 400", async () => {
-                    return chai.request(app)
+                before(async () => {
+                    inputBody = {
+                        username: 'wrong.fields@latasna.com',
+                        password: "12345678",
+                        userRole: userRole.employee
+                    };
+                    createRes = await chai.request(app)
                         .post(baseUrl)
+                        .set("token", adminToken)
+                        .send(inputBody);
+                    userID = createRes.body.id;
+                });
+                it("returns 400", async () => {
+                    const res = await chai.request(app)
+                        .patch(`${baseUrl}/${userID}`)
                         .set('token', adminToken)
-                        .send(inputBody)
-                        .then(res => {
-                            userID = res.body.id;
-                            delete inputBody.password;
-                            inputBody.username = 'knovak.com';
-                            return chai.request(app)
-                                .put(`${baseUrl}/${userID}`)
-                                .set('token', adminToken)
-                                .send(inputBody)
-                                .catch(err => {
-                                    expect(err.status).to.eq(400);
-                                    expect(err.response.type).to.eq(jsonType);
-                                });
-                        });
+                        .send({userRole: "xxx"});
+                    expect(res.status).to.eq(400);
+                    expect(res.type).to.eq(jsonType);
                 });
             });
 
-            describe("Wrong userRole", () => {
-                inputBody.username = "wrong.userrole@latasna.com";
-                it("returns 403", () => {
-                    return chai.request(app)
-                        .put(`${baseUrl}/1`)
+            describe("Wrong Permission", () => {
+                before(async () => {
+                    inputBody = {
+                        username: 'wrong.permission@latasna.com',
+                        password: "12345678",
+                        userRole: userRole.employee
+                    };
+                    createRes = await chai.request(app)
+                        .post(baseUrl)
+                        .set("token", adminToken)
+                        .send(inputBody);
+                    userID = createRes.body.id;
+                });
+                it("returns 403", async () => {
+                    const res = await chai.request(app)
+                        .patch(`${baseUrl}/${userID}`)
                         .set("token", readerToken)
-                        .send(inputBody)
-                        .then(res => {
-                            expect(res.status).to.not.eq(200);
-                        })
-                        .catch(err => {
-                            expect(err.status).to.eq(403);
-                            expect(err.response.type).to.eq(jsonType);
-                        });
+                        .send(inputBody);
+                    expect(res.status).to.eq(403);
+                    expect(res.type).to.eq(jsonType);
                 });
             });
         });
     });
 
-    xdescribe("PATCH Change Password", () => {
-        const inputBody = {
-            username: 'user.pass@latasna.com',
-            password: "12345678",
-            userRole: userRole.admin
-        };
-        let userID: number;
-
+    describe("PATCH Change Password", () => {
         describe("Change password by admin", () => {
             describe("Correct CHANGE", () => {
-                it("returns 202", async () => {
-                    const createRes = await
-                        chai.request(app)
-                            .post(baseUrl)
-                            .set("token", adminToken)
-                            .send(inputBody);
+                before(async () => {
+                    inputBody = {
+                        username: 'user.pass@latasna.com',
+                        password: "12345678",
+                        userRole: userRole.employee
+                    };
+                    createRes = await chai.request(app)
+                        .post(baseUrl)
+                        .set("token", adminToken)
+                        .send(inputBody);
                     userID = createRes.body.id;
+                });
+                it("returns 202", async () => {
+
                     const res = await
                         chai.request(app)
                             .patch(`${baseUrl}/${userID}/password`)
@@ -343,64 +339,97 @@ describe('User tests', () => {
             });
 
             describe("Wrong ID in URL", () => {
-                it("returns 404", () => {
-                    return chai.request(app)
-                        .patch(`${baseUrl}/999999/password`)
+                it("returns 404", async () => {
+                    const res = await chai.request(app)
+                        .patch(`${baseUrl}/00/password`)
                         .set("token", adminToken)
                         .send({password: "56789012"})
-                        .then(res => {
-                            expect(res.status).to.not.eq(202);
-                        })
-                        .catch(err => {
-                            expect(err.status).to.eq(404);
-                            expect(err.response.type).to.eq(jsonType);
-                        });
+                    expect(res.status).to.eq(404);
+                    expect(res.type).to.eq(jsonType);
                 });
             });
 
             describe("Wrong userRole", () => {
-                it("returns 403", () => {
-                    return chai.request(app)
+                before(async () => {
+                    inputBody = {
+                        username: 'update.passWrongRole@latasna.com',
+                        password: "12345678",
+                        userRole: userRole.employee
+                    };
+                    createRes = await chai.request(app)
+                        .post(baseUrl)
+                        .set("token", adminToken)
+                        .send(inputBody);
+                    userID = createRes.body.id;
+                });
+
+                it("returns 403", async () => {
+                    const res = await chai.request(app)
                         .patch(`${baseUrl}/${userID}/password`)
                         .set("token", readerToken)
                         .send({password: "56789012"})
-                        .then(res => {
-                            expect(res.status).to.not.eq(202);
-                        })
-                        .catch(err => {
-                            expect(err.status).to.eq(403);
-                            expect(err.response.type).to.eq(jsonType);
-                        });
+                    expect(res.status).to.eq(403);
+                    expect(res.type).to.eq(jsonType);
                 });
             });
         });
+        describe("Change password by author", () => {
+            let authorToken;
+            describe("Correct CHANGE", () => {
+                before(async () => {
+                    inputBody = {
+                        username: 'user.passauthor@latasna.com',
+                        password: "12345678",
+                        userRole: userRole.employee
+                    };
+                    createRes = await chai.request(app)
+                        .post(baseUrl)
+                        .set("token", adminToken)
+                        .send(inputBody);
+                    userID = createRes.body.id;
+                });
+                it("returns 202", async () => {
+                    authorToken = await login(inputBody.username, inputBody.password);
+                    const res = await
+                        chai.request(app)
+                            .patch(`${baseUrl}/${userID}/password`)
+                            .set("token", authorToken.body.token)
+                            .send({password: "56789012"});
+                    expect(res.status).to.eq(202);
+                    expect(res.type).to.eq(jsonType);
+                });
+            });
+
+        });
     });
 
-    xdescribe("PATCH Activate User", () => {
-        const inputBody = {
-            username: 'activate.user@latasna.com',
-            password: "12345678",
-            isActive: false,
-            userRole: userRole.admin
-        };
-        let userID: number;
+    describe("PATCH Activate User", () => {
 
         describe("Activate by admin", () => {
             describe("Correct ACTIVATE", () => {
-                it("returns 200", async () => {
-                    const createRes = await
-                        chai.request(app)
-                            .post(baseUrl)
-                            .set("token", adminToken)
-                            .send(inputBody);
+                before(async () => {
+                    inputBody = {
+                        username: 'activate.user@latasna.com',
+                        password: "12345678",
+                        isActive: false,
+                        userRole: userRole.admin
+                    };
+                    createRes = await chai.request(app)
+                        .post(baseUrl)
+                        .set("token", adminToken)
+                        .send(inputBody);
+                    expect(createRes.status).to.eq(201);
+                    expect(createRes.type).to.eq(jsonType);
                     userID = createRes.body.id;
+                });
+
+                it("returns 200", async () => {
                     const res = await
                         chai.request(app)
                             .patch(`${baseUrl}/${userID}/activate`)
                             .set("token", adminToken);
                     expect(res.status).to.eq(200);
                     expect(res.type).to.eq(jsonType);
-                    expect(res.body.isActive).to.eq(true);
                     const {error} = activeUserTestOutput.validate(res.body);
                     expect(error).to.eq(undefined);
                     return res;
@@ -410,7 +439,7 @@ describe('User tests', () => {
             describe("Wrong ID in URL", () => {
                 it("returns 404", () => {
                     return chai.request(app)
-                        .patch(`${baseUrl}/999999/activate`)
+                        .patch(`${baseUrl}/000/activate`)
                         .set("token", adminToken)
                         .then(res => {
                             expect(res.status).to.not.eq(200);
@@ -423,48 +452,57 @@ describe('User tests', () => {
             });
 
             describe("Wrong userRole", () => {
-                it("returns 403", () => {
-                    return chai.request(app)
+                before(async () => {
+                    inputBody = {
+                        username: 'activate.wrongrole@latasna.com',
+                        password: "12345678",
+                        isActive: false,
+                        userRole: userRole.employee
+                    };
+                    createRes = await chai.request(app)
+                        .post(baseUrl)
+                        .set("token", adminToken)
+                        .send(inputBody);
+                    userID = createRes.body.id;
+                });
+                it("returns 403", async () => {
+                    const res = await chai.request(app)
                         .patch(`${baseUrl}/${userID}/activate`)
-                        .set("token", readerToken)
-                        .then(res => {
-                            expect(res.status).to.not.eq(200);
-                        })
-                        .catch(err => {
-                            expect(err.status).to.eq(403);
-                            expect(err.response.type).to.eq(jsonType);
-                        });
+                        .set("token", readerToken);
+                    expect(res.status).to.eq(403);
+                    expect(res.type).to.eq(jsonType);
                 });
             });
         });
     });
 
-    xdescribe("PATCH Deactivate User", () => {
-        const inputBody = {
-            username: 'deactivate.user@latasna.com',
-            password: "12345678",
-            isActive: true,
-            userRole: userRole.admin
-        };
-        let userID: number;
-
+    describe("PATCH Deactivate User", () => {
         describe("Deactivate by admin", () => {
             describe("Correct DEACTIVATE", () => {
-                it("returns 200", async () => {
-                    const createRes = await
-                        chai.request(app)
-                            .post(baseUrl)
-                            .set("token", adminToken)
-                            .send(inputBody);
+                before(async () => {
+                    inputBody = {
+                        username: 'deactivate.user@latasna.com',
+                        password: "12345678",
+                        isActive: false,
+                        userRole: userRole.admin
+                    };
+                    createRes = await chai.request(app)
+                        .post(baseUrl)
+                        .set("token", adminToken)
+                        .send(inputBody);
+                    expect(createRes.status).to.eq(201);
+                    expect(createRes.type).to.eq(jsonType);
                     userID = createRes.body.id;
+                });
+
+                it("returns 200", async () => {
                     const res = await
                         chai.request(app)
                             .patch(`${baseUrl}/${userID}/deactivate`)
                             .set("token", adminToken);
                     expect(res.status).to.eq(200);
                     expect(res.type).to.eq(jsonType);
-                    expect(res.body.isActive).to.eq(false);
-                    const {error} = userTestOutput.validate(res.body);
+                    const {error} = deactiveUserTestOutput.validate(res.body);
                     expect(error).to.eq(undefined);
                     return res;
                 });
@@ -473,7 +511,7 @@ describe('User tests', () => {
             describe("Wrong ID in URL", () => {
                 it("returns 404", () => {
                     return chai.request(app)
-                        .patch(`${baseUrl}/999999/deactivate`)
+                        .patch(`${baseUrl}/000/deactivate`)
                         .set("token", adminToken)
                         .then(res => {
                             expect(res.status).to.not.eq(200);
@@ -486,42 +524,47 @@ describe('User tests', () => {
             });
 
             describe("Wrong userRole", () => {
-                it("returns 403", () => {
-                    return chai.request(app)
+                before(async () => {
+                    inputBody = {
+                        username: 'deactivate.wrongrole@latasna.com',
+                        password: "12345678",
+                        isActive: false,
+                        userRole: userRole.employee
+                    };
+                    createRes = await chai.request(app)
+                        .post(baseUrl)
+                        .set("token", adminToken)
+                        .send(inputBody);
+                    userID = createRes.body.id;
+                });
+                it("returns 403", async () => {
+                    const res = await chai.request(app)
                         .patch(`${baseUrl}/${userID}/deactivate`)
-                        .set("token", readerToken)
-                        .then(res => {
-                            expect(res.status).to.not.eq(200);
-                        })
-                        .catch(err => {
-                            expect(err.status).to.eq(403);
-                            expect(err.response.type).to.eq(jsonType);
-                        });
+                        .set("token", readerToken);
+                    expect(res.status).to.eq(403);
+                    expect(res.type).to.eq(jsonType);
                 });
             });
         });
     });
 
-    xdescribe("DELETE user", () => {
-        const inputBody = {
-            username: 'user.toremove@latasna.com',
-            password: "12345678",
-            isActive: true,
-            isRemoved: false,
-            userRole: userRole.employee
-        };
-        let userID: number;
-
+    describe("DELETE user", () => {
         describe("Correct DELETE", () => {
+            before(async () => {
+                inputBody = {
+                    username: 'remove.user@latasna.com',
+                    password: "12345678",
+                    userRole: userRole.employee
+                };
+                createRes = await chai.request(app)
+                    .post(baseUrl)
+                    .set("token", adminToken)
+                    .send(inputBody);
+                expect(createRes.status).to.eq(201);
+                expect(createRes.type).to.eq(jsonType);
+                userID = createRes.body.id;
+            });
             it("returns 200", async () => {
-                const delRes = await
-                    chai.request(app)
-                        .post(baseUrl)
-                        .set("token", adminToken)
-                        .send(inputBody);
-                userID = delRes.body.id;
-                inputBody.isActive = false;
-                inputBody.isRemoved = true;
                 const res = await
                     chai.request(app)
                         .patch(`${baseUrl}/${userID}/remove`)
@@ -530,7 +573,6 @@ describe('User tests', () => {
                 expect(res.type).to.eq(jsonType);
                 const {error} = removedUserTestOutput.validate(res.body);
                 expect(error).to.eq(undefined);
-                return res;
             });
         });
 
@@ -550,17 +592,26 @@ describe('User tests', () => {
         });
 
         describe("Wrong userRole", () => {
-            it("returns 403", () => {
-                return chai.request(app)
-                    .patch(`${baseUrl}/1/remove`)
-                    .set("token", readerToken)
-                    .then(res => {
-                        expect(res.status).to.not.eq(200);
-                    })
-                    .catch(err => {
-                        expect(err.status).to.eq(403);
-                        expect(err.response.type).to.eq(jsonType);
-                    });
+            before(async () => {
+                inputBody = {
+                    username: 'remove.wrongrole@latasna.com',
+                    password: "12345678",
+                    userRole: userRole.employee
+                };
+                createRes = await chai.request(app)
+                    .post(baseUrl)
+                    .set("token", adminToken)
+                    .send(inputBody);
+                expect(createRes.status).to.eq(201);
+                expect(createRes.type).to.eq(jsonType);
+                userID = createRes.body.id;
+            });
+            it("returns 403", async () => {
+                const res = await chai.request(app)
+                    .patch(`${baseUrl}/${userID}/remove`)
+                    .set("token", readerToken);
+                expect(res.status).to.eq(403);
+                expect(res.type).to.eq(jsonType);
             });
         });
     });
