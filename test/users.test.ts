@@ -483,8 +483,8 @@ describe('User tests', () => {
                     inputBody = {
                         username: 'deactivate.user@latasna.com',
                         password: "12345678",
-                        isActive: false,
-                        userRole: userRole.admin
+                        isActive: true,
+                        userRole: userRole.employee
                     };
                     createRes = await chai.request(app)
                         .post(baseUrl)
@@ -528,7 +528,7 @@ describe('User tests', () => {
                     inputBody = {
                         username: 'deactivate.wrongrole@latasna.com',
                         password: "12345678",
-                        isActive: false,
+                        isActive: true,
                         userRole: userRole.employee
                     };
                     createRes = await chai.request(app)
