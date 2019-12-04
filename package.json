@@ -8,8 +8,7 @@
     "start:dev": "NODE_ENV=development webpack",
     "build:dev": "NODE_ENV=development nodemon dist/server.js",
     "prisma-seed": "prisma reset && prisma seed",
-    "prisma-deploy": "prisma deploy",
-    "create-database": "cd src/database/sql && psql -U postgres -h localhost -a -f devDat.sql"
+    "prisma-deploy": "prisma deploy"
   },
   "repository": {
     "type": "git",
