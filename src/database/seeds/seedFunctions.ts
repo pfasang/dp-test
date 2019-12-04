@@ -1,11 +1,11 @@
-const {users} = require("./dev/users");
+const {profiles} = require("./dev/profiles");
 import {prisma} from '../../generated/prisma-client'
 
-const seedUsers = async () => {
-    await prisma.deleteManyUsers();
-    for (const item of users) {
-        await prisma.createUser(item);
+const seedProfiles = async () => {
+    await prisma.deleteManyProfiles();
+    for (const item of profiles) {
+        await prisma.createProfile(item);
     }
 };
 
-export {seedUsers};
+export {seedProfiles};

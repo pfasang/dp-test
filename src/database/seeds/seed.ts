@@ -1,7 +1,7 @@
-import {seedUsers} from "./seedFunctions";
+import {seedProfiles} from "./seedFunctions";
 
 const main = async () => {
-    await seedUsers();
+    await seedProfiles();
 };
 
 main().catch((e) => console.error(e));

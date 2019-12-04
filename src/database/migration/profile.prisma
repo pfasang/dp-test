@@ -1,0 +1,9 @@
+type Profile {
+  id: ID! @id
+  firstName: String!
+  lastName: String!
+  title: String
+  userId: ID! @unique
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}

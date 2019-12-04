@@ -2,7 +2,7 @@
   // Please don't change this file manually but run `prisma generate` to update it.
   // For more information, please read the docs: https://www.prisma.io/docs/prisma-client/
 
-export const typeDefs = /* GraphQL */ `type AggregateUser {
+export const typeDefs = /* GraphQL */ `type AggregateProfile {
   count: Int!
 }
 
@@ -15,12 +15,12 @@ scalar DateTime
 scalar Long
 
 type Mutation {
-  createUser(data: UserCreateInput!): User!
-  updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
-  updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
-  upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
-  deleteUser(where: UserWhereUniqueInput!): User
-  deleteManyUsers(where: UserWhereInput): BatchPayload!
+  createProfile(data: ProfileCreateInput!): Profile!
+  updateProfile(data: ProfileUpdateInput!, where: ProfileWhereUniqueInput!): Profile
+  updateManyProfiles(data: ProfileUpdateManyMutationInput!, where: ProfileWhereInput): BatchPayload!
+  upsertProfile(where: ProfileWhereUniqueInput!, create: ProfileCreateInput!, update: ProfileUpdateInput!): Profile!
+  deleteProfile(where: ProfileWhereUniqueInput!): Profile
+  deleteManyProfiles(where: ProfileWhereInput): BatchPayload!
 }
 
 enum MutationType {
@@ -40,113 +40,95 @@ type PageInfo {
   endCursor: String
 }
 
-type Query {
-  user(where: UserWhereUniqueInput!): User
-  users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
-  usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
-  node(id: ID!): Node
-}
-
-type Subscription {
-  user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
-}
-
-type User {
+type Profile {
   id: ID!
-  username: String!
-  password: String!
-  userRole: Int
-  isRemoved: Boolean
-  isActive: Boolean
+  firstName: String!
+  lastName: String!
+  title: String
+  userId: ID!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
 
-type UserConnection {
+type ProfileConnection {
   pageInfo: PageInfo!
-  edges: [UserEdge]!
-  aggregate: AggregateUser!
+  edges: [ProfileEdge]!
+  aggregate: AggregateProfile!
 }
 
-input UserCreateInput {
+input ProfileCreateInput {
   id: ID
-  username: String!
-  password: String!
-  userRole: Int
-  isRemoved: Boolean
-  isActive: Boolean
+  firstName: String!
+  lastName: String!
+  title: String
+  userId: ID!
 }
 
-type UserEdge {
-  node: User!
+type ProfileEdge {
+  node: Profile!
   cursor: String!
 }
 
-enum UserOrderByInput {
+enum ProfileOrderByInput {
   id_ASC
   id_DESC
-  username_ASC
-  username_DESC
-  password_ASC
-  password_DESC
-  userRole_ASC
-  userRole_DESC
-  isRemoved_ASC
-  isRemoved_DESC
-  isActive_ASC
-  isActive_DESC
+  firstName_ASC
+  firstName_DESC
+  lastName_ASC
+  lastName_DESC
+  title_ASC
+  title_DESC
+  userId_ASC
+  userId_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
   updatedAt_DESC
 }
 
-type UserPreviousValues {
+type ProfilePreviousValues {
   id: ID!
-  username: String!
-  password: String!
-  userRole: Int
-  isRemoved: Boolean
-  isActive: Boolean
+  firstName: String!
+  lastName: String!
+  title: String
+  userId: ID!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
 
-type UserSubscriptionPayload {
+type ProfileSubscriptionPayload {
   mutation: MutationType!
-  node: User
+  node: Profile
   updatedFields: [String!]
-  previousValues: UserPreviousValues
+  previousValues: ProfilePreviousValues
 }
 
-input UserSubscriptionWhereInput {
+input ProfileSubscriptionWhereInput {
   mutation_in: [MutationType!]
   updatedFields_contains: String
   updatedFields_contains_every: [String!]
   updatedFields_contains_some: [String!]
-  node: UserWhereInput
-  AND: [UserSubscriptionWhereInput!]
-  OR: [UserSubscriptionWhereInput!]
-  NOT: [UserSubscriptionWhereInput!]
+  node: ProfileWhereInput
+  AND: [ProfileSubscriptionWhereInput!]
+  OR: [ProfileSubscriptionWhereInput!]
+  NOT: [ProfileSubscriptionWhereInput!]
 }
 
-input UserUpdateInput {
-  username: String
-  password: String
-  userRole: Int
-  isRemoved: Boolean
-  isActive: Boolean
+input ProfileUpdateInput {
+  firstName: String
+  lastName: String
+  title: String
+  userId: ID
 }
 
-input UserUpdateManyMutationInput {
-  username: String
-  password: String
-  userRole: Int
-  isRemoved: Boolean
-  isActive: Boolean
+input ProfileUpdateManyMutationInput {
+  firstName: String
+  lastName: String
+  title: String
+  userId: ID
 }
 
-input UserWhereInput {
+input ProfileWhereInput {
   id: ID
   id_not: ID
   id_in: [ID!]
@@ -161,46 +143,62 @@ input UserWhereInput {
   id_not_starts_with: ID
   id_ends_with: ID
   id_not_ends_with: ID
-  username: String
-  username_not: String
-  username_in: [String!]
-  username_not_in: [String!]
-  username_lt: String
-  username_lte: String
-  username_gt: String
-  username_gte: String
-  username_contains: String
-  username_not_contains: String
-  username_starts_with: String
-  username_not_starts_with: String
-  username_ends_with: String
-  username_not_ends_with: String
-  password: String
-  password_not: String
-  password_in: [String!]
-  password_not_in: [String!]
-  password_lt: String
-  password_lte: String
-  password_gt: String
-  password_gte: String
-  password_contains: String
-  password_not_contains: String
-  password_starts_with: String
-  password_not_starts_with: String
-  password_ends_with: String
-  password_not_ends_with: String
-  userRole: Int
-  userRole_not: Int
-  userRole_in: [Int!]
-  userRole_not_in: [Int!]
-  userRole_lt: Int
-  userRole_lte: Int
-  userRole_gt: Int
-  userRole_gte: Int
-  isRemoved: Boolean
-  isRemoved_not: Boolean
-  isActive: Boolean
-  isActive_not: Boolean
+  firstName: String
+  firstName_not: String
+  firstName_in: [String!]
+  firstName_not_in: [String!]
+  firstName_lt: String
+  firstName_lte: String
+  firstName_gt: String
+  firstName_gte: String
+  firstName_contains: String
+  firstName_not_contains: String
+  firstName_starts_with: String
+  firstName_not_starts_with: String
+  firstName_ends_with: String
+  firstName_not_ends_with: String
+  lastName: String
+  lastName_not: String
+  lastName_in: [String!]
+  lastName_not_in: [String!]
+  lastName_lt: String
+  lastName_lte: String
+  lastName_gt: String
+  lastName_gte: String
+  lastName_contains: String
+  lastName_not_contains: String
+  lastName_starts_with: String
+  lastName_not_starts_with: String
+  lastName_ends_with: String
+  lastName_not_ends_with: String
+  title: String
+  title_not: String
+  title_in: [String!]
+  title_not_in: [String!]
+  title_lt: String
+  title_lte: String
+  title_gt: String
+  title_gte: String
+  title_contains: String
+  title_not_contains: String
+  title_starts_with: String
+  title_not_starts_with: String
+  title_ends_with: String
+  title_not_ends_with: String
+  userId: ID
+  userId_not: ID
+  userId_in: [ID!]
+  userId_not_in: [ID!]
+  userId_lt: ID
+  userId_lte: ID
+  userId_gt: ID
+  userId_gte: ID
+  userId_contains: ID
+  userId_not_contains: ID
+  userId_starts_with: ID
+  userId_not_starts_with: ID
+  userId_ends_with: ID
+  userId_not_ends_with: ID
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]
@@ -217,13 +215,24 @@ input UserWhereInput {
   updatedAt_lte: DateTime
   updatedAt_gt: DateTime
   updatedAt_gte: DateTime
-  AND: [UserWhereInput!]
-  OR: [UserWhereInput!]
-  NOT: [UserWhereInput!]
+  AND: [ProfileWhereInput!]
+  OR: [ProfileWhereInput!]
+  NOT: [ProfileWhereInput!]
 }
 
-input UserWhereUniqueInput {
+input ProfileWhereUniqueInput {
   id: ID
-  username: String
+  userId: ID
+}
+
+type Query {
+  profile(where: ProfileWhereUniqueInput!): Profile
+  profiles(where: ProfileWhereInput, orderBy: ProfileOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Profile]!
+  profilesConnection(where: ProfileWhereInput, orderBy: ProfileOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ProfileConnection!
+  node(id: ID!): Node
+}
+
+type Subscription {
+  profile(where: ProfileSubscriptionWhereInput): ProfileSubscriptionPayload
 }
 `
