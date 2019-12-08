@@ -37,4 +37,21 @@ describe('Profile tests', () => {
             });
         });
     });
+
+
+    describe('POST Create Profile', () => {
+        describe('Correct create by ADMIN', () => {
+            it('returns 201', async () => {
+                const res = await chai.request(app)
+                    .post(`${baseUrl}/1`)
+                    .set('token', adminToken)
+                    .send();
+                expect(res.body.error).to.eq(undefined);
+                expect(res.type).to.eq(jsonType);
+                expect(res.status).to.eq(201);
+                const {error} = profileTestOutput.validate(res.body);
+                expect(error).to.eq(undefined);
+            });
+        });
+    });
 });

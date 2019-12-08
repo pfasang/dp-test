@@ -3,7 +3,7 @@ import 'reflect-metadata';
 const express = require('express');
 const bodyParser = require("body-parser");
 import * as router from "./routers";
-import {verifyUser} from "./middlewares/validationMiddleware";
+import {verifyUser} from "./controllers/externalController";
 
 const app = express();
 

@@ -1,5 +1,5 @@
 import * as express from 'express';
-import {loginMiddleware} from "../middlewares/validationMiddleware";
+import {loginMiddleware} from "../controllers/externalController";
 
 const router = express.Router();
 
