@@ -6,6 +6,10 @@ export const typeDefs = /* GraphQL */ `type AggregateProfile {
   count: Int!
 }
 
+type AggregateSkill {
+  count: Int!
+}
+
 type BatchPayload {
   count: Long!
 }
@@ -21,6 +25,12 @@ type Mutation {
   upsertProfile(where: ProfileWhereUniqueInput!, create: ProfileCreateInput!, update: ProfileUpdateInput!): Profile!
   deleteProfile(where: ProfileWhereUniqueInput!): Profile
   deleteManyProfiles(where: ProfileWhereInput): BatchPayload!
+  createSkill(data: SkillCreateInput!): Skill!
+  updateSkill(data: SkillUpdateInput!, where: SkillWhereUniqueInput!): Skill
+  updateManySkills(data: SkillUpdateManyMutationInput!, where: SkillWhereInput): BatchPayload!
+  upsertSkill(where: SkillWhereUniqueInput!, create: SkillCreateInput!, update: SkillUpdateInput!): Skill!
+  deleteSkill(where: SkillWhereUniqueInput!): Skill
+  deleteManySkills(where: SkillWhereInput): BatchPayload!
 }
 
 enum MutationType {
@@ -229,10 +239,192 @@ type Query {
   profile(where: ProfileWhereUniqueInput!): Profile
   profiles(where: ProfileWhereInput, orderBy: ProfileOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Profile]!
   profilesConnection(where: ProfileWhereInput, orderBy: ProfileOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ProfileConnection!
+  skill(where: SkillWhereUniqueInput!): Skill
+  skills(where: SkillWhereInput, orderBy: SkillOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Skill]!
+  skillsConnection(where: SkillWhereInput, orderBy: SkillOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): SkillConnection!
   node(id: ID!): Node
+}
+
+type Skill {
+  id: ID!
+  name: String!
+  activityId: ID!
+  userId: ID!
+  level: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type SkillConnection {
+  pageInfo: PageInfo!
+  edges: [SkillEdge]!
+  aggregate: AggregateSkill!
+}
+
+input SkillCreateInput {
+  id: ID
+  name: String!
+  activityId: ID!
+  userId: ID!
+  level: Int!
+}
+
+type SkillEdge {
+  node: Skill!
+  cursor: String!
+}
+
+enum SkillOrderByInput {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  activityId_ASC
+  activityId_DESC
+  userId_ASC
+  userId_DESC
+  level_ASC
+  level_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type SkillPreviousValues {
+  id: ID!
+  name: String!
+  activityId: ID!
+  userId: ID!
+  level: Int!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type SkillSubscriptionPayload {
+  mutation: MutationType!
+  node: Skill
+  updatedFields: [String!]
+  previousValues: SkillPreviousValues
+}
+
+input SkillSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: SkillWhereInput
+  AND: [SkillSubscriptionWhereInput!]
+  OR: [SkillSubscriptionWhereInput!]
+  NOT: [SkillSubscriptionWhereInput!]
+}
+
+input SkillUpdateInput {
+  name: String
+  activityId: ID
+  userId: ID
+  level: Int
+}
+
+input SkillUpdateManyMutationInput {
+  name: String
+  activityId: ID
+  userId: ID
+  level: Int
+}
+
+input SkillWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  name: String
+  name_not: String
+  name_in: [String!]
+  name_not_in: [String!]
+  name_lt: String
+  name_lte: String
+  name_gt: String
+  name_gte: String
+  name_contains: String
+  name_not_contains: String
+  name_starts_with: String
+  name_not_starts_with: String
+  name_ends_with: String
+  name_not_ends_with: String
+  activityId: ID
+  activityId_not: ID
+  activityId_in: [ID!]
+  activityId_not_in: [ID!]
+  activityId_lt: ID
+  activityId_lte: ID
+  activityId_gt: ID
+  activityId_gte: ID
+  activityId_contains: ID
+  activityId_not_contains: ID
+  activityId_starts_with: ID
+  activityId_not_starts_with: ID
+  activityId_ends_with: ID
+  activityId_not_ends_with: ID
+  userId: ID
+  userId_not: ID
+  userId_in: [ID!]
+  userId_not_in: [ID!]
+  userId_lt: ID
+  userId_lte: ID
+  userId_gt: ID
+  userId_gte: ID
+  userId_contains: ID
+  userId_not_contains: ID
+  userId_starts_with: ID
+  userId_not_starts_with: ID
+  userId_ends_with: ID
+  userId_not_ends_with: ID
+  level: Int
+  level_not: Int
+  level_in: [Int!]
+  level_not_in: [Int!]
+  level_lt: Int
+  level_lte: Int
+  level_gt: Int
+  level_gte: Int
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  AND: [SkillWhereInput!]
+  OR: [SkillWhereInput!]
+  NOT: [SkillWhereInput!]
+}
+
+input SkillWhereUniqueInput {
+  id: ID
 }
 
 type Subscription {
   profile(where: ProfileSubscriptionWhereInput): ProfileSubscriptionPayload
+  skill(where: SkillSubscriptionWhereInput): SkillSubscriptionPayload
 }
 `

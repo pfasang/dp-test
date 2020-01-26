@@ -1,6 +1,7 @@
 endpoint: http://localhost:4467
 datamodel:
   - src/database/migration/profile.prisma
+  - src/database/migration/skill.prisma
 
 seed:
   run: ts-node ./src/database/seeds/seed.ts

@@ -1,0 +1,9 @@
+type Skill {
+  id: ID! @id
+  name: String!
+  activityId: ID!
+  userId: ID!
+  level: Int!
+  createdAt: DateTime! @createdAt
+  updatedAt: DateTime! @updatedAt
+}
