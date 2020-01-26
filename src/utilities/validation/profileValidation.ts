@@ -11,7 +11,7 @@ export const profileTestOutput = Joi.object({
     firstName: Joi.string().min(3).max(30).required(),
     lastName: Joi.string().min(3).max(30).required(),
     title: Joi.string(),
-    userId: Joi.string().required(),
+    userId: Joi.number().integer().required(),
     createdAt: Joi.date().iso(),
     updatedAt: Joi.date().iso()
 });
