@@ -2,7 +2,11 @@
   // Please don't change this file manually but run `prisma generate` to update it.
   // For more information, please read the docs: https://www.prisma.io/docs/prisma-client/
 
-export const typeDefs = /* GraphQL */ `type AggregateProfile {
+export const typeDefs = /* GraphQL */ `type AggregateOwnerSkill {
+  count: Int!
+}
+
+type AggregateProfile {
   count: Int!
 }
 
@@ -19,6 +23,12 @@ scalar DateTime
 scalar Long
 
 type Mutation {
+  createOwnerSkill(data: OwnerSkillCreateInput!): OwnerSkill!
+  updateOwnerSkill(data: OwnerSkillUpdateInput!, where: OwnerSkillWhereUniqueInput!): OwnerSkill
+  updateManyOwnerSkills(data: OwnerSkillUpdateManyMutationInput!, where: OwnerSkillWhereInput): BatchPayload!
+  upsertOwnerSkill(where: OwnerSkillWhereUniqueInput!, create: OwnerSkillCreateInput!, update: OwnerSkillUpdateInput!): OwnerSkill!
+  deleteOwnerSkill(where: OwnerSkillWhereUniqueInput!): OwnerSkill
+  deleteManyOwnerSkills(where: OwnerSkillWhereInput): BatchPayload!
   createProfile(data: ProfileCreateInput!): Profile!
   updateProfile(data: ProfileUpdateInput!, where: ProfileWhereUniqueInput!): Profile
   updateManyProfiles(data: ProfileUpdateManyMutationInput!, where: ProfileWhereInput): BatchPayload!
@@ -41,6 +51,169 @@ enum MutationType {
 
 interface Node {
   id: ID!
+}
+
+type OwnerSkill {
+  id: ID!
+  skillId: ID!
+  activityId: ID
+  userId: ID
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type OwnerSkillConnection {
+  pageInfo: PageInfo!
+  edges: [OwnerSkillEdge]!
+  aggregate: AggregateOwnerSkill!
+}
+
+input OwnerSkillCreateInput {
+  id: ID
+  skillId: ID!
+  activityId: ID
+  userId: ID
+}
+
+type OwnerSkillEdge {
+  node: OwnerSkill!
+  cursor: String!
+}
+
+enum OwnerSkillOrderByInput {
+  id_ASC
+  id_DESC
+  skillId_ASC
+  skillId_DESC
+  activityId_ASC
+  activityId_DESC
+  userId_ASC
+  userId_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+}
+
+type OwnerSkillPreviousValues {
+  id: ID!
+  skillId: ID!
+  activityId: ID
+  userId: ID
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type OwnerSkillSubscriptionPayload {
+  mutation: MutationType!
+  node: OwnerSkill
+  updatedFields: [String!]
+  previousValues: OwnerSkillPreviousValues
+}
+
+input OwnerSkillSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: OwnerSkillWhereInput
+  AND: [OwnerSkillSubscriptionWhereInput!]
+  OR: [OwnerSkillSubscriptionWhereInput!]
+  NOT: [OwnerSkillSubscriptionWhereInput!]
+}
+
+input OwnerSkillUpdateInput {
+  skillId: ID
+  activityId: ID
+  userId: ID
+}
+
+input OwnerSkillUpdateManyMutationInput {
+  skillId: ID
+  activityId: ID
+  userId: ID
+}
+
+input OwnerSkillWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  skillId: ID
+  skillId_not: ID
+  skillId_in: [ID!]
+  skillId_not_in: [ID!]
+  skillId_lt: ID
+  skillId_lte: ID
+  skillId_gt: ID
+  skillId_gte: ID
+  skillId_contains: ID
+  skillId_not_contains: ID
+  skillId_starts_with: ID
+  skillId_not_starts_with: ID
+  skillId_ends_with: ID
+  skillId_not_ends_with: ID
+  activityId: ID
+  activityId_not: ID
+  activityId_in: [ID!]
+  activityId_not_in: [ID!]
+  activityId_lt: ID
+  activityId_lte: ID
+  activityId_gt: ID
+  activityId_gte: ID
+  activityId_contains: ID
+  activityId_not_contains: ID
+  activityId_starts_with: ID
+  activityId_not_starts_with: ID
+  activityId_ends_with: ID
+  activityId_not_ends_with: ID
+  userId: ID
+  userId_not: ID
+  userId_in: [ID!]
+  userId_not_in: [ID!]
+  userId_lt: ID
+  userId_lte: ID
+  userId_gt: ID
+  userId_gte: ID
+  userId_contains: ID
+  userId_not_contains: ID
+  userId_starts_with: ID
+  userId_not_starts_with: ID
+  userId_ends_with: ID
+  userId_not_ends_with: ID
+  createdAt: DateTime
+  createdAt_not: DateTime
+  createdAt_in: [DateTime!]
+  createdAt_not_in: [DateTime!]
+  createdAt_lt: DateTime
+  createdAt_lte: DateTime
+  createdAt_gt: DateTime
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+  updatedAt_not: DateTime
+  updatedAt_in: [DateTime!]
+  updatedAt_not_in: [DateTime!]
+  updatedAt_lt: DateTime
+  updatedAt_lte: DateTime
+  updatedAt_gt: DateTime
+  updatedAt_gte: DateTime
+  AND: [OwnerSkillWhereInput!]
+  OR: [OwnerSkillWhereInput!]
+  NOT: [OwnerSkillWhereInput!]
+}
+
+input OwnerSkillWhereUniqueInput {
+  id: ID
 }
 
 type PageInfo {
@@ -236,6 +409,9 @@ input ProfileWhereUniqueInput {
 }
 
 type Query {
+  ownerSkill(where: OwnerSkillWhereUniqueInput!): OwnerSkill
+  ownerSkills(where: OwnerSkillWhereInput, orderBy: OwnerSkillOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [OwnerSkill]!
+  ownerSkillsConnection(where: OwnerSkillWhereInput, orderBy: OwnerSkillOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): OwnerSkillConnection!
   profile(where: ProfileWhereUniqueInput!): Profile
   profiles(where: ProfileWhereInput, orderBy: ProfileOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Profile]!
   profilesConnection(where: ProfileWhereInput, orderBy: ProfileOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ProfileConnection!
@@ -248,8 +424,6 @@ type Query {
 type Skill {
   id: ID!
   name: String!
-  activityId: ID!
-  userId: ID!
   level: Int!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -264,8 +438,6 @@ type SkillConnection {
 input SkillCreateInput {
   id: ID
   name: String!
-  activityId: ID!
-  userId: ID!
   level: Int!
 }
 
@@ -279,10 +451,6 @@ enum SkillOrderByInput {
   id_DESC
   name_ASC
   name_DESC
-  activityId_ASC
-  activityId_DESC
-  userId_ASC
-  userId_DESC
   level_ASC
   level_DESC
   createdAt_ASC
@@ -294,8 +462,6 @@ enum SkillOrderByInput {
 type SkillPreviousValues {
   id: ID!
   name: String!
-  activityId: ID!
-  userId: ID!
   level: Int!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -321,15 +487,11 @@ input SkillSubscriptionWhereInput {
 
 input SkillUpdateInput {
   name: String
-  activityId: ID
-  userId: ID
   level: Int
 }
 
 input SkillUpdateManyMutationInput {
   name: String
-  activityId: ID
-  userId: ID
   level: Int
 }
 
@@ -362,34 +524,6 @@ input SkillWhereInput {
   name_not_starts_with: String
   name_ends_with: String
   name_not_ends_with: String
-  activityId: ID
-  activityId_not: ID
-  activityId_in: [ID!]
-  activityId_not_in: [ID!]
-  activityId_lt: ID
-  activityId_lte: ID
-  activityId_gt: ID
-  activityId_gte: ID
-  activityId_contains: ID
-  activityId_not_contains: ID
-  activityId_starts_with: ID
-  activityId_not_starts_with: ID
-  activityId_ends_with: ID
-  activityId_not_ends_with: ID
-  userId: ID
-  userId_not: ID
-  userId_in: [ID!]
-  userId_not_in: [ID!]
-  userId_lt: ID
-  userId_lte: ID
-  userId_gt: ID
-  userId_gte: ID
-  userId_contains: ID
-  userId_not_contains: ID
-  userId_starts_with: ID
-  userId_not_starts_with: ID
-  userId_ends_with: ID
-  userId_not_ends_with: ID
   level: Int
   level_not: Int
   level_in: [Int!]
@@ -421,9 +555,11 @@ input SkillWhereInput {
 
 input SkillWhereUniqueInput {
   id: ID
+  name: String
 }
 
 type Subscription {
+  ownerSkill(where: OwnerSkillSubscriptionWhereInput): OwnerSkillSubscriptionPayload
   profile(where: ProfileSubscriptionWhereInput): ProfileSubscriptionPayload
   skill(where: SkillSubscriptionWhereInput): SkillSubscriptionPayload
 }

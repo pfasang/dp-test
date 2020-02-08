@@ -1,5 +1,6 @@
 const {profiles} = require("./dev/profiles");
 const {skills} = require("./dev/skills");
+const {ownerSkills} = require("./dev/ownerSkills");
 import {prisma} from '../../generated/prisma-client'
 
 const seedProfiles = async () => {
@@ -16,4 +17,11 @@ const seedSkills = async () => {
     }
 };
 
-export {seedProfiles, seedSkills};
+const seedOwnerSkills = async () => {
+    await prisma.deleteManyOwnerSkills();
+    for (const item of ownerSkills) {
+        await prisma.createOwnerSkill(item);
+    }
+};
+
+export {seedProfiles, seedSkills, seedOwnerSkills};

@@ -5,11 +5,6 @@ import {
     updateProfile,
 } from "../controllers/profileController";
 
-import {
-    adminPermission,
-    authorPermission
-} from "../middlewares/permissionMiddleware";
-
 const router = express.Router();
 
 router.get("/profile/:userId", getUserProfile);

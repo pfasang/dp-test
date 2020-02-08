@@ -1,7 +1,8 @@
-type Skill {
+type OwnerSkill {
   id: ID! @id
-  name: String! @unique
-  level: Int!
+  skillId: ID!
+  activityId: ID
+  userId: ID
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
 }
