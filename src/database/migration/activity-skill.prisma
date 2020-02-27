@@ -1,7 +1,7 @@
-type OwnerSkill {
+type ActivitySkill {
   id: ID! @id
   skillId: ID!
-  userId: ID!
+  activityId: ID!
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
 }

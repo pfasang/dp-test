@@ -1,5 +1,6 @@
-import {OwnerSkill, prisma, Skill} from "../generated/prisma-client";
+import {prisma, Skill} from "../generated/prisma-client";
 import {
+    activitySkillCreate,
     ownerSkillCreate,
     skillCreateInputValidation,
     skillUpdateInputValidation
@@ -51,14 +52,23 @@ export const updateSkill = async (req, res) => {
 
 export const assignSkill = async (req, res) => {
     //Validate user input
-    const validatedBody = ownerSkillCreate.validate(req.body);
+    let validatedBody;
+    if (req.body.userId) {
+        validatedBody = ownerSkillCreate.validate(req.body);
+    } else {
+        validatedBody = activitySkillCreate.validate(req.body);
+    }
     if (validatedBody.error) {
         return res.status(400).send({error: "Validation error."});
     }
 
     try {
-        const assignSkill: OwnerSkill = await prisma.createOwnerSkill(req.body);
-        res.status(201).json(assignSkill);
+        if (req.body.userId) {
+            await prisma.createOwnerSkill(req.body);
+        } else {
+            await prisma.createActivitySkill(req.body);
+        }
+        return res.status(201).json();
     } catch (e) {
         return res.status(400).send({error: e});
     }

@@ -1,8 +1,11 @@
-import {seedSkills} from "../src/database/seeds/seedFunctions";
+import {seedActivitySkills, seedOwnerSkills, seedSkills} from "../src/database/seeds/seedFunctions";
 
 import * as chai from "chai";
 import {app} from "../src/server";
-import {skillTestOutput, skillListTestOutput, ownerSkillOutput} from "../src/utilities/validation/skillValidation";
+import {
+    skillTestOutput,
+    skillListTestOutput
+} from "../src/utilities/validation/skillValidation";
 
 const chaiHttp = require('chai-http');
 chai.use(chaiHttp);
@@ -16,6 +19,8 @@ describe('Skills tests', () => {
 
     before(async () => {
         await seedSkills();
+        await seedOwnerSkills();
+        await seedActivitySkills();
     });
 
     describe('GET all skills', () => {
@@ -184,11 +189,10 @@ describe('Skills tests', () => {
     });
 
     describe('POST Assign Skill', () => {
-        describe('Correct assignment', () => {
+        describe('Correct assignment to User', () => {
             before(async () => {
                 inputBody = {
                     skillId: '1',
-                    activityId: '1',
                     userId: '1',
                 };
             });
@@ -198,9 +202,21 @@ describe('Skills tests', () => {
                     .send(inputBody);
                 expect(res.body.error).to.eq(undefined);
                 expect(res.status).to.eq(201);
-                expect(res.type).to.eq(jsonType);
-                const {error} = ownerSkillOutput.validate(res.body);
-                expect(error).to.eq(undefined);
+            });
+        });
+        describe('Correct assignment to Activity', () => {
+            before(async () => {
+                inputBody = {
+                    skillId: '1',
+                    activityId: '1',
+                };
+            });
+            it('returns 201', async () => {
+                const res = await chai.request(app)
+                    .post(`${baseUrl}/assign`)
+                    .send(inputBody);
+                expect(res.body.error).to.eq(undefined);
+                expect(res.status).to.eq(201);
             });
         });
     });

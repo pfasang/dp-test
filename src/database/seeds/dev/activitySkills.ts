@@ -1,46 +1,46 @@
-const ownerSkills = [
+const activitySkills = [
     {
         skillId: '2',
-        userId: '1',
+        activityId: '3',
     },
     {
         skillId: '3',
-        userId: '2',
+        activityId: '3',
     },
     {
         skillId: '5',
-        userId: '3',
+        activityId: '5',
     },
     {
         skillId: '5',
-        userId: '4',
+        activityId: '1',
     },
     {
         skillId: '1',
-        userId: '5',
+        activityId: '2',
     },
     {
         skillId: '1',
-        userId: '6',
+        activityId: '4',
     },
     {
         skillId: '2',
-        userId: '7',
+        activityId: '7',
     },
     {
         skillId: '4',
-        userId: '8',
+        activityId: '7',
     },
     {
         skillId: '4',
-        userId: '9',
+        activityId: '9',
     },
     {
         skillId: '1',
-        userId: '10',
+        activityId: '8',
     }
 ];
 
 module.exports = {
-    ownerSkills
+    activitySkills
 };
