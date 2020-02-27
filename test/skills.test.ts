@@ -44,7 +44,6 @@ describe('Skills tests', () => {
 
                 inputBody = {
                     name: 'skillCreateCorrect',
-                    level: 3,
                 };
             });
             it('returns 201', async () => {
@@ -62,8 +61,7 @@ describe('Skills tests', () => {
         describe('Skill already exists', () => {
             before(async () => {
                 inputBody = {
-                    name: 'skillCreateCorrect',
-                    level: 1,
+                    name: 'skillAlreadyExists',
                 };
             });
             it('returns 400', async () => {
@@ -79,7 +77,6 @@ describe('Skills tests', () => {
             before(async () => {
                 inputBody = {
                     name: 123,
-                    level: 1,
                 };
             });
             it('returns 400', async () => {
@@ -98,7 +95,6 @@ describe('Skills tests', () => {
             before(async () => {
                 inputBody = {
                     name: 'skillUpdateCorrect',
-                    level: 3,
                 };
                 createRes = await chai.request(app)
                     .post(baseUrl)
@@ -110,7 +106,7 @@ describe('Skills tests', () => {
                     const res = await
                         chai.request(app)
                             .patch(`${baseUrl}/${skillID}`)
-                            .send({level: 1});
+                            .send({ name: 'skillUpdatedCorrect'});
                     const {error} = skillTestOutput.validate(res.body);
                     expect(error).to.eq(undefined);
                     expect(res.status).to.eq(200);
@@ -122,7 +118,6 @@ describe('Skills tests', () => {
                 before(() => {
                     inputBody = {
                         name: 'skillUpdateWrongID',
-                        level: 2,
                     };
                 });
 
@@ -140,7 +135,6 @@ describe('Skills tests', () => {
                 before(async () => {
                     inputBody = {
                         name: "skillWrongFields",
-                        level: 2,
                     };
                     createRes = await chai.request(app)
                         .post(baseUrl)
@@ -150,7 +144,7 @@ describe('Skills tests', () => {
                 it("returns 400", async () => {
                     const res = await chai.request(app)
                         .patch(`${baseUrl}/${skillID}`)
-                        .send({level: "zero"});
+                        .send({test: "test"});
                     expect(res.status).to.eq(400);
                     expect(res.type).to.eq(jsonType);
                     expect(res.body.error).to.not.eq(undefined);
@@ -161,7 +155,6 @@ describe('Skills tests', () => {
                 before(async () => {
                     inputBody = {
                         name: "SkillUpdate",
-                        level: 2,
                     };
                     await chai.request(app)
                         .post(baseUrl)
@@ -171,7 +164,6 @@ describe('Skills tests', () => {
                         .post(baseUrl)
                         .send({
                             name: "SkillUpdateSameName",
-                            level: 2,
                         });
 
                     skillID = createRes.body.id;
@@ -194,6 +186,7 @@ describe('Skills tests', () => {
                 inputBody = {
                     skillId: '1',
                     userId: '1',
+                    level: 1,
                 };
             });
             it('returns 201', async () => {
@@ -209,6 +202,7 @@ describe('Skills tests', () => {
                 inputBody = {
                     skillId: '1',
                     activityId: '1',
+                    level: 2,
                 };
             });
             it('returns 201', async () => {

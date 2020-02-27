@@ -8,7 +8,7 @@
     "start:dev": "NODE_ENV=development webpack",
     "build:dev": "NODE_ENV=development nodemon dist/server.js",
     "prisma-seed": "prisma reset && prisma seed",
-    "prisma-deploy": "prisma deploy"
+    "prisma-deploy": "prisma deploy --force"
   },
   "repository": {
     "type": "git",

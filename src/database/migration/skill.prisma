@@ -1,7 +1,6 @@
 type Skill {
   id: ID! @id
   name: String! @unique
-  level: Int!
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
 }

@@ -6,6 +6,7 @@ export const typeDefs = /* GraphQL */ `type ActivitySkill {
   id: ID!
   skillId: ID!
   activityId: ID!
+  level: Int!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -20,6 +21,7 @@ input ActivitySkillCreateInput {
   id: ID
   skillId: ID!
   activityId: ID!
+  level: Int!
 }
 
 type ActivitySkillEdge {
@@ -34,6 +36,8 @@ enum ActivitySkillOrderByInput {
   skillId_DESC
   activityId_ASC
   activityId_DESC
+  level_ASC
+  level_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
@@ -44,6 +48,7 @@ type ActivitySkillPreviousValues {
   id: ID!
   skillId: ID!
   activityId: ID!
+  level: Int!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -69,11 +74,13 @@ input ActivitySkillSubscriptionWhereInput {
 input ActivitySkillUpdateInput {
   skillId: ID
   activityId: ID
+  level: Int
 }
 
 input ActivitySkillUpdateManyMutationInput {
   skillId: ID
   activityId: ID
+  level: Int
 }
 
 input ActivitySkillWhereInput {
@@ -119,6 +126,14 @@ input ActivitySkillWhereInput {
   activityId_not_starts_with: ID
   activityId_ends_with: ID
   activityId_not_ends_with: ID
+  level: Int
+  level_not: Int
+  level_in: [Int!]
+  level_not_in: [Int!]
+  level_lt: Int
+  level_lte: Int
+  level_gt: Int
+  level_gte: Int
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]
@@ -209,6 +224,7 @@ type OwnerSkill {
   id: ID!
   skillId: ID!
   userId: ID!
+  level: Int!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -223,6 +239,7 @@ input OwnerSkillCreateInput {
   id: ID
   skillId: ID!
   userId: ID!
+  level: Int!
 }
 
 type OwnerSkillEdge {
@@ -237,6 +254,8 @@ enum OwnerSkillOrderByInput {
   skillId_DESC
   userId_ASC
   userId_DESC
+  level_ASC
+  level_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
@@ -247,6 +266,7 @@ type OwnerSkillPreviousValues {
   id: ID!
   skillId: ID!
   userId: ID!
+  level: Int!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -272,11 +292,13 @@ input OwnerSkillSubscriptionWhereInput {
 input OwnerSkillUpdateInput {
   skillId: ID
   userId: ID
+  level: Int
 }
 
 input OwnerSkillUpdateManyMutationInput {
   skillId: ID
   userId: ID
+  level: Int
 }
 
 input OwnerSkillWhereInput {
@@ -322,6 +344,14 @@ input OwnerSkillWhereInput {
   userId_not_starts_with: ID
   userId_ends_with: ID
   userId_not_ends_with: ID
+  level: Int
+  level_not: Int
+  level_in: [Int!]
+  level_not_in: [Int!]
+  level_lt: Int
+  level_lte: Int
+  level_gt: Int
+  level_gte: Int
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]
@@ -558,7 +588,6 @@ type Query {
 type Skill {
   id: ID!
   name: String!
-  level: Int!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -572,7 +601,6 @@ type SkillConnection {
 input SkillCreateInput {
   id: ID
   name: String!
-  level: Int!
 }
 
 type SkillEdge {
@@ -585,8 +613,6 @@ enum SkillOrderByInput {
   id_DESC
   name_ASC
   name_DESC
-  level_ASC
-  level_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
@@ -596,7 +622,6 @@ enum SkillOrderByInput {
 type SkillPreviousValues {
   id: ID!
   name: String!
-  level: Int!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -621,12 +646,10 @@ input SkillSubscriptionWhereInput {
 
 input SkillUpdateInput {
   name: String
-  level: Int
 }
 
 input SkillUpdateManyMutationInput {
   name: String
-  level: Int
 }
 
 input SkillWhereInput {
@@ -658,14 +681,6 @@ input SkillWhereInput {
   name_not_starts_with: String
   name_ends_with: String
   name_not_ends_with: String
-  level: Int
-  level_not: Int
-  level_in: [Int!]
-  level_not_in: [Int!]
-  level_lt: Int
-  level_lte: Int
-  level_gt: Int
-  level_gte: Int
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]

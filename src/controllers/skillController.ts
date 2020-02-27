@@ -2,8 +2,7 @@ import {prisma, Skill} from "../generated/prisma-client";
 import {
     activitySkillCreate,
     ownerSkillCreate,
-    skillCreateInputValidation,
-    skillUpdateInputValidation
+    skillInputValidation
 } from "../utilities/validation/skillValidation";
 
 const Joi = require('@hapi/joi');
@@ -20,7 +19,7 @@ export const getSkills = async (req, res) => {
 
 export const createSkill = async (req, res) => {
     //Validate user input
-    const validatedBody = skillCreateInputValidation.validate(req.body);
+    const validatedBody = skillInputValidation.validate(req.body);
     if (validatedBody.error) {
         return res.status(400).send({error: "Validation error."});
     }
@@ -38,7 +37,7 @@ export const updateSkill = async (req, res) => {
     //get skill ID number from url
     const skillID = req.params.id;
     //Validate user input
-    const validatedBody = skillUpdateInputValidation.validate(req.body);
+    const validatedBody = skillInputValidation.validate(req.body);
     if (validatedBody.error) {
         return res.status(400).send({error: validatedBody.error.details});
     }

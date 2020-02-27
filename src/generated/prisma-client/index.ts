@@ -231,6 +231,8 @@ export type OwnerSkillOrderByInput =
   | "skillId_DESC"
   | "userId_ASC"
   | "userId_DESC"
+  | "level_ASC"
+  | "level_DESC"
   | "createdAt_ASC"
   | "createdAt_DESC"
   | "updatedAt_ASC"
@@ -241,14 +243,26 @@ export type SkillOrderByInput =
   | "id_DESC"
   | "name_ASC"
   | "name_DESC"
-  | "level_ASC"
-  | "level_DESC"
   | "createdAt_ASC"
   | "createdAt_DESC"
   | "updatedAt_ASC"
   | "updatedAt_DESC";
 
 export type MutationType = "CREATED" | "UPDATED" | "DELETED";
+
+export type ActivitySkillOrderByInput =
+  | "id_ASC"
+  | "id_DESC"
+  | "skillId_ASC"
+  | "skillId_DESC"
+  | "activityId_ASC"
+  | "activityId_DESC"
+  | "level_ASC"
+  | "level_DESC"
+  | "createdAt_ASC"
+  | "createdAt_DESC"
+  | "updatedAt_ASC"
+  | "updatedAt_DESC";
 
 export type ProfileOrderByInput =
   | "id_ASC"
@@ -261,18 +275,6 @@ export type ProfileOrderByInput =
   | "title_DESC"
   | "userId_ASC"
   | "userId_DESC"
-  | "createdAt_ASC"
-  | "createdAt_DESC"
-  | "updatedAt_ASC"
-  | "updatedAt_DESC";
-
-export type ActivitySkillOrderByInput =
-  | "id_ASC"
-  | "id_DESC"
-  | "skillId_ASC"
-  | "skillId_DESC"
-  | "activityId_ASC"
-  | "activityId_DESC"
   | "createdAt_ASC"
   | "createdAt_DESC"
   | "updatedAt_ASC"
@@ -293,6 +295,7 @@ export type ActivitySkillWhereUniqueInput = AtLeastOne<{
 export interface OwnerSkillUpdateInput {
   skillId?: Maybe<ID_Input>;
   userId?: Maybe<ID_Input>;
+  level?: Maybe<Int>;
 }
 
 export interface ProfileSubscriptionWhereInput {
@@ -332,11 +335,11 @@ export interface OwnerSkillCreateInput {
   id?: Maybe<ID_Input>;
   skillId: ID_Input;
   userId: ID_Input;
+  level: Int;
 }
 
 export interface SkillUpdateInput {
   name?: Maybe<String>;
-  level?: Maybe<Int>;
 }
 
 export interface ProfileWhereInput {
@@ -438,140 +441,6 @@ export interface ProfileUpdateManyMutationInput {
   userId?: Maybe<ID_Input>;
 }
 
-export interface OwnerSkillSubscriptionWhereInput {
-  mutation_in?: Maybe<MutationType[] | MutationType>;
-  updatedFields_contains?: Maybe<String>;
-  updatedFields_contains_every?: Maybe<String[] | String>;
-  updatedFields_contains_some?: Maybe<String[] | String>;
-  node?: Maybe<OwnerSkillWhereInput>;
-  AND?: Maybe<
-    OwnerSkillSubscriptionWhereInput[] | OwnerSkillSubscriptionWhereInput
-  >;
-  OR?: Maybe<
-    OwnerSkillSubscriptionWhereInput[] | OwnerSkillSubscriptionWhereInput
-  >;
-  NOT?: Maybe<
-    OwnerSkillSubscriptionWhereInput[] | OwnerSkillSubscriptionWhereInput
-  >;
-}
-
-export interface ProfileUpdateInput {
-  firstName?: Maybe<String>;
-  lastName?: Maybe<String>;
-  title?: Maybe<String>;
-  userId?: Maybe<ID_Input>;
-}
-
-export interface ActivitySkillUpdateManyMutationInput {
-  skillId?: Maybe<ID_Input>;
-  activityId?: Maybe<ID_Input>;
-}
-
-export interface SkillSubscriptionWhereInput {
-  mutation_in?: Maybe<MutationType[] | MutationType>;
-  updatedFields_contains?: Maybe<String>;
-  updatedFields_contains_every?: Maybe<String[] | String>;
-  updatedFields_contains_some?: Maybe<String[] | String>;
-  node?: Maybe<SkillWhereInput>;
-  AND?: Maybe<SkillSubscriptionWhereInput[] | SkillSubscriptionWhereInput>;
-  OR?: Maybe<SkillSubscriptionWhereInput[] | SkillSubscriptionWhereInput>;
-  NOT?: Maybe<SkillSubscriptionWhereInput[] | SkillSubscriptionWhereInput>;
-}
-
-export interface ActivitySkillUpdateInput {
-  skillId?: Maybe<ID_Input>;
-  activityId?: Maybe<ID_Input>;
-}
-
-export interface OwnerSkillUpdateManyMutationInput {
-  skillId?: Maybe<ID_Input>;
-  userId?: Maybe<ID_Input>;
-}
-
-export interface SkillCreateInput {
-  id?: Maybe<ID_Input>;
-  name: String;
-  level: Int;
-}
-
-export interface SkillWhereInput {
-  id?: Maybe<ID_Input>;
-  id_not?: Maybe<ID_Input>;
-  id_in?: Maybe<ID_Input[] | ID_Input>;
-  id_not_in?: Maybe<ID_Input[] | ID_Input>;
-  id_lt?: Maybe<ID_Input>;
-  id_lte?: Maybe<ID_Input>;
-  id_gt?: Maybe<ID_Input>;
-  id_gte?: Maybe<ID_Input>;
-  id_contains?: Maybe<ID_Input>;
-  id_not_contains?: Maybe<ID_Input>;
-  id_starts_with?: Maybe<ID_Input>;
-  id_not_starts_with?: Maybe<ID_Input>;
-  id_ends_with?: Maybe<ID_Input>;
-  id_not_ends_with?: Maybe<ID_Input>;
-  name?: Maybe<String>;
-  name_not?: Maybe<String>;
-  name_in?: Maybe<String[] | String>;
-  name_not_in?: Maybe<String[] | String>;
-  name_lt?: Maybe<String>;
-  name_lte?: Maybe<String>;
-  name_gt?: Maybe<String>;
-  name_gte?: Maybe<String>;
-  name_contains?: Maybe<String>;
-  name_not_contains?: Maybe<String>;
-  name_starts_with?: Maybe<String>;
-  name_not_starts_with?: Maybe<String>;
-  name_ends_with?: Maybe<String>;
-  name_not_ends_with?: Maybe<String>;
-  level?: Maybe<Int>;
-  level_not?: Maybe<Int>;
-  level_in?: Maybe<Int[] | Int>;
-  level_not_in?: Maybe<Int[] | Int>;
-  level_lt?: Maybe<Int>;
-  level_lte?: Maybe<Int>;
-  level_gt?: Maybe<Int>;
-  level_gte?: Maybe<Int>;
-  createdAt?: Maybe<DateTimeInput>;
-  createdAt_not?: Maybe<DateTimeInput>;
-  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_lt?: Maybe<DateTimeInput>;
-  createdAt_lte?: Maybe<DateTimeInput>;
-  createdAt_gt?: Maybe<DateTimeInput>;
-  createdAt_gte?: Maybe<DateTimeInput>;
-  updatedAt?: Maybe<DateTimeInput>;
-  updatedAt_not?: Maybe<DateTimeInput>;
-  updatedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  updatedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  updatedAt_lt?: Maybe<DateTimeInput>;
-  updatedAt_lte?: Maybe<DateTimeInput>;
-  updatedAt_gt?: Maybe<DateTimeInput>;
-  updatedAt_gte?: Maybe<DateTimeInput>;
-  AND?: Maybe<SkillWhereInput[] | SkillWhereInput>;
-  OR?: Maybe<SkillWhereInput[] | SkillWhereInput>;
-  NOT?: Maybe<SkillWhereInput[] | SkillWhereInput>;
-}
-
-export type SkillWhereUniqueInput = AtLeastOne<{
-  id: Maybe<ID_Input>;
-  name?: Maybe<String>;
-}>;
-
-export interface ActivitySkillCreateInput {
-  id?: Maybe<ID_Input>;
-  skillId: ID_Input;
-  activityId: ID_Input;
-}
-
-export type OwnerSkillWhereUniqueInput = AtLeastOne<{
-  id: Maybe<ID_Input>;
-}>;
-
-export interface SkillUpdateManyMutationInput {
-  name?: Maybe<String>;
-  level?: Maybe<Int>;
-}
-
 export interface ActivitySkillWhereInput {
   id?: Maybe<ID_Input>;
   id_not?: Maybe<ID_Input>;
@@ -615,6 +484,14 @@ export interface ActivitySkillWhereInput {
   activityId_not_starts_with?: Maybe<ID_Input>;
   activityId_ends_with?: Maybe<ID_Input>;
   activityId_not_ends_with?: Maybe<ID_Input>;
+  level?: Maybe<Int>;
+  level_not?: Maybe<Int>;
+  level_in?: Maybe<Int[] | Int>;
+  level_not_in?: Maybe<Int[] | Int>;
+  level_lt?: Maybe<Int>;
+  level_lte?: Maybe<Int>;
+  level_gt?: Maybe<Int>;
+  level_gte?: Maybe<Int>;
   createdAt?: Maybe<DateTimeInput>;
   createdAt_not?: Maybe<DateTimeInput>;
   createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
@@ -634,6 +511,134 @@ export interface ActivitySkillWhereInput {
   AND?: Maybe<ActivitySkillWhereInput[] | ActivitySkillWhereInput>;
   OR?: Maybe<ActivitySkillWhereInput[] | ActivitySkillWhereInput>;
   NOT?: Maybe<ActivitySkillWhereInput[] | ActivitySkillWhereInput>;
+}
+
+export interface ProfileUpdateInput {
+  firstName?: Maybe<String>;
+  lastName?: Maybe<String>;
+  title?: Maybe<String>;
+  userId?: Maybe<ID_Input>;
+}
+
+export interface ActivitySkillUpdateManyMutationInput {
+  skillId?: Maybe<ID_Input>;
+  activityId?: Maybe<ID_Input>;
+  level?: Maybe<Int>;
+}
+
+export interface SkillSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<SkillWhereInput>;
+  AND?: Maybe<SkillSubscriptionWhereInput[] | SkillSubscriptionWhereInput>;
+  OR?: Maybe<SkillSubscriptionWhereInput[] | SkillSubscriptionWhereInput>;
+  NOT?: Maybe<SkillSubscriptionWhereInput[] | SkillSubscriptionWhereInput>;
+}
+
+export interface ActivitySkillUpdateInput {
+  skillId?: Maybe<ID_Input>;
+  activityId?: Maybe<ID_Input>;
+  level?: Maybe<Int>;
+}
+
+export interface OwnerSkillUpdateManyMutationInput {
+  skillId?: Maybe<ID_Input>;
+  userId?: Maybe<ID_Input>;
+  level?: Maybe<Int>;
+}
+
+export interface SkillCreateInput {
+  id?: Maybe<ID_Input>;
+  name: String;
+}
+
+export interface SkillWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  name?: Maybe<String>;
+  name_not?: Maybe<String>;
+  name_in?: Maybe<String[] | String>;
+  name_not_in?: Maybe<String[] | String>;
+  name_lt?: Maybe<String>;
+  name_lte?: Maybe<String>;
+  name_gt?: Maybe<String>;
+  name_gte?: Maybe<String>;
+  name_contains?: Maybe<String>;
+  name_not_contains?: Maybe<String>;
+  name_starts_with?: Maybe<String>;
+  name_not_starts_with?: Maybe<String>;
+  name_ends_with?: Maybe<String>;
+  name_not_ends_with?: Maybe<String>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  updatedAt?: Maybe<DateTimeInput>;
+  updatedAt_not?: Maybe<DateTimeInput>;
+  updatedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_lt?: Maybe<DateTimeInput>;
+  updatedAt_lte?: Maybe<DateTimeInput>;
+  updatedAt_gt?: Maybe<DateTimeInput>;
+  updatedAt_gte?: Maybe<DateTimeInput>;
+  AND?: Maybe<SkillWhereInput[] | SkillWhereInput>;
+  OR?: Maybe<SkillWhereInput[] | SkillWhereInput>;
+  NOT?: Maybe<SkillWhereInput[] | SkillWhereInput>;
+}
+
+export type SkillWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+  name?: Maybe<String>;
+}>;
+
+export interface ActivitySkillCreateInput {
+  id?: Maybe<ID_Input>;
+  skillId: ID_Input;
+  activityId: ID_Input;
+  level: Int;
+}
+
+export type OwnerSkillWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+}>;
+
+export interface SkillUpdateManyMutationInput {
+  name?: Maybe<String>;
+}
+
+export interface OwnerSkillSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<OwnerSkillWhereInput>;
+  AND?: Maybe<
+    OwnerSkillSubscriptionWhereInput[] | OwnerSkillSubscriptionWhereInput
+  >;
+  OR?: Maybe<
+    OwnerSkillSubscriptionWhereInput[] | OwnerSkillSubscriptionWhereInput
+  >;
+  NOT?: Maybe<
+    OwnerSkillSubscriptionWhereInput[] | OwnerSkillSubscriptionWhereInput
+  >;
 }
 
 export interface OwnerSkillWhereInput {
@@ -679,6 +684,14 @@ export interface OwnerSkillWhereInput {
   userId_not_starts_with?: Maybe<ID_Input>;
   userId_ends_with?: Maybe<ID_Input>;
   userId_not_ends_with?: Maybe<ID_Input>;
+  level?: Maybe<Int>;
+  level_not?: Maybe<Int>;
+  level_in?: Maybe<Int[] | Int>;
+  level_not_in?: Maybe<Int[] | Int>;
+  level_lt?: Maybe<Int>;
+  level_lte?: Maybe<Int>;
+  level_gt?: Maybe<Int>;
+  level_gte?: Maybe<Int>;
   createdAt?: Maybe<DateTimeInput>;
   createdAt_not?: Maybe<DateTimeInput>;
   createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
@@ -747,7 +760,6 @@ export interface ActivitySkillEdgeSubscription
 export interface SkillPreviousValues {
   id: ID_Output;
   name: String;
-  level: Int;
   createdAt: DateTimeOutput;
   updatedAt: DateTimeOutput;
 }
@@ -757,7 +769,6 @@ export interface SkillPreviousValuesPromise
     Fragmentable {
   id: () => Promise<ID_Output>;
   name: () => Promise<String>;
-  level: () => Promise<Int>;
   createdAt: () => Promise<DateTimeOutput>;
   updatedAt: () => Promise<DateTimeOutput>;
 }
@@ -767,7 +778,6 @@ export interface SkillPreviousValuesSubscription
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
   name: () => Promise<AsyncIterator<String>>;
-  level: () => Promise<AsyncIterator<Int>>;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
@@ -849,7 +859,6 @@ export interface AggregateSkillSubscription
 export interface Skill {
   id: ID_Output;
   name: String;
-  level: Int;
   createdAt: DateTimeOutput;
   updatedAt: DateTimeOutput;
 }
@@ -857,7 +866,6 @@ export interface Skill {
 export interface SkillPromise extends Promise<Skill>, Fragmentable {
   id: () => Promise<ID_Output>;
   name: () => Promise<String>;
-  level: () => Promise<Int>;
   createdAt: () => Promise<DateTimeOutput>;
   updatedAt: () => Promise<DateTimeOutput>;
 }
@@ -867,7 +875,6 @@ export interface SkillSubscription
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
   name: () => Promise<AsyncIterator<String>>;
-  level: () => Promise<AsyncIterator<Int>>;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
@@ -877,7 +884,6 @@ export interface SkillNullablePromise
     Fragmentable {
   id: () => Promise<ID_Output>;
   name: () => Promise<String>;
-  level: () => Promise<Int>;
   createdAt: () => Promise<DateTimeOutput>;
   updatedAt: () => Promise<DateTimeOutput>;
 }
@@ -1007,6 +1013,7 @@ export interface ActivitySkill {
   id: ID_Output;
   skillId: ID_Output;
   activityId: ID_Output;
+  level: Int;
   createdAt: DateTimeOutput;
   updatedAt: DateTimeOutput;
 }
@@ -1017,6 +1024,7 @@ export interface ActivitySkillPromise
   id: () => Promise<ID_Output>;
   skillId: () => Promise<ID_Output>;
   activityId: () => Promise<ID_Output>;
+  level: () => Promise<Int>;
   createdAt: () => Promise<DateTimeOutput>;
   updatedAt: () => Promise<DateTimeOutput>;
 }
@@ -1027,6 +1035,7 @@ export interface ActivitySkillSubscription
   id: () => Promise<AsyncIterator<ID_Output>>;
   skillId: () => Promise<AsyncIterator<ID_Output>>;
   activityId: () => Promise<AsyncIterator<ID_Output>>;
+  level: () => Promise<AsyncIterator<Int>>;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
@@ -1037,6 +1046,7 @@ export interface ActivitySkillNullablePromise
   id: () => Promise<ID_Output>;
   skillId: () => Promise<ID_Output>;
   activityId: () => Promise<ID_Output>;
+  level: () => Promise<Int>;
   createdAt: () => Promise<DateTimeOutput>;
   updatedAt: () => Promise<DateTimeOutput>;
 }
@@ -1089,6 +1099,7 @@ export interface OwnerSkill {
   id: ID_Output;
   skillId: ID_Output;
   userId: ID_Output;
+  level: Int;
   createdAt: DateTimeOutput;
   updatedAt: DateTimeOutput;
 }
@@ -1097,6 +1108,7 @@ export interface OwnerSkillPromise extends Promise<OwnerSkill>, Fragmentable {
   id: () => Promise<ID_Output>;
   skillId: () => Promise<ID_Output>;
   userId: () => Promise<ID_Output>;
+  level: () => Promise<Int>;
   createdAt: () => Promise<DateTimeOutput>;
   updatedAt: () => Promise<DateTimeOutput>;
 }
@@ -1107,6 +1119,7 @@ export interface OwnerSkillSubscription
   id: () => Promise<AsyncIterator<ID_Output>>;
   skillId: () => Promise<AsyncIterator<ID_Output>>;
   userId: () => Promise<AsyncIterator<ID_Output>>;
+  level: () => Promise<AsyncIterator<Int>>;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
@@ -1117,6 +1130,7 @@ export interface OwnerSkillNullablePromise
   id: () => Promise<ID_Output>;
   skillId: () => Promise<ID_Output>;
   userId: () => Promise<ID_Output>;
+  level: () => Promise<Int>;
   createdAt: () => Promise<DateTimeOutput>;
   updatedAt: () => Promise<DateTimeOutput>;
 }
@@ -1146,6 +1160,7 @@ export interface OwnerSkillPreviousValues {
   id: ID_Output;
   skillId: ID_Output;
   userId: ID_Output;
+  level: Int;
   createdAt: DateTimeOutput;
   updatedAt: DateTimeOutput;
 }
@@ -1156,6 +1171,7 @@ export interface OwnerSkillPreviousValuesPromise
   id: () => Promise<ID_Output>;
   skillId: () => Promise<ID_Output>;
   userId: () => Promise<ID_Output>;
+  level: () => Promise<Int>;
   createdAt: () => Promise<DateTimeOutput>;
   updatedAt: () => Promise<DateTimeOutput>;
 }
@@ -1166,6 +1182,7 @@ export interface OwnerSkillPreviousValuesSubscription
   id: () => Promise<AsyncIterator<ID_Output>>;
   skillId: () => Promise<AsyncIterator<ID_Output>>;
   userId: () => Promise<AsyncIterator<ID_Output>>;
+  level: () => Promise<AsyncIterator<Int>>;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
@@ -1233,6 +1250,7 @@ export interface ActivitySkillPreviousValues {
   id: ID_Output;
   skillId: ID_Output;
   activityId: ID_Output;
+  level: Int;
   createdAt: DateTimeOutput;
   updatedAt: DateTimeOutput;
 }
@@ -1243,6 +1261,7 @@ export interface ActivitySkillPreviousValuesPromise
   id: () => Promise<ID_Output>;
   skillId: () => Promise<ID_Output>;
   activityId: () => Promise<ID_Output>;
+  level: () => Promise<Int>;
   createdAt: () => Promise<DateTimeOutput>;
   updatedAt: () => Promise<DateTimeOutput>;
 }
@@ -1253,6 +1272,7 @@ export interface ActivitySkillPreviousValuesSubscription
   id: () => Promise<AsyncIterator<ID_Output>>;
   skillId: () => Promise<AsyncIterator<ID_Output>>;
   activityId: () => Promise<AsyncIterator<ID_Output>>;
+  level: () => Promise<AsyncIterator<Int>>;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
@@ -1354,11 +1374,6 @@ The `String` scalar type represents textual data, represented as UTF-8 character
 export type String = string;
 
 /*
-The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1.
-*/
-export type Int = number;
-
-/*
 DateTime scalar input type, allowing Date
 */
 export type DateTimeInput = Date | string;
@@ -1367,6 +1382,11 @@ export type DateTimeInput = Date | string;
 DateTime scalar output type, which is always a string
 */
 export type DateTimeOutput = string;
+
+/*
+The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1.
+*/
+export type Int = number;
 
 /**
  * Model Metadata
