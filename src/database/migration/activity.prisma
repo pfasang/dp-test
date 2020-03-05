@@ -1,0 +1,8 @@
+type Activity {
+  id: ID! @id
+  name: String!
+  projectId: ID!
+  userId: ID!
+  startDate: DateTime!
+  endDate: DateTime
+}

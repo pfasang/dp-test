@@ -14,6 +14,7 @@ app
     .use(bodyParser.json())
     .use(router.profileRouter)
     .use(router.skillRouter)
+    .use(router.activityRouter);
 
 app.listen(port);
 console.log(`App is running on port: ${port}`);

@@ -4,6 +4,7 @@ datamodel:
   - src/database/migration/skill.prisma
   - src/database/migration/activity-skill.prisma
   - src/database/migration/owner-skill.prisma
+  - src/database/migration/activity.prisma
 
 seed:
   run: ts-node ./src/database/seeds/seed.ts

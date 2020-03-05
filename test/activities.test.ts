@@ -1,0 +1,190 @@
+import {seedActivities} from "../src/database/seeds/seedFunctions";
+import * as chai from "chai";
+import {app} from "../src/server";
+import {
+    activityTestOutput,
+    activityListTestOutput
+} from "../src/utilities/validation/activityValidation";
+
+
+import 'chai-http';
+
+chai.use(require('chai-http'));
+
+const expect = chai.expect;
+let activityID: number, inputBody, createRes;
+
+const baseUrl = '/activities';
+const jsonType = 'application/json';
+
+describe('Activity tests', () => {
+
+    before(async () => {
+        await seedActivities();
+    });
+
+    describe('GET all activities', () => {
+        describe('Correct GET activities', () => {
+            it('returns 200', async () => {
+                const res = await chai.request(app)
+                    .get(`${baseUrl}`);
+                expect(res.body.error).to.eq(undefined);
+                expect(res.status).to.eq(200);
+                expect(res.type).to.eq(jsonType);
+                const {error} = activityListTestOutput.validate(res.body);
+                expect(error).to.eq(undefined);
+            });
+        });
+    });
+
+    describe('POST Create Activity', () => {
+
+        describe('Correct create', () => {
+            before(async () => {
+
+                inputBody = {
+                    name: 'activityCreateCorrect',
+                    projectId: '2',
+                    userId: '7',
+                    startDate: '2020-01-08',
+                };
+            });
+            it('returns 201', async () => {
+                const res = await chai.request(app)
+                    .post(`${baseUrl}`)
+                    .send(inputBody);
+                expect(res.body.error).to.eq(undefined);
+                expect(res.status).to.eq(201);
+                expect(res.type).to.eq(jsonType);
+                const {error} = activityTestOutput.validate(res.body);
+                expect(error).to.eq(undefined);
+            });
+        });
+
+        describe('Validation Error', () => {
+            before(async () => {
+                inputBody = {
+                    name: 'activityValidationError',
+                    projectId: '3',
+                    userId: '7',
+                    startDate: "xxx"
+                };
+            });
+            it('returns 400', async () => {
+                const res = await chai.request(app)
+                    .post(`${baseUrl}`)
+                    .send(inputBody);
+                expect(res.status).to.eq(400);
+                expect(res.type).to.eq(jsonType);
+                expect(res.body.error).to.not.eq(undefined);
+            });
+        });
+    });
+
+    describe("PATCH Update Activity", () => {
+        describe("Correct UPDATE", () => {
+            before(async () => {
+                inputBody = {
+                    name: 'activityUpdateCorrect',
+                    projectId: '3',
+                    userId: '6',
+                    startDate: '2020-02-08',
+                };
+                createRes = await chai.request(app)
+                    .post(baseUrl)
+                    .send(inputBody);
+                activityID = createRes.body.id;
+            });
+            it("returns 200", async () => {
+                const res = await chai.request(app)
+                    .patch(`${baseUrl}/${activityID}`)
+                    .send({endDate: '2020-03-10'});
+                expect(res.status).to.eq(200);
+                const {error} = activityTestOutput.validate(res.body);
+                expect(error).to.eq(undefined);
+                expect(res.type).to.eq(jsonType);
+            });
+        });
+
+        describe("Wrong ID in URL", () => {
+            before(async () => {
+                inputBody = {
+                    name: 'activityUpdateWrongID',
+                    projectId: '5',
+                    userId: '5',
+                    startDate: '2012-05-18',
+                };
+            });
+
+            it("returns 404", async () => {
+                const res = await chai.request(app)
+                    .patch(`${baseUrl}/0`)
+                    .send(inputBody);
+                expect(res.status).to.eq(404);
+                expect(res.type).to.eq(jsonType);
+                expect(res.body.error).to.not.eq(undefined);
+            });
+        });
+
+        describe("Wrong fields", () => {
+            before(async () => {
+                inputBody = {
+                    name: "activityWrongFields",
+                    projectId: '4',
+                    userId: '4',
+                    startDate: '2019-09-23',
+                };
+                createRes = await chai.request(app)
+                    .post(baseUrl)
+                    .send(inputBody);
+                activityID = createRes.body.id;
+            });
+            it("returns 400", async () => {
+                const res = await chai.request(app)
+                    .patch(`${baseUrl}/${activityID}`)
+                    .send({
+                        endDate: "test",
+                        xxx: 33
+                    });
+                expect(res.status).to.eq(400);
+                expect(res.type).to.eq(jsonType);
+                expect(res.body.error).to.not.eq(undefined);
+            });
+        });
+    });
+
+    describe("DELETE Activity", () => {
+        describe("Correct DELETE", () => {
+            before(async () => {
+                inputBody = {
+                    name: 'toRemoveActivity',
+                    projectId: '1',
+                    userId: '5',
+                    startDate: '2019-05-18',
+                };
+                createRes = await chai.request(app)
+                    .post(baseUrl)
+                    .send(inputBody);
+                expect(createRes.status).to.eq(201);
+                expect(createRes.type).to.eq(jsonType);
+                activityID = createRes.body.id;
+            });
+
+            it("returns 204", async () => {
+                const res = await chai.request(app)
+                    .del(`${baseUrl}/${activityID}`);
+                expect(res.status).to.eq(204);
+            });
+        });
+
+        describe("Wrong ID in URL", () => {
+            it("returns 404", async () => {
+                const res = await chai.request(app)
+                    .del(`${baseUrl}/0`)
+                expect(res.status).to.eq(404);
+                expect(res.type).to.eq(jsonType);
+                expect(res.body.error).to.not.eq(undefined);
+            });
+        });
+    });
+});

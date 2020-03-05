@@ -2,7 +2,60 @@
   // Please don't change this file manually but run `prisma generate` to update it.
   // For more information, please read the docs: https://www.prisma.io/docs/prisma-client/
 
-export const typeDefs = /* GraphQL */ `type ActivitySkill {
+export const typeDefs = /* GraphQL */ `type Activity {
+  id: ID!
+  name: String!
+  projectId: ID!
+  userId: ID!
+  startDate: DateTime!
+  endDate: DateTime
+}
+
+type ActivityConnection {
+  pageInfo: PageInfo!
+  edges: [ActivityEdge]!
+  aggregate: AggregateActivity!
+}
+
+input ActivityCreateInput {
+  id: ID
+  name: String!
+  projectId: ID!
+  userId: ID!
+  startDate: DateTime!
+  endDate: DateTime
+}
+
+type ActivityEdge {
+  node: Activity!
+  cursor: String!
+}
+
+enum ActivityOrderByInput {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  projectId_ASC
+  projectId_DESC
+  userId_ASC
+  userId_DESC
+  startDate_ASC
+  startDate_DESC
+  endDate_ASC
+  endDate_DESC
+}
+
+type ActivityPreviousValues {
+  id: ID!
+  name: String!
+  projectId: ID!
+  userId: ID!
+  startDate: DateTime!
+  endDate: DateTime
+}
+
+type ActivitySkill {
   id: ID!
   skillId: ID!
   activityId: ID!
@@ -159,6 +212,126 @@ input ActivitySkillWhereUniqueInput {
   id: ID
 }
 
+type ActivitySubscriptionPayload {
+  mutation: MutationType!
+  node: Activity
+  updatedFields: [String!]
+  previousValues: ActivityPreviousValues
+}
+
+input ActivitySubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: ActivityWhereInput
+  AND: [ActivitySubscriptionWhereInput!]
+  OR: [ActivitySubscriptionWhereInput!]
+  NOT: [ActivitySubscriptionWhereInput!]
+}
+
+input ActivityUpdateInput {
+  name: String
+  projectId: ID
+  userId: ID
+  startDate: DateTime
+  endDate: DateTime
+}
+
+input ActivityUpdateManyMutationInput {
+  name: String
+  projectId: ID
+  userId: ID
+  startDate: DateTime
+  endDate: DateTime
+}
+
+input ActivityWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  name: String
+  name_not: String
+  name_in: [String!]
+  name_not_in: [String!]
+  name_lt: String
+  name_lte: String
+  name_gt: String
+  name_gte: String
+  name_contains: String
+  name_not_contains: String
+  name_starts_with: String
+  name_not_starts_with: String
+  name_ends_with: String
+  name_not_ends_with: String
+  projectId: ID
+  projectId_not: ID
+  projectId_in: [ID!]
+  projectId_not_in: [ID!]
+  projectId_lt: ID
+  projectId_lte: ID
+  projectId_gt: ID
+  projectId_gte: ID
+  projectId_contains: ID
+  projectId_not_contains: ID
+  projectId_starts_with: ID
+  projectId_not_starts_with: ID
+  projectId_ends_with: ID
+  projectId_not_ends_with: ID
+  userId: ID
+  userId_not: ID
+  userId_in: [ID!]
+  userId_not_in: [ID!]
+  userId_lt: ID
+  userId_lte: ID
+  userId_gt: ID
+  userId_gte: ID
+  userId_contains: ID
+  userId_not_contains: ID
+  userId_starts_with: ID
+  userId_not_starts_with: ID
+  userId_ends_with: ID
+  userId_not_ends_with: ID
+  startDate: DateTime
+  startDate_not: DateTime
+  startDate_in: [DateTime!]
+  startDate_not_in: [DateTime!]
+  startDate_lt: DateTime
+  startDate_lte: DateTime
+  startDate_gt: DateTime
+  startDate_gte: DateTime
+  endDate: DateTime
+  endDate_not: DateTime
+  endDate_in: [DateTime!]
+  endDate_not_in: [DateTime!]
+  endDate_lt: DateTime
+  endDate_lte: DateTime
+  endDate_gt: DateTime
+  endDate_gte: DateTime
+  AND: [ActivityWhereInput!]
+  OR: [ActivityWhereInput!]
+  NOT: [ActivityWhereInput!]
+}
+
+input ActivityWhereUniqueInput {
+  id: ID
+}
+
+type AggregateActivity {
+  count: Int!
+}
+
 type AggregateActivitySkill {
   count: Int!
 }
@@ -184,6 +357,12 @@ scalar DateTime
 scalar Long
 
 type Mutation {
+  createActivity(data: ActivityCreateInput!): Activity!
+  updateActivity(data: ActivityUpdateInput!, where: ActivityWhereUniqueInput!): Activity
+  updateManyActivities(data: ActivityUpdateManyMutationInput!, where: ActivityWhereInput): BatchPayload!
+  upsertActivity(where: ActivityWhereUniqueInput!, create: ActivityCreateInput!, update: ActivityUpdateInput!): Activity!
+  deleteActivity(where: ActivityWhereUniqueInput!): Activity
+  deleteManyActivities(where: ActivityWhereInput): BatchPayload!
   createActivitySkill(data: ActivitySkillCreateInput!): ActivitySkill!
   updateActivitySkill(data: ActivitySkillUpdateInput!, where: ActivitySkillWhereUniqueInput!): ActivitySkill
   updateManyActivitySkills(data: ActivitySkillUpdateManyMutationInput!, where: ActivitySkillWhereInput): BatchPayload!
@@ -570,6 +749,9 @@ input ProfileWhereUniqueInput {
 }
 
 type Query {
+  activity(where: ActivityWhereUniqueInput!): Activity
+  activities(where: ActivityWhereInput, orderBy: ActivityOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Activity]!
+  activitiesConnection(where: ActivityWhereInput, orderBy: ActivityOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ActivityConnection!
   activitySkill(where: ActivitySkillWhereUniqueInput!): ActivitySkill
   activitySkills(where: ActivitySkillWhereInput, orderBy: ActivitySkillOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ActivitySkill]!
   activitySkillsConnection(where: ActivitySkillWhereInput, orderBy: ActivitySkillOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ActivitySkillConnection!
@@ -708,6 +890,7 @@ input SkillWhereUniqueInput {
 }
 
 type Subscription {
+  activity(where: ActivitySubscriptionWhereInput): ActivitySubscriptionPayload
   activitySkill(where: ActivitySkillSubscriptionWhereInput): ActivitySkillSubscriptionPayload
   ownerSkill(where: OwnerSkillSubscriptionWhereInput): OwnerSkillSubscriptionPayload
   profile(where: ProfileSubscriptionWhereInput): ProfileSubscriptionPayload
