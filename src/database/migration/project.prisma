@@ -1,0 +1,8 @@
+type Project {
+  id: ID! @id
+  name: String! @unique
+  description: String!
+  managerId: ID!
+  startDate: DateTime!
+  endDate: DateTime
+}

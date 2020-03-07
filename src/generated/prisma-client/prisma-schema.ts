@@ -344,6 +344,10 @@ type AggregateProfile {
   count: Int!
 }
 
+type AggregateProject {
+  count: Int!
+}
+
 type AggregateSkill {
   count: Int!
 }
@@ -381,6 +385,12 @@ type Mutation {
   upsertProfile(where: ProfileWhereUniqueInput!, create: ProfileCreateInput!, update: ProfileUpdateInput!): Profile!
   deleteProfile(where: ProfileWhereUniqueInput!): Profile
   deleteManyProfiles(where: ProfileWhereInput): BatchPayload!
+  createProject(data: ProjectCreateInput!): Project!
+  updateProject(data: ProjectUpdateInput!, where: ProjectWhereUniqueInput!): Project
+  updateManyProjects(data: ProjectUpdateManyMutationInput!, where: ProjectWhereInput): BatchPayload!
+  upsertProject(where: ProjectWhereUniqueInput!, create: ProjectCreateInput!, update: ProjectUpdateInput!): Project!
+  deleteProject(where: ProjectWhereUniqueInput!): Project
+  deleteManyProjects(where: ProjectWhereInput): BatchPayload!
   createSkill(data: SkillCreateInput!): Skill!
   updateSkill(data: SkillUpdateInput!, where: SkillWhereUniqueInput!): Skill
   updateManySkills(data: SkillUpdateManyMutationInput!, where: SkillWhereInput): BatchPayload!
@@ -748,6 +758,176 @@ input ProfileWhereUniqueInput {
   userId: ID
 }
 
+type Project {
+  id: ID!
+  name: String!
+  description: String!
+  managerId: ID!
+  startDate: DateTime!
+  endDate: DateTime
+}
+
+type ProjectConnection {
+  pageInfo: PageInfo!
+  edges: [ProjectEdge]!
+  aggregate: AggregateProject!
+}
+
+input ProjectCreateInput {
+  id: ID
+  name: String!
+  description: String!
+  managerId: ID!
+  startDate: DateTime!
+  endDate: DateTime
+}
+
+type ProjectEdge {
+  node: Project!
+  cursor: String!
+}
+
+enum ProjectOrderByInput {
+  id_ASC
+  id_DESC
+  name_ASC
+  name_DESC
+  description_ASC
+  description_DESC
+  managerId_ASC
+  managerId_DESC
+  startDate_ASC
+  startDate_DESC
+  endDate_ASC
+  endDate_DESC
+}
+
+type ProjectPreviousValues {
+  id: ID!
+  name: String!
+  description: String!
+  managerId: ID!
+  startDate: DateTime!
+  endDate: DateTime
+}
+
+type ProjectSubscriptionPayload {
+  mutation: MutationType!
+  node: Project
+  updatedFields: [String!]
+  previousValues: ProjectPreviousValues
+}
+
+input ProjectSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: ProjectWhereInput
+  AND: [ProjectSubscriptionWhereInput!]
+  OR: [ProjectSubscriptionWhereInput!]
+  NOT: [ProjectSubscriptionWhereInput!]
+}
+
+input ProjectUpdateInput {
+  name: String
+  description: String
+  managerId: ID
+  startDate: DateTime
+  endDate: DateTime
+}
+
+input ProjectUpdateManyMutationInput {
+  name: String
+  description: String
+  managerId: ID
+  startDate: DateTime
+  endDate: DateTime
+}
+
+input ProjectWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  name: String
+  name_not: String
+  name_in: [String!]
+  name_not_in: [String!]
+  name_lt: String
+  name_lte: String
+  name_gt: String
+  name_gte: String
+  name_contains: String
+  name_not_contains: String
+  name_starts_with: String
+  name_not_starts_with: String
+  name_ends_with: String
+  name_not_ends_with: String
+  description: String
+  description_not: String
+  description_in: [String!]
+  description_not_in: [String!]
+  description_lt: String
+  description_lte: String
+  description_gt: String
+  description_gte: String
+  description_contains: String
+  description_not_contains: String
+  description_starts_with: String
+  description_not_starts_with: String
+  description_ends_with: String
+  description_not_ends_with: String
+  managerId: ID
+  managerId_not: ID
+  managerId_in: [ID!]
+  managerId_not_in: [ID!]
+  managerId_lt: ID
+  managerId_lte: ID
+  managerId_gt: ID
+  managerId_gte: ID
+  managerId_contains: ID
+  managerId_not_contains: ID
+  managerId_starts_with: ID
+  managerId_not_starts_with: ID
+  managerId_ends_with: ID
+  managerId_not_ends_with: ID
+  startDate: DateTime
+  startDate_not: DateTime
+  startDate_in: [DateTime!]
+  startDate_not_in: [DateTime!]
+  startDate_lt: DateTime
+  startDate_lte: DateTime
+  startDate_gt: DateTime
+  startDate_gte: DateTime
+  endDate: DateTime
+  endDate_not: DateTime
+  endDate_in: [DateTime!]
+  endDate_not_in: [DateTime!]
+  endDate_lt: DateTime
+  endDate_lte: DateTime
+  endDate_gt: DateTime
+  endDate_gte: DateTime
+  AND: [ProjectWhereInput!]
+  OR: [ProjectWhereInput!]
+  NOT: [ProjectWhereInput!]
+}
+
+input ProjectWhereUniqueInput {
+  id: ID
+  name: String
+}
+
 type Query {
   activity(where: ActivityWhereUniqueInput!): Activity
   activities(where: ActivityWhereInput, orderBy: ActivityOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Activity]!
@@ -761,6 +941,9 @@ type Query {
   profile(where: ProfileWhereUniqueInput!): Profile
   profiles(where: ProfileWhereInput, orderBy: ProfileOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Profile]!
   profilesConnection(where: ProfileWhereInput, orderBy: ProfileOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ProfileConnection!
+  project(where: ProjectWhereUniqueInput!): Project
+  projects(where: ProjectWhereInput, orderBy: ProjectOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Project]!
+  projectsConnection(where: ProjectWhereInput, orderBy: ProjectOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ProjectConnection!
   skill(where: SkillWhereUniqueInput!): Skill
   skills(where: SkillWhereInput, orderBy: SkillOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Skill]!
   skillsConnection(where: SkillWhereInput, orderBy: SkillOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): SkillConnection!
@@ -894,6 +1077,7 @@ type Subscription {
   activitySkill(where: ActivitySkillSubscriptionWhereInput): ActivitySkillSubscriptionPayload
   ownerSkill(where: OwnerSkillSubscriptionWhereInput): OwnerSkillSubscriptionPayload
   profile(where: ProfileSubscriptionWhereInput): ProfileSubscriptionPayload
+  project(where: ProjectSubscriptionWhereInput): ProjectSubscriptionPayload
   skill(where: SkillSubscriptionWhereInput): SkillSubscriptionPayload
 }
 `
