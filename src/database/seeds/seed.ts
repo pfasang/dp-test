@@ -9,11 +9,11 @@ import {
 
 const main = async () => {
     await seedProfiles();
+    await seedProjects();
     await seedSkills();
     await seedOwnerSkills();
     await seedActivitySkills();
     await seedActivities();
-    await seedProjects();
 };
 
 main().catch((e) => console.error(e));

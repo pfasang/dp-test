@@ -5,10 +5,11 @@
 export const typeDefs = /* GraphQL */ `type Activity {
   id: ID!
   name: String!
-  projectId: ID!
+  project: Project!
   userId: ID!
   startDate: DateTime!
   endDate: DateTime
+  skills(where: ActivitySkillWhereInput, orderBy: ActivitySkillOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ActivitySkill!]
 }
 
 type ActivityConnection {
@@ -20,10 +21,11 @@ type ActivityConnection {
 input ActivityCreateInput {
   id: ID
   name: String!
-  projectId: ID!
+  project: ProjectCreateOneInput!
   userId: ID!
   startDate: DateTime!
   endDate: DateTime
+  skills: ActivitySkillCreateManyInput
 }
 
 type ActivityEdge {
@@ -36,8 +38,6 @@ enum ActivityOrderByInput {
   id_DESC
   name_ASC
   name_DESC
-  projectId_ASC
-  projectId_DESC
   userId_ASC
   userId_DESC
   startDate_ASC
@@ -49,7 +49,6 @@ enum ActivityOrderByInput {
 type ActivityPreviousValues {
   id: ID!
   name: String!
-  projectId: ID!
   userId: ID!
   startDate: DateTime!
   endDate: DateTime
@@ -57,11 +56,8 @@ type ActivityPreviousValues {
 
 type ActivitySkill {
   id: ID!
-  skillId: ID!
-  activityId: ID!
   level: Int!
-  createdAt: DateTime!
-  updatedAt: DateTime!
+  skill: Skill!
 }
 
 type ActivitySkillConnection {
@@ -72,9 +68,13 @@ type ActivitySkillConnection {
 
 input ActivitySkillCreateInput {
   id: ID
-  skillId: ID!
-  activityId: ID!
   level: Int!
+  skill: SkillCreateOneInput!
+}
+
+input ActivitySkillCreateManyInput {
+  create: [ActivitySkillCreateInput!]
+  connect: [ActivitySkillWhereUniqueInput!]
 }
 
 type ActivitySkillEdge {
@@ -85,25 +85,41 @@ type ActivitySkillEdge {
 enum ActivitySkillOrderByInput {
   id_ASC
   id_DESC
-  skillId_ASC
-  skillId_DESC
-  activityId_ASC
-  activityId_DESC
   level_ASC
   level_DESC
-  createdAt_ASC
-  createdAt_DESC
-  updatedAt_ASC
-  updatedAt_DESC
 }
 
 type ActivitySkillPreviousValues {
   id: ID!
-  skillId: ID!
-  activityId: ID!
   level: Int!
-  createdAt: DateTime!
-  updatedAt: DateTime!
+}
+
+input ActivitySkillScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  level: Int
+  level_not: Int
+  level_in: [Int!]
+  level_not_in: [Int!]
+  level_lt: Int
+  level_lte: Int
+  level_gt: Int
+  level_gte: Int
+  AND: [ActivitySkillScalarWhereInput!]
+  OR: [ActivitySkillScalarWhereInput!]
+  NOT: [ActivitySkillScalarWhereInput!]
 }
 
 type ActivitySkillSubscriptionPayload {
@@ -124,16 +140,50 @@ input ActivitySkillSubscriptionWhereInput {
   NOT: [ActivitySkillSubscriptionWhereInput!]
 }
 
+input ActivitySkillUpdateDataInput {
+  level: Int
+  skill: SkillUpdateOneRequiredInput
+}
+
 input ActivitySkillUpdateInput {
-  skillId: ID
-  activityId: ID
+  level: Int
+  skill: SkillUpdateOneRequiredInput
+}
+
+input ActivitySkillUpdateManyDataInput {
   level: Int
 }
 
+input ActivitySkillUpdateManyInput {
+  create: [ActivitySkillCreateInput!]
+  update: [ActivitySkillUpdateWithWhereUniqueNestedInput!]
+  upsert: [ActivitySkillUpsertWithWhereUniqueNestedInput!]
+  delete: [ActivitySkillWhereUniqueInput!]
+  connect: [ActivitySkillWhereUniqueInput!]
+  set: [ActivitySkillWhereUniqueInput!]
+  disconnect: [ActivitySkillWhereUniqueInput!]
+  deleteMany: [ActivitySkillScalarWhereInput!]
+  updateMany: [ActivitySkillUpdateManyWithWhereNestedInput!]
+}
+
 input ActivitySkillUpdateManyMutationInput {
-  skillId: ID
-  activityId: ID
   level: Int
+}
+
+input ActivitySkillUpdateManyWithWhereNestedInput {
+  where: ActivitySkillScalarWhereInput!
+  data: ActivitySkillUpdateManyDataInput!
+}
+
+input ActivitySkillUpdateWithWhereUniqueNestedInput {
+  where: ActivitySkillWhereUniqueInput!
+  data: ActivitySkillUpdateDataInput!
+}
+
+input ActivitySkillUpsertWithWhereUniqueNestedInput {
+  where: ActivitySkillWhereUniqueInput!
+  update: ActivitySkillUpdateDataInput!
+  create: ActivitySkillCreateInput!
 }
 
 input ActivitySkillWhereInput {
@@ -151,34 +201,6 @@ input ActivitySkillWhereInput {
   id_not_starts_with: ID
   id_ends_with: ID
   id_not_ends_with: ID
-  skillId: ID
-  skillId_not: ID
-  skillId_in: [ID!]
-  skillId_not_in: [ID!]
-  skillId_lt: ID
-  skillId_lte: ID
-  skillId_gt: ID
-  skillId_gte: ID
-  skillId_contains: ID
-  skillId_not_contains: ID
-  skillId_starts_with: ID
-  skillId_not_starts_with: ID
-  skillId_ends_with: ID
-  skillId_not_ends_with: ID
-  activityId: ID
-  activityId_not: ID
-  activityId_in: [ID!]
-  activityId_not_in: [ID!]
-  activityId_lt: ID
-  activityId_lte: ID
-  activityId_gt: ID
-  activityId_gte: ID
-  activityId_contains: ID
-  activityId_not_contains: ID
-  activityId_starts_with: ID
-  activityId_not_starts_with: ID
-  activityId_ends_with: ID
-  activityId_not_ends_with: ID
   level: Int
   level_not: Int
   level_in: [Int!]
@@ -187,22 +209,7 @@ input ActivitySkillWhereInput {
   level_lte: Int
   level_gt: Int
   level_gte: Int
-  createdAt: DateTime
-  createdAt_not: DateTime
-  createdAt_in: [DateTime!]
-  createdAt_not_in: [DateTime!]
-  createdAt_lt: DateTime
-  createdAt_lte: DateTime
-  createdAt_gt: DateTime
-  createdAt_gte: DateTime
-  updatedAt: DateTime
-  updatedAt_not: DateTime
-  updatedAt_in: [DateTime!]
-  updatedAt_not_in: [DateTime!]
-  updatedAt_lt: DateTime
-  updatedAt_lte: DateTime
-  updatedAt_gt: DateTime
-  updatedAt_gte: DateTime
+  skill: SkillWhereInput
   AND: [ActivitySkillWhereInput!]
   OR: [ActivitySkillWhereInput!]
   NOT: [ActivitySkillWhereInput!]
@@ -232,15 +239,15 @@ input ActivitySubscriptionWhereInput {
 
 input ActivityUpdateInput {
   name: String
-  projectId: ID
+  project: ProjectUpdateOneRequiredInput
   userId: ID
   startDate: DateTime
   endDate: DateTime
+  skills: ActivitySkillUpdateManyInput
 }
 
 input ActivityUpdateManyMutationInput {
   name: String
-  projectId: ID
   userId: ID
   startDate: DateTime
   endDate: DateTime
@@ -275,20 +282,7 @@ input ActivityWhereInput {
   name_not_starts_with: String
   name_ends_with: String
   name_not_ends_with: String
-  projectId: ID
-  projectId_not: ID
-  projectId_in: [ID!]
-  projectId_not_in: [ID!]
-  projectId_lt: ID
-  projectId_lte: ID
-  projectId_gt: ID
-  projectId_gte: ID
-  projectId_contains: ID
-  projectId_not_contains: ID
-  projectId_starts_with: ID
-  projectId_not_starts_with: ID
-  projectId_ends_with: ID
-  projectId_not_ends_with: ID
+  project: ProjectWhereInput
   userId: ID
   userId_not: ID
   userId_in: [ID!]
@@ -319,6 +313,9 @@ input ActivityWhereInput {
   endDate_lte: DateTime
   endDate_gt: DateTime
   endDate_gte: DateTime
+  skills_every: ActivitySkillWhereInput
+  skills_some: ActivitySkillWhereInput
+  skills_none: ActivitySkillWhereInput
   AND: [ActivityWhereInput!]
   OR: [ActivityWhereInput!]
   NOT: [ActivityWhereInput!]
@@ -411,11 +408,9 @@ interface Node {
 
 type OwnerSkill {
   id: ID!
-  skillId: ID!
+  skill: Skill!
   userId: ID!
   level: Int!
-  createdAt: DateTime!
-  updatedAt: DateTime!
 }
 
 type OwnerSkillConnection {
@@ -426,7 +421,7 @@ type OwnerSkillConnection {
 
 input OwnerSkillCreateInput {
   id: ID
-  skillId: ID!
+  skill: SkillCreateOneInput!
   userId: ID!
   level: Int!
 }
@@ -439,25 +434,16 @@ type OwnerSkillEdge {
 enum OwnerSkillOrderByInput {
   id_ASC
   id_DESC
-  skillId_ASC
-  skillId_DESC
   userId_ASC
   userId_DESC
   level_ASC
   level_DESC
-  createdAt_ASC
-  createdAt_DESC
-  updatedAt_ASC
-  updatedAt_DESC
 }
 
 type OwnerSkillPreviousValues {
   id: ID!
-  skillId: ID!
   userId: ID!
   level: Int!
-  createdAt: DateTime!
-  updatedAt: DateTime!
 }
 
 type OwnerSkillSubscriptionPayload {
@@ -479,13 +465,12 @@ input OwnerSkillSubscriptionWhereInput {
 }
 
 input OwnerSkillUpdateInput {
-  skillId: ID
+  skill: SkillUpdateOneRequiredInput
   userId: ID
   level: Int
 }
 
 input OwnerSkillUpdateManyMutationInput {
-  skillId: ID
   userId: ID
   level: Int
 }
@@ -505,20 +490,7 @@ input OwnerSkillWhereInput {
   id_not_starts_with: ID
   id_ends_with: ID
   id_not_ends_with: ID
-  skillId: ID
-  skillId_not: ID
-  skillId_in: [ID!]
-  skillId_not_in: [ID!]
-  skillId_lt: ID
-  skillId_lte: ID
-  skillId_gt: ID
-  skillId_gte: ID
-  skillId_contains: ID
-  skillId_not_contains: ID
-  skillId_starts_with: ID
-  skillId_not_starts_with: ID
-  skillId_ends_with: ID
-  skillId_not_ends_with: ID
+  skill: SkillWhereInput
   userId: ID
   userId_not: ID
   userId_in: [ID!]
@@ -541,22 +513,6 @@ input OwnerSkillWhereInput {
   level_lte: Int
   level_gt: Int
   level_gte: Int
-  createdAt: DateTime
-  createdAt_not: DateTime
-  createdAt_in: [DateTime!]
-  createdAt_not_in: [DateTime!]
-  createdAt_lt: DateTime
-  createdAt_lte: DateTime
-  createdAt_gt: DateTime
-  createdAt_gte: DateTime
-  updatedAt: DateTime
-  updatedAt_not: DateTime
-  updatedAt_in: [DateTime!]
-  updatedAt_not_in: [DateTime!]
-  updatedAt_lt: DateTime
-  updatedAt_lte: DateTime
-  updatedAt_gt: DateTime
-  updatedAt_gte: DateTime
   AND: [OwnerSkillWhereInput!]
   OR: [OwnerSkillWhereInput!]
   NOT: [OwnerSkillWhereInput!]
@@ -782,6 +738,11 @@ input ProjectCreateInput {
   endDate: DateTime
 }
 
+input ProjectCreateOneInput {
+  create: ProjectCreateInput
+  connect: ProjectWhereUniqueInput
+}
+
 type ProjectEdge {
   node: Project!
   cursor: String!
@@ -829,6 +790,14 @@ input ProjectSubscriptionWhereInput {
   NOT: [ProjectSubscriptionWhereInput!]
 }
 
+input ProjectUpdateDataInput {
+  name: String
+  description: String
+  managerId: ID
+  startDate: DateTime
+  endDate: DateTime
+}
+
 input ProjectUpdateInput {
   name: String
   description: String
@@ -843,6 +812,18 @@ input ProjectUpdateManyMutationInput {
   managerId: ID
   startDate: DateTime
   endDate: DateTime
+}
+
+input ProjectUpdateOneRequiredInput {
+  create: ProjectCreateInput
+  update: ProjectUpdateDataInput
+  upsert: ProjectUpsertNestedInput
+  connect: ProjectWhereUniqueInput
+}
+
+input ProjectUpsertNestedInput {
+  update: ProjectUpdateDataInput!
+  create: ProjectCreateInput!
 }
 
 input ProjectWhereInput {
@@ -968,6 +949,11 @@ input SkillCreateInput {
   name: String!
 }
 
+input SkillCreateOneInput {
+  create: SkillCreateInput
+  connect: SkillWhereUniqueInput
+}
+
 type SkillEdge {
   node: Skill!
   cursor: String!
@@ -1009,12 +995,28 @@ input SkillSubscriptionWhereInput {
   NOT: [SkillSubscriptionWhereInput!]
 }
 
+input SkillUpdateDataInput {
+  name: String
+}
+
 input SkillUpdateInput {
   name: String
 }
 
 input SkillUpdateManyMutationInput {
   name: String
+}
+
+input SkillUpdateOneRequiredInput {
+  create: SkillCreateInput
+  update: SkillUpdateDataInput
+  upsert: SkillUpsertNestedInput
+  connect: SkillWhereUniqueInput
+}
+
+input SkillUpsertNestedInput {
+  update: SkillUpdateDataInput!
+  create: SkillCreateInput!
 }
 
 input SkillWhereInput {

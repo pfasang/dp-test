@@ -1,8 +1,5 @@
 type ActivitySkill {
   id: ID! @id
-  skillId: ID!
-  activityId: ID!
   level: Int!
-  createdAt: DateTime! @createdAt
-  updatedAt: DateTime! @updatedAt
+  skill: Skill!
 }

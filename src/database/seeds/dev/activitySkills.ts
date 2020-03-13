@@ -1,53 +1,66 @@
 const activitySkills = [
     {
-        skillId: '2',
-        activityId: '3',
+        id: '1',
         level: 1,
+        skill: {
+            connect: {id: '2'}
+        }
     },
     {
-        skillId: '3',
-        activityId: '3',
+        id: '2',
         level: 3,
+        skill: {
+            connect: {id: '3'}
+        }
     },
     {
-        skillId: '5',
-        activityId: '5',
+        id: '3',
         level: 2,
+        skill: {
+            connect: {id: '5'}
+        }
     },
     {
-        skillId: '5',
-        activityId: '1',
-        level: 3,
-    },
-    {
-        skillId: '1',
-        activityId: '2',
+        id: '4',
         level: 1,
+        skill: {
+            connect: {id: '1'}
+        }
     },
     {
-        skillId: '1',
-        activityId: '4',
+        id: '5',
         level: 2,
+        skill: {
+            connect: {id: '1'}
+        }
     },
     {
-        skillId: '2',
-        activityId: '7',
+        id: '6',
         level: 2,
+        skill: {
+            connect: {id: '2'}
+        }
     },
     {
-        skillId: '4',
-        activityId: '7',
+        id: '7',
         level: 3,
+        skill: {
+            connect: {id: '4'}
+        }
     },
     {
-        skillId: '4',
-        activityId: '9',
+        id: '8',
         level: 3,
+        skill: {
+            connect: {id: '1'}
+        }
     },
     {
-        skillId: '1',
-        activityId: '8',
+        id: '9',
         level: 1,
+        skill: {
+            connect: {id: '1'}
+        }
     }
 ];
 

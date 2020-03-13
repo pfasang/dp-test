@@ -1,5 +1,6 @@
 const projects = [
     {
+        id: '1',
         name: 'projectA',
         description: 'Lorem Ipsum dolor sit amet',
         managerId: '2',
@@ -7,12 +8,14 @@ const projects = [
         endDate: "2015-12-20",
     },
     {
+        id: '2',
         name: 'projectB',
         description: 'Lorem Ipsum dolor sit amet',
         managerId: '6',
         startDate: "2018-01-07",
     },
     {
+        id: '3',
         name: 'projectC',
         description: 'Lorem Ipsum dolor sit amet',
         managerId: '1',
@@ -20,18 +23,21 @@ const projects = [
         endDate: "2019-05-02",
     },
     {
+        id: '4',
         name: 'projectD',
         description: 'Lorem Ipsum dolor sit amet',
         managerId: '3',
         startDate: "2019-09-27",
     },
     {
+        id: '5',
         name: 'projectE',
         description: 'Lorem Ipsum dolor sit amet',
         managerId: '6',
         startDate: "2020-01-05",
     },
     {
+        id: '6',
         name: 'projectF',
         description: 'Lorem Ipsum dolor sit amet',
         managerId: '2',

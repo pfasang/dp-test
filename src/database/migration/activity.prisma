@@ -1,8 +1,9 @@
 type Activity {
   id: ID! @id
   name: String!
-  projectId: ID!
+  project: Project!
   userId: ID!
   startDate: DateTime!
   endDate: DateTime
+  skills: [ActivitySkill]!
 }

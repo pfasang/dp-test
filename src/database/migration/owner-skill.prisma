@@ -1,8 +1,6 @@
 type OwnerSkill {
   id: ID! @id
-  skillId: ID!
+  skill: Skill!
   userId: ID!
   level: Int!
-  createdAt: DateTime! @createdAt
-  updatedAt: DateTime! @updatedAt
 }
