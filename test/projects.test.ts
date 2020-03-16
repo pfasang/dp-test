@@ -1,4 +1,4 @@
-import {seedProjects} from "../src/database/seeds/seedFunctions";
+import {seedActivities, seedProjects} from "../src/database/seeds/seedFunctions";
 import * as chai from "chai";
 import {app} from "../src/server";
 import 'chai-http';
@@ -13,10 +13,6 @@ const baseUrl = '/projects';
 const jsonType = 'application/json';
 
 describe('Project tests', () => {
-
-    before(async () => {
-        await seedProjects();
-    });
 
     describe('GET all projects', () => {
         describe('Correct GET', () => {
@@ -40,7 +36,7 @@ describe('Project tests', () => {
                 inputBody = {
                     name: 'projectCreateCorrect',
                     description: 'Euismod Magna Pellentesque Venenatis Ullamcorper',
-                    managerId: '2',
+                    manager: '2',
                     startDate: '2020-01-08',
                     endDate: '2020-01-10',
                 };
@@ -62,7 +58,7 @@ describe('Project tests', () => {
                 inputBody = {
                     name: 'projectValidationError',
                     description: 'Euismod Magna Pellentesque Venenatis Ullamcorper',
-                    managerId: '3',
+                    manager: '3',
                     startDate: "xxx"
                 };
             });
@@ -83,7 +79,7 @@ describe('Project tests', () => {
                 inputBody = {
                     name: 'projectUpdateCorrect',
                     description: 'Euismod Magna Pellentesque Venenatis Ullamcorper',
-                    managerId: '2',
+                    manager: '2',
                     startDate: '2020-01-08',
                 };
                 createRes = await chai.request(app)
@@ -107,7 +103,7 @@ describe('Project tests', () => {
                 inputBody = {
                     name: 'projectUpdateWrongID',
                     description: 'Euismod Magna Pellentesque Venenatis Ullamcorper',
-                    managerId: '4',
+                    manager: '4',
                     startDate: '2020-01-08',
                     endDate: '2020-01-10',
                 };
@@ -128,7 +124,7 @@ describe('Project tests', () => {
                 inputBody = {
                     name: "projectWrongFields",
                     description: 'Euismod Magna Pellentesque Venenatis Ullamcorper',
-                    managerId: '5',
+                    manager: '5',
                     startDate: '2019-09-23',
                 };
                 createRes = await chai.request(app)
@@ -156,7 +152,7 @@ describe('Project tests', () => {
                 inputBody = {
                     name: 'toRemoveActivity',
                     description: 'Euismod Magna Pellentesque Venenatis Ullamcorper',
-                    managerId: '1',
+                    manager: '1',
                     startDate: '2019-05-18',
                 };
                 createRes = await chai.request(app)
@@ -169,7 +165,7 @@ describe('Project tests', () => {
 
             it("returns 204", async () => {
                 const res = await chai.request(app)
-                    .del(`${baseUrl}/${projectID}`);
+                    .del(`${baseUrl}/1`);
                 expect(res.status).to.eq(204);
             });
         });

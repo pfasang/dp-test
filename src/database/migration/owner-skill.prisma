@@ -1,6 +1,0 @@
-type OwnerSkill {
-  id: ID! @id
-  skill: Skill!
-  userId: ID!
-  level: Int!
-}

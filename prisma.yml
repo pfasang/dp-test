@@ -3,7 +3,7 @@ datamodel:
   - src/database/migration/profile.prisma
   - src/database/migration/skill.prisma
   - src/database/migration/activity-skill.prisma
-  - src/database/migration/owner-skill.prisma
+  - src/database/migration/user-skill.prisma
   - src/database/migration/activity.prisma
   - src/database/migration/project.prisma
 

@@ -3,57 +3,57 @@ const profiles = [
         firstName: 'Michal',
         lastName: 'Uder',
         title: 'Mgr.',
-        userId: '1',
+        user: '1',
     },
     {
         firstName: 'Peter',
         lastName: 'Lahky',
-        userId: '2',
+        user: '2',
     },
     {
         firstName: 'Martin',
         lastName: 'Tazky',
         title: 'Ing.',
-        userId: '3',
+        user: '3',
     },
     {
         firstName: 'Jozef',
         lastName: 'Dressel',
-        userId: '4',
+        user: '4',
     },
     {
         firstName: 'Anna',
         lastName: 'Vojovska',
         title: 'Phd.',
-        userId: '5',
+        user: '5',
     },
     {
         firstName: 'Robert',
         lastName: 'Landl',
-        userId: '6',
+        user: '6',
     },
     {
         firstName: 'Petra',
         lastName: 'Slavikova',
         title: 'Bc.',
-        userId: '7',
+        user: '7',
     },
     {
         firstName: 'Oliver',
         lastName: 'Ladovy',
         title: 'Ing.',
-        userId: '8',
+        user: '8',
     },
     {
         firstName: 'Marcel',
         lastName: 'Dvorak',
-        userId: '9',
+        user: '9',
     },
     {
         firstName: 'John',
         lastName: 'Doe',
         title: 'prof.',
-        userId: '10',
+        user: '10',
     }
 ];
 

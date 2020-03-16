@@ -1,4 +1,3 @@
-import {seedActivitySkills, seedOwnerSkills, seedSkills} from "../src/database/seeds/seedFunctions";
 
 import * as chai from "chai";
 import {app} from "../src/server";
@@ -16,13 +15,6 @@ const baseUrl = '/skills';
 const jsonType = 'application/json';
 
 describe('Skills tests', () => {
-
-    before(async () => {
-        await seedSkills();
-        await seedOwnerSkills();
-        await seedActivitySkills();
-    });
-
     describe('GET all skills', () => {
         describe('Correct GET skills', () => {
             it('returns 200', async () => {
@@ -184,8 +176,8 @@ describe('Skills tests', () => {
         describe('Correct assignment to User', () => {
             before(async () => {
                 inputBody = {
-                    skillId: '1',
-                    userId: '1',
+                    skill: '1',
+                    owner: '1',
                     level: 1,
                 };
             });
@@ -200,8 +192,8 @@ describe('Skills tests', () => {
         describe('Correct assignment to Activity', () => {
             before(async () => {
                 inputBody = {
-                    skillId: '1',
-                    activityId: '1',
+                    skill: '1',
+                    owner: '1',
                     level: 2,
                 };
             });

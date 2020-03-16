@@ -1,0 +1,6 @@
+type UserSkill {
+  id: ID! @id
+  level: Int!
+  skill: Skill! @relation(link: INLINE)
+  owner: ID!
+}

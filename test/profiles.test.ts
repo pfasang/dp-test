@@ -15,11 +15,6 @@ const baseUrl = '/profile';
 const jsonType = 'application/json';
 
 describe('Profile tests', () => {
-
-    before(async () => {
-        await seedProfiles();
-    });
-
     describe('GET profile by ADMIN', () => {
         describe('Correct GET profile', () => {
             it('returns 200', async () => {

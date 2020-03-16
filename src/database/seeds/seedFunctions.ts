@@ -1,6 +1,6 @@
 const {profiles} = require("./dev/profiles");
 const {skills} = require("./dev/skills");
-const {ownerSkills} = require("./dev/ownerSkills");
+const {ownerSkills} = require("./dev/userSkills");
 const {activitySkills} = require("./dev/activitySkills");
 const {activities} = require("./dev/activities");
 const {projects} = require("./dev/projects");
@@ -20,10 +20,10 @@ const seedSkills = async () => {
     }
 };
 
-const seedOwnerSkills = async () => {
-    await prisma.deleteManyOwnerSkills();
+const seedUserSkills = async () => {
+    await prisma.deleteManyUserSkills();
     for (const item of ownerSkills) {
-        await prisma.createOwnerSkill(item);
+        await prisma.createUserSkill(item);
     }
 };
 
@@ -47,4 +47,4 @@ const seedProjects = async () => {
     }
 };
 
-export {seedProfiles, seedSkills, seedOwnerSkills, seedActivitySkills, seedActivities, seedProjects};
+export {seedProfiles, seedSkills, seedUserSkills, seedActivitySkills, seedActivities, seedProjects};

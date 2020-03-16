@@ -3,7 +3,7 @@ type Profile {
   firstName: String!
   lastName: String!
   title: String
-  userId: ID! @unique
+  user: ID! @unique
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
 }

@@ -4,10 +4,10 @@
   "description": "Internal person finder",
   "main": "src/server.js",
   "scripts": {
-    "test": "mocha --exit --reporter spec --require ts-node/register test/**/*.test.ts",
+    "test": "prisma seed --reset && mocha --exit --reporter spec --require ts-node/register test/**/*.test.ts",
     "start:dev": "NODE_ENV=development webpack",
     "build:dev": "NODE_ENV=development nodemon dist/server.js",
-    "prisma-seed": "prisma reset --force && prisma seed",
+    "prisma-seed": "prisma seed --reset",
     "prisma-deploy": "prisma reset --force && prisma deploy --force"
   },
   "repository": {

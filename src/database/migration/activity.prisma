@@ -1,9 +1,9 @@
 type Activity {
   id: ID! @id
   name: String!
-  project: Project!
-  userId: ID!
+  project: Project! @relation(link: INLINE, name: "ActivityProject")
+  user: ID!
   startDate: DateTime!
   endDate: DateTime
-  skills: [ActivitySkill]!
+  skills: [ActivitySkill] @relation(name: "ActivitySkill", onDelete: CASCADE)
 }

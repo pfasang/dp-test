@@ -7,9 +7,9 @@ const Joi = require('@hapi/joi');
 
 export const getUserProfile = async (req, res) => {
     //get user id number from url
-    const userID = req.params.userId;
+    const userID = req.params.user;
     //get user profile with given ID
-    const userProfile: Profile = await prisma.profile({userId: userID});
+    const userProfile: Profile = await prisma.profile({user: userID});
     if (!userProfile) {
         return res.status(404).send({error: "User Profile not found."});
     }
@@ -18,8 +18,8 @@ export const getUserProfile = async (req, res) => {
 
 export const createProfile = async (req, res) => {
     //get user id number from url
-    const userID = req.params.userId;
-    const userProfile: Profile = await prisma.profile({userId: userID});
+    const userID = req.params.user;
+    const userProfile: Profile = await prisma.profile({user: userID});
     if (userProfile) {
         return res.status(404).send({error: "Profile of selected user already exists."});
     }
@@ -28,7 +28,7 @@ export const createProfile = async (req, res) => {
     if (validatedBody.error) {
         return res.status(400).send({error: "Validation error."});
     }
-    req.body.userId = userID;
+    req.body.user = userID;
     try {
         const newProfile: Profile = await prisma.createProfile(req.body);
         res.status(201).json(newProfile);
@@ -39,14 +39,14 @@ export const createProfile = async (req, res) => {
 
 export const updateProfile = async (req, res) => {
     //get user id number from url
-    const userID = req.params.userId;
+    const userID = req.params.user;
     //Validate user input
     const validatedBody = profileUpdateInputValidation.validate(req.body);
     if (validatedBody.error) {
         return res.status(400).send({error: validatedBody.error.details});
     }
     try {
-        const profile: Profile = await prisma.updateProfile({data: req.body, where: {userId: userID}});
+        const profile: Profile = await prisma.updateProfile({data: req.body, where: {user: userID}});
         res.status(200).json(profile);
     } catch (e) {
         return res.status(404).send({error: e});
@@ -55,7 +55,7 @@ export const updateProfile = async (req, res) => {
 
 export const authorPermission = async (req, res, next) => {
     //get user id number from url
-    const userID = req.params.userId;
+    const userID = req.params.user;
 
     const user = req.user;
     if (user.userRole != userRole.admin) {

@@ -6,7 +6,7 @@ export const typeDefs = /* GraphQL */ `type Activity {
   id: ID!
   name: String!
   project: Project!
-  userId: ID!
+  user: ID!
   startDate: DateTime!
   endDate: DateTime
   skills(where: ActivitySkillWhereInput, orderBy: ActivitySkillOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ActivitySkill!]
@@ -21,11 +21,39 @@ type ActivityConnection {
 input ActivityCreateInput {
   id: ID
   name: String!
-  project: ProjectCreateOneInput!
-  userId: ID!
+  project: ProjectCreateOneWithoutActivitiesInput!
+  user: ID!
   startDate: DateTime!
   endDate: DateTime
-  skills: ActivitySkillCreateManyInput
+  skills: ActivitySkillCreateManyWithoutOwnerInput
+}
+
+input ActivityCreateManyWithoutProjectInput {
+  create: [ActivityCreateWithoutProjectInput!]
+  connect: [ActivityWhereUniqueInput!]
+}
+
+input ActivityCreateOneWithoutSkillsInput {
+  create: ActivityCreateWithoutSkillsInput
+  connect: ActivityWhereUniqueInput
+}
+
+input ActivityCreateWithoutProjectInput {
+  id: ID
+  name: String!
+  user: ID!
+  startDate: DateTime!
+  endDate: DateTime
+  skills: ActivitySkillCreateManyWithoutOwnerInput
+}
+
+input ActivityCreateWithoutSkillsInput {
+  id: ID
+  name: String!
+  project: ProjectCreateOneWithoutActivitiesInput!
+  user: ID!
+  startDate: DateTime!
+  endDate: DateTime
 }
 
 type ActivityEdge {
@@ -38,8 +66,8 @@ enum ActivityOrderByInput {
   id_DESC
   name_ASC
   name_DESC
-  userId_ASC
-  userId_DESC
+  user_ASC
+  user_DESC
   startDate_ASC
   startDate_DESC
   endDate_ASC
@@ -49,15 +77,80 @@ enum ActivityOrderByInput {
 type ActivityPreviousValues {
   id: ID!
   name: String!
-  userId: ID!
+  user: ID!
   startDate: DateTime!
   endDate: DateTime
+}
+
+input ActivityScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  name: String
+  name_not: String
+  name_in: [String!]
+  name_not_in: [String!]
+  name_lt: String
+  name_lte: String
+  name_gt: String
+  name_gte: String
+  name_contains: String
+  name_not_contains: String
+  name_starts_with: String
+  name_not_starts_with: String
+  name_ends_with: String
+  name_not_ends_with: String
+  user: ID
+  user_not: ID
+  user_in: [ID!]
+  user_not_in: [ID!]
+  user_lt: ID
+  user_lte: ID
+  user_gt: ID
+  user_gte: ID
+  user_contains: ID
+  user_not_contains: ID
+  user_starts_with: ID
+  user_not_starts_with: ID
+  user_ends_with: ID
+  user_not_ends_with: ID
+  startDate: DateTime
+  startDate_not: DateTime
+  startDate_in: [DateTime!]
+  startDate_not_in: [DateTime!]
+  startDate_lt: DateTime
+  startDate_lte: DateTime
+  startDate_gt: DateTime
+  startDate_gte: DateTime
+  endDate: DateTime
+  endDate_not: DateTime
+  endDate_in: [DateTime!]
+  endDate_not_in: [DateTime!]
+  endDate_lt: DateTime
+  endDate_lte: DateTime
+  endDate_gt: DateTime
+  endDate_gte: DateTime
+  AND: [ActivityScalarWhereInput!]
+  OR: [ActivityScalarWhereInput!]
+  NOT: [ActivityScalarWhereInput!]
 }
 
 type ActivitySkill {
   id: ID!
   level: Int!
   skill: Skill!
+  owner: Activity!
 }
 
 type ActivitySkillConnection {
@@ -70,11 +163,18 @@ input ActivitySkillCreateInput {
   id: ID
   level: Int!
   skill: SkillCreateOneInput!
+  owner: ActivityCreateOneWithoutSkillsInput!
 }
 
-input ActivitySkillCreateManyInput {
-  create: [ActivitySkillCreateInput!]
+input ActivitySkillCreateManyWithoutOwnerInput {
+  create: [ActivitySkillCreateWithoutOwnerInput!]
   connect: [ActivitySkillWhereUniqueInput!]
+}
+
+input ActivitySkillCreateWithoutOwnerInput {
+  id: ID
+  level: Int!
+  skill: SkillCreateOneInput!
 }
 
 type ActivitySkillEdge {
@@ -140,34 +240,30 @@ input ActivitySkillSubscriptionWhereInput {
   NOT: [ActivitySkillSubscriptionWhereInput!]
 }
 
-input ActivitySkillUpdateDataInput {
-  level: Int
-  skill: SkillUpdateOneRequiredInput
-}
-
 input ActivitySkillUpdateInput {
   level: Int
   skill: SkillUpdateOneRequiredInput
+  owner: ActivityUpdateOneRequiredWithoutSkillsInput
 }
 
 input ActivitySkillUpdateManyDataInput {
   level: Int
 }
 
-input ActivitySkillUpdateManyInput {
-  create: [ActivitySkillCreateInput!]
-  update: [ActivitySkillUpdateWithWhereUniqueNestedInput!]
-  upsert: [ActivitySkillUpsertWithWhereUniqueNestedInput!]
+input ActivitySkillUpdateManyMutationInput {
+  level: Int
+}
+
+input ActivitySkillUpdateManyWithoutOwnerInput {
+  create: [ActivitySkillCreateWithoutOwnerInput!]
   delete: [ActivitySkillWhereUniqueInput!]
   connect: [ActivitySkillWhereUniqueInput!]
   set: [ActivitySkillWhereUniqueInput!]
   disconnect: [ActivitySkillWhereUniqueInput!]
+  update: [ActivitySkillUpdateWithWhereUniqueWithoutOwnerInput!]
+  upsert: [ActivitySkillUpsertWithWhereUniqueWithoutOwnerInput!]
   deleteMany: [ActivitySkillScalarWhereInput!]
   updateMany: [ActivitySkillUpdateManyWithWhereNestedInput!]
-}
-
-input ActivitySkillUpdateManyMutationInput {
-  level: Int
 }
 
 input ActivitySkillUpdateManyWithWhereNestedInput {
@@ -175,15 +271,20 @@ input ActivitySkillUpdateManyWithWhereNestedInput {
   data: ActivitySkillUpdateManyDataInput!
 }
 
-input ActivitySkillUpdateWithWhereUniqueNestedInput {
-  where: ActivitySkillWhereUniqueInput!
-  data: ActivitySkillUpdateDataInput!
+input ActivitySkillUpdateWithoutOwnerDataInput {
+  level: Int
+  skill: SkillUpdateOneRequiredInput
 }
 
-input ActivitySkillUpsertWithWhereUniqueNestedInput {
+input ActivitySkillUpdateWithWhereUniqueWithoutOwnerInput {
   where: ActivitySkillWhereUniqueInput!
-  update: ActivitySkillUpdateDataInput!
-  create: ActivitySkillCreateInput!
+  data: ActivitySkillUpdateWithoutOwnerDataInput!
+}
+
+input ActivitySkillUpsertWithWhereUniqueWithoutOwnerInput {
+  where: ActivitySkillWhereUniqueInput!
+  update: ActivitySkillUpdateWithoutOwnerDataInput!
+  create: ActivitySkillCreateWithoutOwnerInput!
 }
 
 input ActivitySkillWhereInput {
@@ -210,6 +311,7 @@ input ActivitySkillWhereInput {
   level_gt: Int
   level_gte: Int
   skill: SkillWhereInput
+  owner: ActivityWhereInput
   AND: [ActivitySkillWhereInput!]
   OR: [ActivitySkillWhereInput!]
   NOT: [ActivitySkillWhereInput!]
@@ -239,18 +341,81 @@ input ActivitySubscriptionWhereInput {
 
 input ActivityUpdateInput {
   name: String
-  project: ProjectUpdateOneRequiredInput
-  userId: ID
+  project: ProjectUpdateOneRequiredWithoutActivitiesInput
+  user: ID
   startDate: DateTime
   endDate: DateTime
-  skills: ActivitySkillUpdateManyInput
+  skills: ActivitySkillUpdateManyWithoutOwnerInput
+}
+
+input ActivityUpdateManyDataInput {
+  name: String
+  user: ID
+  startDate: DateTime
+  endDate: DateTime
 }
 
 input ActivityUpdateManyMutationInput {
   name: String
-  userId: ID
+  user: ID
   startDate: DateTime
   endDate: DateTime
+}
+
+input ActivityUpdateManyWithoutProjectInput {
+  create: [ActivityCreateWithoutProjectInput!]
+  delete: [ActivityWhereUniqueInput!]
+  connect: [ActivityWhereUniqueInput!]
+  set: [ActivityWhereUniqueInput!]
+  disconnect: [ActivityWhereUniqueInput!]
+  update: [ActivityUpdateWithWhereUniqueWithoutProjectInput!]
+  upsert: [ActivityUpsertWithWhereUniqueWithoutProjectInput!]
+  deleteMany: [ActivityScalarWhereInput!]
+  updateMany: [ActivityUpdateManyWithWhereNestedInput!]
+}
+
+input ActivityUpdateManyWithWhereNestedInput {
+  where: ActivityScalarWhereInput!
+  data: ActivityUpdateManyDataInput!
+}
+
+input ActivityUpdateOneRequiredWithoutSkillsInput {
+  create: ActivityCreateWithoutSkillsInput
+  update: ActivityUpdateWithoutSkillsDataInput
+  upsert: ActivityUpsertWithoutSkillsInput
+  connect: ActivityWhereUniqueInput
+}
+
+input ActivityUpdateWithoutProjectDataInput {
+  name: String
+  user: ID
+  startDate: DateTime
+  endDate: DateTime
+  skills: ActivitySkillUpdateManyWithoutOwnerInput
+}
+
+input ActivityUpdateWithoutSkillsDataInput {
+  name: String
+  project: ProjectUpdateOneRequiredWithoutActivitiesInput
+  user: ID
+  startDate: DateTime
+  endDate: DateTime
+}
+
+input ActivityUpdateWithWhereUniqueWithoutProjectInput {
+  where: ActivityWhereUniqueInput!
+  data: ActivityUpdateWithoutProjectDataInput!
+}
+
+input ActivityUpsertWithoutSkillsInput {
+  update: ActivityUpdateWithoutSkillsDataInput!
+  create: ActivityCreateWithoutSkillsInput!
+}
+
+input ActivityUpsertWithWhereUniqueWithoutProjectInput {
+  where: ActivityWhereUniqueInput!
+  update: ActivityUpdateWithoutProjectDataInput!
+  create: ActivityCreateWithoutProjectInput!
 }
 
 input ActivityWhereInput {
@@ -283,20 +448,20 @@ input ActivityWhereInput {
   name_ends_with: String
   name_not_ends_with: String
   project: ProjectWhereInput
-  userId: ID
-  userId_not: ID
-  userId_in: [ID!]
-  userId_not_in: [ID!]
-  userId_lt: ID
-  userId_lte: ID
-  userId_gt: ID
-  userId_gte: ID
-  userId_contains: ID
-  userId_not_contains: ID
-  userId_starts_with: ID
-  userId_not_starts_with: ID
-  userId_ends_with: ID
-  userId_not_ends_with: ID
+  user: ID
+  user_not: ID
+  user_in: [ID!]
+  user_not_in: [ID!]
+  user_lt: ID
+  user_lte: ID
+  user_gt: ID
+  user_gte: ID
+  user_contains: ID
+  user_not_contains: ID
+  user_starts_with: ID
+  user_not_starts_with: ID
+  user_ends_with: ID
+  user_not_ends_with: ID
   startDate: DateTime
   startDate_not: DateTime
   startDate_in: [DateTime!]
@@ -333,10 +498,6 @@ type AggregateActivitySkill {
   count: Int!
 }
 
-type AggregateOwnerSkill {
-  count: Int!
-}
-
 type AggregateProfile {
   count: Int!
 }
@@ -346,6 +507,10 @@ type AggregateProject {
 }
 
 type AggregateSkill {
+  count: Int!
+}
+
+type AggregateUserSkill {
   count: Int!
 }
 
@@ -370,12 +535,6 @@ type Mutation {
   upsertActivitySkill(where: ActivitySkillWhereUniqueInput!, create: ActivitySkillCreateInput!, update: ActivitySkillUpdateInput!): ActivitySkill!
   deleteActivitySkill(where: ActivitySkillWhereUniqueInput!): ActivitySkill
   deleteManyActivitySkills(where: ActivitySkillWhereInput): BatchPayload!
-  createOwnerSkill(data: OwnerSkillCreateInput!): OwnerSkill!
-  updateOwnerSkill(data: OwnerSkillUpdateInput!, where: OwnerSkillWhereUniqueInput!): OwnerSkill
-  updateManyOwnerSkills(data: OwnerSkillUpdateManyMutationInput!, where: OwnerSkillWhereInput): BatchPayload!
-  upsertOwnerSkill(where: OwnerSkillWhereUniqueInput!, create: OwnerSkillCreateInput!, update: OwnerSkillUpdateInput!): OwnerSkill!
-  deleteOwnerSkill(where: OwnerSkillWhereUniqueInput!): OwnerSkill
-  deleteManyOwnerSkills(where: OwnerSkillWhereInput): BatchPayload!
   createProfile(data: ProfileCreateInput!): Profile!
   updateProfile(data: ProfileUpdateInput!, where: ProfileWhereUniqueInput!): Profile
   updateManyProfiles(data: ProfileUpdateManyMutationInput!, where: ProfileWhereInput): BatchPayload!
@@ -394,6 +553,12 @@ type Mutation {
   upsertSkill(where: SkillWhereUniqueInput!, create: SkillCreateInput!, update: SkillUpdateInput!): Skill!
   deleteSkill(where: SkillWhereUniqueInput!): Skill
   deleteManySkills(where: SkillWhereInput): BatchPayload!
+  createUserSkill(data: UserSkillCreateInput!): UserSkill!
+  updateUserSkill(data: UserSkillUpdateInput!, where: UserSkillWhereUniqueInput!): UserSkill
+  updateManyUserSkills(data: UserSkillUpdateManyMutationInput!, where: UserSkillWhereInput): BatchPayload!
+  upsertUserSkill(where: UserSkillWhereUniqueInput!, create: UserSkillCreateInput!, update: UserSkillUpdateInput!): UserSkill!
+  deleteUserSkill(where: UserSkillWhereUniqueInput!): UserSkill
+  deleteManyUserSkills(where: UserSkillWhereInput): BatchPayload!
 }
 
 enum MutationType {
@@ -404,122 +569,6 @@ enum MutationType {
 
 interface Node {
   id: ID!
-}
-
-type OwnerSkill {
-  id: ID!
-  skill: Skill!
-  userId: ID!
-  level: Int!
-}
-
-type OwnerSkillConnection {
-  pageInfo: PageInfo!
-  edges: [OwnerSkillEdge]!
-  aggregate: AggregateOwnerSkill!
-}
-
-input OwnerSkillCreateInput {
-  id: ID
-  skill: SkillCreateOneInput!
-  userId: ID!
-  level: Int!
-}
-
-type OwnerSkillEdge {
-  node: OwnerSkill!
-  cursor: String!
-}
-
-enum OwnerSkillOrderByInput {
-  id_ASC
-  id_DESC
-  userId_ASC
-  userId_DESC
-  level_ASC
-  level_DESC
-}
-
-type OwnerSkillPreviousValues {
-  id: ID!
-  userId: ID!
-  level: Int!
-}
-
-type OwnerSkillSubscriptionPayload {
-  mutation: MutationType!
-  node: OwnerSkill
-  updatedFields: [String!]
-  previousValues: OwnerSkillPreviousValues
-}
-
-input OwnerSkillSubscriptionWhereInput {
-  mutation_in: [MutationType!]
-  updatedFields_contains: String
-  updatedFields_contains_every: [String!]
-  updatedFields_contains_some: [String!]
-  node: OwnerSkillWhereInput
-  AND: [OwnerSkillSubscriptionWhereInput!]
-  OR: [OwnerSkillSubscriptionWhereInput!]
-  NOT: [OwnerSkillSubscriptionWhereInput!]
-}
-
-input OwnerSkillUpdateInput {
-  skill: SkillUpdateOneRequiredInput
-  userId: ID
-  level: Int
-}
-
-input OwnerSkillUpdateManyMutationInput {
-  userId: ID
-  level: Int
-}
-
-input OwnerSkillWhereInput {
-  id: ID
-  id_not: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_contains: ID
-  id_not_contains: ID
-  id_starts_with: ID
-  id_not_starts_with: ID
-  id_ends_with: ID
-  id_not_ends_with: ID
-  skill: SkillWhereInput
-  userId: ID
-  userId_not: ID
-  userId_in: [ID!]
-  userId_not_in: [ID!]
-  userId_lt: ID
-  userId_lte: ID
-  userId_gt: ID
-  userId_gte: ID
-  userId_contains: ID
-  userId_not_contains: ID
-  userId_starts_with: ID
-  userId_not_starts_with: ID
-  userId_ends_with: ID
-  userId_not_ends_with: ID
-  level: Int
-  level_not: Int
-  level_in: [Int!]
-  level_not_in: [Int!]
-  level_lt: Int
-  level_lte: Int
-  level_gt: Int
-  level_gte: Int
-  AND: [OwnerSkillWhereInput!]
-  OR: [OwnerSkillWhereInput!]
-  NOT: [OwnerSkillWhereInput!]
-}
-
-input OwnerSkillWhereUniqueInput {
-  id: ID
 }
 
 type PageInfo {
@@ -534,7 +583,7 @@ type Profile {
   firstName: String!
   lastName: String!
   title: String
-  userId: ID!
+  user: ID!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -550,7 +599,7 @@ input ProfileCreateInput {
   firstName: String!
   lastName: String!
   title: String
-  userId: ID!
+  user: ID!
 }
 
 type ProfileEdge {
@@ -567,8 +616,8 @@ enum ProfileOrderByInput {
   lastName_DESC
   title_ASC
   title_DESC
-  userId_ASC
-  userId_DESC
+  user_ASC
+  user_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
@@ -580,7 +629,7 @@ type ProfilePreviousValues {
   firstName: String!
   lastName: String!
   title: String
-  userId: ID!
+  user: ID!
   createdAt: DateTime!
   updatedAt: DateTime!
 }
@@ -607,14 +656,14 @@ input ProfileUpdateInput {
   firstName: String
   lastName: String
   title: String
-  userId: ID
+  user: ID
 }
 
 input ProfileUpdateManyMutationInput {
   firstName: String
   lastName: String
   title: String
-  userId: ID
+  user: ID
 }
 
 input ProfileWhereInput {
@@ -674,20 +723,20 @@ input ProfileWhereInput {
   title_not_starts_with: String
   title_ends_with: String
   title_not_ends_with: String
-  userId: ID
-  userId_not: ID
-  userId_in: [ID!]
-  userId_not_in: [ID!]
-  userId_lt: ID
-  userId_lte: ID
-  userId_gt: ID
-  userId_gte: ID
-  userId_contains: ID
-  userId_not_contains: ID
-  userId_starts_with: ID
-  userId_not_starts_with: ID
-  userId_ends_with: ID
-  userId_not_ends_with: ID
+  user: ID
+  user_not: ID
+  user_in: [ID!]
+  user_not_in: [ID!]
+  user_lt: ID
+  user_lte: ID
+  user_gt: ID
+  user_gte: ID
+  user_contains: ID
+  user_not_contains: ID
+  user_starts_with: ID
+  user_not_starts_with: ID
+  user_ends_with: ID
+  user_not_ends_with: ID
   createdAt: DateTime
   createdAt_not: DateTime
   createdAt_in: [DateTime!]
@@ -711,16 +760,17 @@ input ProfileWhereInput {
 
 input ProfileWhereUniqueInput {
   id: ID
-  userId: ID
+  user: ID
 }
 
 type Project {
   id: ID!
   name: String!
   description: String!
-  managerId: ID!
+  manager: ID!
   startDate: DateTime!
   endDate: DateTime
+  activities(where: ActivityWhereInput, orderBy: ActivityOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Activity!]
 }
 
 type ProjectConnection {
@@ -733,14 +783,24 @@ input ProjectCreateInput {
   id: ID
   name: String!
   description: String!
-  managerId: ID!
+  manager: ID!
   startDate: DateTime!
   endDate: DateTime
+  activities: ActivityCreateManyWithoutProjectInput
 }
 
-input ProjectCreateOneInput {
-  create: ProjectCreateInput
+input ProjectCreateOneWithoutActivitiesInput {
+  create: ProjectCreateWithoutActivitiesInput
   connect: ProjectWhereUniqueInput
+}
+
+input ProjectCreateWithoutActivitiesInput {
+  id: ID
+  name: String!
+  description: String!
+  manager: ID!
+  startDate: DateTime!
+  endDate: DateTime
 }
 
 type ProjectEdge {
@@ -755,8 +815,8 @@ enum ProjectOrderByInput {
   name_DESC
   description_ASC
   description_DESC
-  managerId_ASC
-  managerId_DESC
+  manager_ASC
+  manager_DESC
   startDate_ASC
   startDate_DESC
   endDate_ASC
@@ -767,7 +827,7 @@ type ProjectPreviousValues {
   id: ID!
   name: String!
   description: String!
-  managerId: ID!
+  manager: ID!
   startDate: DateTime!
   endDate: DateTime
 }
@@ -790,40 +850,41 @@ input ProjectSubscriptionWhereInput {
   NOT: [ProjectSubscriptionWhereInput!]
 }
 
-input ProjectUpdateDataInput {
-  name: String
-  description: String
-  managerId: ID
-  startDate: DateTime
-  endDate: DateTime
-}
-
 input ProjectUpdateInput {
   name: String
   description: String
-  managerId: ID
+  manager: ID
   startDate: DateTime
   endDate: DateTime
+  activities: ActivityUpdateManyWithoutProjectInput
 }
 
 input ProjectUpdateManyMutationInput {
   name: String
   description: String
-  managerId: ID
+  manager: ID
   startDate: DateTime
   endDate: DateTime
 }
 
-input ProjectUpdateOneRequiredInput {
-  create: ProjectCreateInput
-  update: ProjectUpdateDataInput
-  upsert: ProjectUpsertNestedInput
+input ProjectUpdateOneRequiredWithoutActivitiesInput {
+  create: ProjectCreateWithoutActivitiesInput
+  update: ProjectUpdateWithoutActivitiesDataInput
+  upsert: ProjectUpsertWithoutActivitiesInput
   connect: ProjectWhereUniqueInput
 }
 
-input ProjectUpsertNestedInput {
-  update: ProjectUpdateDataInput!
-  create: ProjectCreateInput!
+input ProjectUpdateWithoutActivitiesDataInput {
+  name: String
+  description: String
+  manager: ID
+  startDate: DateTime
+  endDate: DateTime
+}
+
+input ProjectUpsertWithoutActivitiesInput {
+  update: ProjectUpdateWithoutActivitiesDataInput!
+  create: ProjectCreateWithoutActivitiesInput!
 }
 
 input ProjectWhereInput {
@@ -869,20 +930,20 @@ input ProjectWhereInput {
   description_not_starts_with: String
   description_ends_with: String
   description_not_ends_with: String
-  managerId: ID
-  managerId_not: ID
-  managerId_in: [ID!]
-  managerId_not_in: [ID!]
-  managerId_lt: ID
-  managerId_lte: ID
-  managerId_gt: ID
-  managerId_gte: ID
-  managerId_contains: ID
-  managerId_not_contains: ID
-  managerId_starts_with: ID
-  managerId_not_starts_with: ID
-  managerId_ends_with: ID
-  managerId_not_ends_with: ID
+  manager: ID
+  manager_not: ID
+  manager_in: [ID!]
+  manager_not_in: [ID!]
+  manager_lt: ID
+  manager_lte: ID
+  manager_gt: ID
+  manager_gte: ID
+  manager_contains: ID
+  manager_not_contains: ID
+  manager_starts_with: ID
+  manager_not_starts_with: ID
+  manager_ends_with: ID
+  manager_not_ends_with: ID
   startDate: DateTime
   startDate_not: DateTime
   startDate_in: [DateTime!]
@@ -899,6 +960,9 @@ input ProjectWhereInput {
   endDate_lte: DateTime
   endDate_gt: DateTime
   endDate_gte: DateTime
+  activities_every: ActivityWhereInput
+  activities_some: ActivityWhereInput
+  activities_none: ActivityWhereInput
   AND: [ProjectWhereInput!]
   OR: [ProjectWhereInput!]
   NOT: [ProjectWhereInput!]
@@ -916,9 +980,6 @@ type Query {
   activitySkill(where: ActivitySkillWhereUniqueInput!): ActivitySkill
   activitySkills(where: ActivitySkillWhereInput, orderBy: ActivitySkillOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ActivitySkill]!
   activitySkillsConnection(where: ActivitySkillWhereInput, orderBy: ActivitySkillOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ActivitySkillConnection!
-  ownerSkill(where: OwnerSkillWhereUniqueInput!): OwnerSkill
-  ownerSkills(where: OwnerSkillWhereInput, orderBy: OwnerSkillOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [OwnerSkill]!
-  ownerSkillsConnection(where: OwnerSkillWhereInput, orderBy: OwnerSkillOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): OwnerSkillConnection!
   profile(where: ProfileWhereUniqueInput!): Profile
   profiles(where: ProfileWhereInput, orderBy: ProfileOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Profile]!
   profilesConnection(where: ProfileWhereInput, orderBy: ProfileOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ProfileConnection!
@@ -928,6 +989,9 @@ type Query {
   skill(where: SkillWhereUniqueInput!): Skill
   skills(where: SkillWhereInput, orderBy: SkillOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Skill]!
   skillsConnection(where: SkillWhereInput, orderBy: SkillOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): SkillConnection!
+  userSkill(where: UserSkillWhereUniqueInput!): UserSkill
+  userSkills(where: UserSkillWhereInput, orderBy: UserSkillOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [UserSkill]!
+  userSkillsConnection(where: UserSkillWhereInput, orderBy: UserSkillOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserSkillConnection!
   node(id: ID!): Node
 }
 
@@ -1077,9 +1141,125 @@ input SkillWhereUniqueInput {
 type Subscription {
   activity(where: ActivitySubscriptionWhereInput): ActivitySubscriptionPayload
   activitySkill(where: ActivitySkillSubscriptionWhereInput): ActivitySkillSubscriptionPayload
-  ownerSkill(where: OwnerSkillSubscriptionWhereInput): OwnerSkillSubscriptionPayload
   profile(where: ProfileSubscriptionWhereInput): ProfileSubscriptionPayload
   project(where: ProjectSubscriptionWhereInput): ProjectSubscriptionPayload
   skill(where: SkillSubscriptionWhereInput): SkillSubscriptionPayload
+  userSkill(where: UserSkillSubscriptionWhereInput): UserSkillSubscriptionPayload
+}
+
+type UserSkill {
+  id: ID!
+  level: Int!
+  skill: Skill!
+  owner: ID!
+}
+
+type UserSkillConnection {
+  pageInfo: PageInfo!
+  edges: [UserSkillEdge]!
+  aggregate: AggregateUserSkill!
+}
+
+input UserSkillCreateInput {
+  id: ID
+  level: Int!
+  skill: SkillCreateOneInput!
+  owner: ID!
+}
+
+type UserSkillEdge {
+  node: UserSkill!
+  cursor: String!
+}
+
+enum UserSkillOrderByInput {
+  id_ASC
+  id_DESC
+  level_ASC
+  level_DESC
+  owner_ASC
+  owner_DESC
+}
+
+type UserSkillPreviousValues {
+  id: ID!
+  level: Int!
+  owner: ID!
+}
+
+type UserSkillSubscriptionPayload {
+  mutation: MutationType!
+  node: UserSkill
+  updatedFields: [String!]
+  previousValues: UserSkillPreviousValues
+}
+
+input UserSkillSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: UserSkillWhereInput
+  AND: [UserSkillSubscriptionWhereInput!]
+  OR: [UserSkillSubscriptionWhereInput!]
+  NOT: [UserSkillSubscriptionWhereInput!]
+}
+
+input UserSkillUpdateInput {
+  level: Int
+  skill: SkillUpdateOneRequiredInput
+  owner: ID
+}
+
+input UserSkillUpdateManyMutationInput {
+  level: Int
+  owner: ID
+}
+
+input UserSkillWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  level: Int
+  level_not: Int
+  level_in: [Int!]
+  level_not_in: [Int!]
+  level_lt: Int
+  level_lte: Int
+  level_gt: Int
+  level_gte: Int
+  skill: SkillWhereInput
+  owner: ID
+  owner_not: ID
+  owner_in: [ID!]
+  owner_not_in: [ID!]
+  owner_lt: ID
+  owner_lte: ID
+  owner_gt: ID
+  owner_gte: ID
+  owner_contains: ID
+  owner_not_contains: ID
+  owner_starts_with: ID
+  owner_not_starts_with: ID
+  owner_ends_with: ID
+  owner_not_ends_with: ID
+  AND: [UserSkillWhereInput!]
+  OR: [UserSkillWhereInput!]
+  NOT: [UserSkillWhereInput!]
+}
+
+input UserSkillWhereUniqueInput {
+  id: ID
 }
 `

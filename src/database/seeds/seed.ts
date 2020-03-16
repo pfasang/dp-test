@@ -1,7 +1,7 @@
 import {
     seedProfiles,
     seedSkills,
-    seedOwnerSkills,
+    seedUserSkills,
     seedActivitySkills,
     seedActivities,
     seedProjects
@@ -11,9 +11,9 @@ const main = async () => {
     await seedProfiles();
     await seedProjects();
     await seedSkills();
-    await seedOwnerSkills();
-    await seedActivitySkills();
     await seedActivities();
+    await seedUserSkills();
+    await seedActivitySkills();
 };
 
 main().catch((e) => console.error(e));

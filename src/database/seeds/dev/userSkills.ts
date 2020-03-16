@@ -1,10 +1,10 @@
-const ownerSkills = [
+const userSkills = [
     {
         id: '1',
         skill: {
             connect: {id: '2'}
         },
-        userId: '1',
+        owner: '1',
         level: 1,
     },
     {
@@ -12,7 +12,7 @@ const ownerSkills = [
         skill: {
             connect: {id: '3'}
         },
-        userId: '2',
+        owner: '2',
         level: 1,
     },
     {
@@ -20,7 +20,7 @@ const ownerSkills = [
         skill: {
             connect: {id: '5'}
         },
-        userId: '3',
+        owner: '3',
         level: 3,
     },
     {
@@ -28,7 +28,7 @@ const ownerSkills = [
         skill: {
             connect: {id: '5'}
         },
-        userId: '4',
+        owner: '4',
         level: 1,
     },
     {
@@ -36,7 +36,7 @@ const ownerSkills = [
         skill: {
             connect: {id: '1'}
         },
-        userId: '5',
+        owner: '5',
         level: 1,
     },
     {
@@ -44,7 +44,7 @@ const ownerSkills = [
         skill: {
             connect: {id: '1'}
         },
-        userId: '6',
+        owner: '6',
         level: 3,
     },
     {
@@ -52,7 +52,7 @@ const ownerSkills = [
         skill: {
             connect: {id: '2'}
         },
-        userId: '7',
+        owner: '7',
         level: 2,
     },
     {
@@ -60,7 +60,7 @@ const ownerSkills = [
         skill: {
             connect: {id: '4'}
         },
-        userId: '8',
+        owner: '8',
         level: 2,
     },
     {
@@ -68,7 +68,7 @@ const ownerSkills = [
         skill: {
             connect: {id: '4'}
         },
-        userId: '9',
+        owner: '9',
         level: 1,
     },
     {
@@ -76,11 +76,11 @@ const ownerSkills = [
         skill: {
             connect: {id: '1'}
         },
-        userId: '10',
+        owner: '10',
         level: 1,
     }
 ];
 
 module.exports = {
-    ownerSkills
+    ownerSkills: userSkills
 };

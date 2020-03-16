@@ -2,8 +2,8 @@ import {seedActivities} from "../src/database/seeds/seedFunctions";
 import * as chai from "chai";
 import {app} from "../src/server";
 import {
-    activityTestOutput,
-    activityListTestOutput
+    activityOutput,
+    activityListOutput,
 } from "../src/utilities/validation/activityValidation";
 
 
@@ -18,11 +18,6 @@ const baseUrl = '/activities';
 const jsonType = 'application/json';
 
 describe('Activity tests', () => {
-
-    before(async () => {
-        await seedActivities();
-    });
-
     describe('GET all activities', () => {
         describe('Correct GET activities', () => {
             it('returns 200', async () => {
@@ -31,7 +26,21 @@ describe('Activity tests', () => {
                 expect(res.body.error).to.eq(undefined);
                 expect(res.status).to.eq(200);
                 expect(res.type).to.eq(jsonType);
-                const {error} = activityListTestOutput.validate(res.body);
+                const {error} = activityListOutput.validate(res.body);
+                expect(error).to.eq(undefined);
+            });
+        });
+    });
+
+    describe('GET user activities', () => {
+        describe('Correct GET activities', () => {
+            it('returns 200', async () => {
+                const res = await chai.request(app)
+                    .get(`${baseUrl}/1`);
+                expect(res.body.error).to.eq(undefined);
+                expect(res.status).to.eq(200);
+                expect(res.type).to.eq(jsonType);
+                const {error} = activityListOutput.validate(res.body);
                 expect(error).to.eq(undefined);
             });
         });
@@ -44,8 +53,8 @@ describe('Activity tests', () => {
 
                 inputBody = {
                     name: 'activityCreateCorrect',
-                    projectId: '2',
-                    userId: '7',
+                    project: '2',
+                    user: '7',
                     startDate: '2020-01-08',
                 };
             });
@@ -56,7 +65,7 @@ describe('Activity tests', () => {
                 expect(res.body.error).to.eq(undefined);
                 expect(res.status).to.eq(201);
                 expect(res.type).to.eq(jsonType);
-                const {error} = activityTestOutput.validate(res.body);
+                const {error} = activityOutput.validate(res.body);
                 expect(error).to.eq(undefined);
             });
         });
@@ -65,8 +74,8 @@ describe('Activity tests', () => {
             before(async () => {
                 inputBody = {
                     name: 'activityValidationError',
-                    projectId: '3',
-                    userId: '7',
+                    project: '3',
+                    user: '7',
                     startDate: "xxx"
                 };
             });
@@ -86,8 +95,8 @@ describe('Activity tests', () => {
             before(async () => {
                 inputBody = {
                     name: 'activityUpdateCorrect',
-                    projectId: '3',
-                    userId: '6',
+                    project: '3',
+                    user: '6',
                     startDate: '2020-02-08',
                 };
                 createRes = await chai.request(app)
@@ -100,7 +109,7 @@ describe('Activity tests', () => {
                     .patch(`${baseUrl}/${activityID}`)
                     .send({endDate: '2020-03-10'});
                 expect(res.status).to.eq(200);
-                const {error} = activityTestOutput.validate(res.body);
+                const {error} = activityOutput.validate(res.body);
                 expect(error).to.eq(undefined);
                 expect(res.type).to.eq(jsonType);
             });
@@ -110,8 +119,7 @@ describe('Activity tests', () => {
             before(async () => {
                 inputBody = {
                     name: 'activityUpdateWrongID',
-                    projectId: '5',
-                    userId: '5',
+                    user: '5',
                     startDate: '2012-05-18',
                 };
             });
@@ -130,8 +138,8 @@ describe('Activity tests', () => {
             before(async () => {
                 inputBody = {
                     name: "activityWrongFields",
-                    projectId: '4',
-                    userId: '4',
+                    project: '4',
+                    user: '4',
                     startDate: '2019-09-23',
                 };
                 createRes = await chai.request(app)
@@ -158,8 +166,8 @@ describe('Activity tests', () => {
             before(async () => {
                 inputBody = {
                     name: 'toRemoveActivity',
-                    projectId: '1',
-                    userId: '5',
+                    project: '1',
+                    user: '5',
                     startDate: '2019-05-18',
                 };
                 createRes = await chai.request(app)

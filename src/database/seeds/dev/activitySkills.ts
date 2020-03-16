@@ -4,12 +4,18 @@ const activitySkills = [
         level: 1,
         skill: {
             connect: {id: '2'}
+        },
+        owner: {
+            connect: {id: '3'}
         }
     },
     {
         id: '2',
         level: 3,
         skill: {
+            connect: {id: '3'}
+        },
+        owner: {
             connect: {id: '3'}
         }
     },
@@ -18,6 +24,9 @@ const activitySkills = [
         level: 2,
         skill: {
             connect: {id: '5'}
+        },
+        owner: {
+            connect: {id: '5'}
         }
     },
     {
@@ -25,6 +34,9 @@ const activitySkills = [
         level: 1,
         skill: {
             connect: {id: '1'}
+        },
+        owner: {
+            connect: {id: '2'}
         }
     },
     {
@@ -32,6 +44,9 @@ const activitySkills = [
         level: 2,
         skill: {
             connect: {id: '1'}
+        },
+        owner: {
+            connect: {id: '4'}
         }
     },
     {
@@ -39,6 +54,9 @@ const activitySkills = [
         level: 2,
         skill: {
             connect: {id: '2'}
+        },
+        owner: {
+            connect: {id: '6'}
         }
     },
     {
@@ -46,6 +64,9 @@ const activitySkills = [
         level: 3,
         skill: {
             connect: {id: '4'}
+        },
+        owner: {
+            connect: {id: '6'}
         }
     },
     {
@@ -53,12 +74,38 @@ const activitySkills = [
         level: 3,
         skill: {
             connect: {id: '1'}
+        },
+        owner: {
+            connect: {id: '6'}
         }
     },
     {
         id: '9',
         level: 1,
         skill: {
+            connect: {id: '1'}
+        },
+        owner: {
+            connect: {id: '3'}
+        }
+    },
+    {
+        id: '10',
+        level: 2,
+        skill: {
+            connect: {id: '4'}
+        },
+        owner: {
+            connect: {id: '1'}
+        }
+    },
+    {
+        id: '11',
+        level: 1,
+        skill: {
+            connect: {id: '6'}
+        },
+        owner: {
             connect: {id: '1'}
         }
     }

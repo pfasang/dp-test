@@ -1,6 +1,5 @@
-import {prisma, Skill} from "../generated/prisma-client";
+import {prisma, Skill, UserSkill} from "../generated/prisma-client";
 import {
-    activitySkillCreate,
     ownerSkillCreate,
     skillInputValidation
 } from "../utilities/validation/skillValidation";
@@ -42,7 +41,10 @@ export const updateSkill = async (req, res) => {
         return res.status(400).send({error: validatedBody.error.details});
     }
     try {
-        const skill: Skill = await prisma.updateSkill({data: req.body, where: {id: skillID}});
+        const skill: Skill = await prisma.updateSkill({
+            data: req.body,
+            where: {id: skillID}
+        });
         res.status(200).json(skill);
     } catch (e) {
         return res.status(404).send({error: e});
@@ -51,24 +53,38 @@ export const updateSkill = async (req, res) => {
 
 export const assignSkill = async (req, res) => {
     //Validate user input
-    let validatedBody;
-    if (req.body.userId) {
-        validatedBody = ownerSkillCreate.validate(req.body);
-    } else {
-        validatedBody = activitySkillCreate.validate(req.body);
-    }
+    let validatedBody = ownerSkillCreate.validate(req.body);
     if (validatedBody.error) {
-        return res.status(400).send({error: "Validation error."});
+        return res.status(400).send({error: validatedBody.error});
     }
 
     try {
-        if (req.body.userId) {
-            await prisma.createOwnerSkill(req.body);
+        if (req.body.owner) {
+            let {skill, ...data} = req.body;
+            await prisma.createUserSkill({
+                ...data,
+                skill: {
+                    connect: {
+                        id: skill ? skill : ""
+                    }
+                }
+            });
         } else {
-            await prisma.createActivitySkill(req.body);
+            let {skill, owner, ...data} = req.body;
+            console.log(skill, owner);
+            await prisma.createActivitySkill({
+                ...data,
+                skill: {
+                    connect: {id: skill}
+                },
+                activity: {
+                    connect: {id: owner}
+                }
+            });
         }
         return res.status(201).json();
     } catch (e) {
+        console.log(e);
         return res.status(400).send({error: e});
     }
 };

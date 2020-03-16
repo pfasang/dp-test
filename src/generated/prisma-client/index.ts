@@ -18,10 +18,10 @@ export type Maybe<T> = T | undefined | null;
 export interface Exists {
   activity: (where?: ActivityWhereInput) => Promise<boolean>;
   activitySkill: (where?: ActivitySkillWhereInput) => Promise<boolean>;
-  ownerSkill: (where?: OwnerSkillWhereInput) => Promise<boolean>;
   profile: (where?: ProfileWhereInput) => Promise<boolean>;
   project: (where?: ProjectWhereInput) => Promise<boolean>;
   skill: (where?: SkillWhereInput) => Promise<boolean>;
+  userSkill: (where?: UserSkillWhereInput) => Promise<boolean>;
 }
 
 export interface Node {}
@@ -83,25 +83,6 @@ export interface Prisma {
     first?: Int;
     last?: Int;
   }) => ActivitySkillConnectionPromise;
-  ownerSkill: (where: OwnerSkillWhereUniqueInput) => OwnerSkillNullablePromise;
-  ownerSkills: (args?: {
-    where?: OwnerSkillWhereInput;
-    orderBy?: OwnerSkillOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => FragmentableArray<OwnerSkill>;
-  ownerSkillsConnection: (args?: {
-    where?: OwnerSkillWhereInput;
-    orderBy?: OwnerSkillOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => OwnerSkillConnectionPromise;
   profile: (where: ProfileWhereUniqueInput) => ProfileNullablePromise;
   profiles: (args?: {
     where?: ProfileWhereInput;
@@ -159,6 +140,25 @@ export interface Prisma {
     first?: Int;
     last?: Int;
   }) => SkillConnectionPromise;
+  userSkill: (where: UserSkillWhereUniqueInput) => UserSkillNullablePromise;
+  userSkills: (args?: {
+    where?: UserSkillWhereInput;
+    orderBy?: UserSkillOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => FragmentableArray<UserSkill>;
+  userSkillsConnection: (args?: {
+    where?: UserSkillWhereInput;
+    orderBy?: UserSkillOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => UserSkillConnectionPromise;
   node: (args: { id: ID_Output }) => Node;
 
   /**
@@ -201,22 +201,6 @@ export interface Prisma {
   deleteManyActivitySkills: (
     where?: ActivitySkillWhereInput
   ) => BatchPayloadPromise;
-  createOwnerSkill: (data: OwnerSkillCreateInput) => OwnerSkillPromise;
-  updateOwnerSkill: (args: {
-    data: OwnerSkillUpdateInput;
-    where: OwnerSkillWhereUniqueInput;
-  }) => OwnerSkillPromise;
-  updateManyOwnerSkills: (args: {
-    data: OwnerSkillUpdateManyMutationInput;
-    where?: OwnerSkillWhereInput;
-  }) => BatchPayloadPromise;
-  upsertOwnerSkill: (args: {
-    where: OwnerSkillWhereUniqueInput;
-    create: OwnerSkillCreateInput;
-    update: OwnerSkillUpdateInput;
-  }) => OwnerSkillPromise;
-  deleteOwnerSkill: (where: OwnerSkillWhereUniqueInput) => OwnerSkillPromise;
-  deleteManyOwnerSkills: (where?: OwnerSkillWhereInput) => BatchPayloadPromise;
   createProfile: (data: ProfileCreateInput) => ProfilePromise;
   updateProfile: (args: {
     data: ProfileUpdateInput;
@@ -265,6 +249,22 @@ export interface Prisma {
   }) => SkillPromise;
   deleteSkill: (where: SkillWhereUniqueInput) => SkillPromise;
   deleteManySkills: (where?: SkillWhereInput) => BatchPayloadPromise;
+  createUserSkill: (data: UserSkillCreateInput) => UserSkillPromise;
+  updateUserSkill: (args: {
+    data: UserSkillUpdateInput;
+    where: UserSkillWhereUniqueInput;
+  }) => UserSkillPromise;
+  updateManyUserSkills: (args: {
+    data: UserSkillUpdateManyMutationInput;
+    where?: UserSkillWhereInput;
+  }) => BatchPayloadPromise;
+  upsertUserSkill: (args: {
+    where: UserSkillWhereUniqueInput;
+    create: UserSkillCreateInput;
+    update: UserSkillUpdateInput;
+  }) => UserSkillPromise;
+  deleteUserSkill: (where: UserSkillWhereUniqueInput) => UserSkillPromise;
+  deleteManyUserSkills: (where?: UserSkillWhereInput) => BatchPayloadPromise;
 
   /**
    * Subscriptions
@@ -280,9 +280,6 @@ export interface Subscription {
   activitySkill: (
     where?: ActivitySkillSubscriptionWhereInput
   ) => ActivitySkillSubscriptionPayloadSubscription;
-  ownerSkill: (
-    where?: OwnerSkillSubscriptionWhereInput
-  ) => OwnerSkillSubscriptionPayloadSubscription;
   profile: (
     where?: ProfileSubscriptionWhereInput
   ) => ProfileSubscriptionPayloadSubscription;
@@ -292,6 +289,9 @@ export interface Subscription {
   skill: (
     where?: SkillSubscriptionWhereInput
   ) => SkillSubscriptionPayloadSubscription;
+  userSkill: (
+    where?: UserSkillSubscriptionWhereInput
+  ) => UserSkillSubscriptionPayloadSubscription;
 }
 
 export interface ClientConstructor<T> {
@@ -302,29 +302,21 @@ export interface ClientConstructor<T> {
  * Types
  */
 
-export type ActivitySkillOrderByInput =
-  | "id_ASC"
-  | "id_DESC"
-  | "level_ASC"
-  | "level_DESC";
-
 export type ActivityOrderByInput =
   | "id_ASC"
   | "id_DESC"
   | "name_ASC"
   | "name_DESC"
-  | "userId_ASC"
-  | "userId_DESC"
+  | "user_ASC"
+  | "user_DESC"
   | "startDate_ASC"
   | "startDate_DESC"
   | "endDate_ASC"
   | "endDate_DESC";
 
-export type OwnerSkillOrderByInput =
+export type ActivitySkillOrderByInput =
   | "id_ASC"
   | "id_DESC"
-  | "userId_ASC"
-  | "userId_DESC"
   | "level_ASC"
   | "level_DESC";
 
@@ -337,8 +329,8 @@ export type ProfileOrderByInput =
   | "lastName_DESC"
   | "title_ASC"
   | "title_DESC"
-  | "userId_ASC"
-  | "userId_DESC"
+  | "user_ASC"
+  | "user_DESC"
   | "createdAt_ASC"
   | "createdAt_DESC"
   | "updatedAt_ASC"
@@ -351,8 +343,8 @@ export type ProjectOrderByInput =
   | "name_DESC"
   | "description_ASC"
   | "description_DESC"
-  | "managerId_ASC"
-  | "managerId_DESC"
+  | "manager_ASC"
+  | "manager_DESC"
   | "startDate_ASC"
   | "startDate_DESC"
   | "endDate_ASC"
@@ -368,91 +360,20 @@ export type SkillOrderByInput =
   | "updatedAt_ASC"
   | "updatedAt_DESC";
 
+export type UserSkillOrderByInput =
+  | "id_ASC"
+  | "id_DESC"
+  | "level_ASC"
+  | "level_DESC"
+  | "owner_ASC"
+  | "owner_DESC";
+
 export type MutationType = "CREATED" | "UPDATED" | "DELETED";
 
-export interface ActivitySkillCreateManyInput {
-  create?: Maybe<ActivitySkillCreateInput[] | ActivitySkillCreateInput>;
-  connect?: Maybe<
-    ActivitySkillWhereUniqueInput[] | ActivitySkillWhereUniqueInput
-  >;
-}
-
-export type ActivityWhereUniqueInput = AtLeastOne<{
-  id: Maybe<ID_Input>;
-}>;
-
-export interface ActivityUpdateInput {
-  name?: Maybe<String>;
-  project?: Maybe<ProjectUpdateOneRequiredInput>;
-  userId?: Maybe<ID_Input>;
-  startDate?: Maybe<DateTimeInput>;
-  endDate?: Maybe<DateTimeInput>;
-  skills?: Maybe<ActivitySkillUpdateManyInput>;
-}
-
-export interface SkillWhereInput {
-  id?: Maybe<ID_Input>;
-  id_not?: Maybe<ID_Input>;
-  id_in?: Maybe<ID_Input[] | ID_Input>;
-  id_not_in?: Maybe<ID_Input[] | ID_Input>;
-  id_lt?: Maybe<ID_Input>;
-  id_lte?: Maybe<ID_Input>;
-  id_gt?: Maybe<ID_Input>;
-  id_gte?: Maybe<ID_Input>;
-  id_contains?: Maybe<ID_Input>;
-  id_not_contains?: Maybe<ID_Input>;
-  id_starts_with?: Maybe<ID_Input>;
-  id_not_starts_with?: Maybe<ID_Input>;
-  id_ends_with?: Maybe<ID_Input>;
-  id_not_ends_with?: Maybe<ID_Input>;
-  name?: Maybe<String>;
-  name_not?: Maybe<String>;
-  name_in?: Maybe<String[] | String>;
-  name_not_in?: Maybe<String[] | String>;
-  name_lt?: Maybe<String>;
-  name_lte?: Maybe<String>;
-  name_gt?: Maybe<String>;
-  name_gte?: Maybe<String>;
-  name_contains?: Maybe<String>;
-  name_not_contains?: Maybe<String>;
-  name_starts_with?: Maybe<String>;
-  name_not_starts_with?: Maybe<String>;
-  name_ends_with?: Maybe<String>;
-  name_not_ends_with?: Maybe<String>;
-  createdAt?: Maybe<DateTimeInput>;
-  createdAt_not?: Maybe<DateTimeInput>;
-  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_lt?: Maybe<DateTimeInput>;
-  createdAt_lte?: Maybe<DateTimeInput>;
-  createdAt_gt?: Maybe<DateTimeInput>;
-  createdAt_gte?: Maybe<DateTimeInput>;
-  updatedAt?: Maybe<DateTimeInput>;
-  updatedAt_not?: Maybe<DateTimeInput>;
-  updatedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  updatedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  updatedAt_lt?: Maybe<DateTimeInput>;
-  updatedAt_lte?: Maybe<DateTimeInput>;
-  updatedAt_gt?: Maybe<DateTimeInput>;
-  updatedAt_gte?: Maybe<DateTimeInput>;
-  AND?: Maybe<SkillWhereInput[] | SkillWhereInput>;
-  OR?: Maybe<SkillWhereInput[] | SkillWhereInput>;
-  NOT?: Maybe<SkillWhereInput[] | SkillWhereInput>;
-}
-
-export interface ActivitySkillUpdateManyMutationInput {
-  level?: Maybe<Int>;
-}
-
-export interface ActivitySkillUpdateManyInput {
-  create?: Maybe<ActivitySkillCreateInput[] | ActivitySkillCreateInput>;
-  update?: Maybe<
-    | ActivitySkillUpdateWithWhereUniqueNestedInput[]
-    | ActivitySkillUpdateWithWhereUniqueNestedInput
-  >;
-  upsert?: Maybe<
-    | ActivitySkillUpsertWithWhereUniqueNestedInput[]
-    | ActivitySkillUpsertWithWhereUniqueNestedInput
+export interface ActivitySkillUpdateManyWithoutOwnerInput {
+  create?: Maybe<
+    | ActivitySkillCreateWithoutOwnerInput[]
+    | ActivitySkillCreateWithoutOwnerInput
   >;
   delete?: Maybe<
     ActivitySkillWhereUniqueInput[] | ActivitySkillWhereUniqueInput
@@ -464,6 +385,14 @@ export interface ActivitySkillUpdateManyInput {
   disconnect?: Maybe<
     ActivitySkillWhereUniqueInput[] | ActivitySkillWhereUniqueInput
   >;
+  update?: Maybe<
+    | ActivitySkillUpdateWithWhereUniqueWithoutOwnerInput[]
+    | ActivitySkillUpdateWithWhereUniqueWithoutOwnerInput
+  >;
+  upsert?: Maybe<
+    | ActivitySkillUpsertWithWhereUniqueWithoutOwnerInput[]
+    | ActivitySkillUpsertWithWhereUniqueWithoutOwnerInput
+  >;
   deleteMany?: Maybe<
     ActivitySkillScalarWhereInput[] | ActivitySkillScalarWhereInput
   >;
@@ -473,212 +402,75 @@ export interface ActivitySkillUpdateManyInput {
   >;
 }
 
+export type ActivityWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+}>;
+
+export interface UserSkillWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  level?: Maybe<Int>;
+  level_not?: Maybe<Int>;
+  level_in?: Maybe<Int[] | Int>;
+  level_not_in?: Maybe<Int[] | Int>;
+  level_lt?: Maybe<Int>;
+  level_lte?: Maybe<Int>;
+  level_gt?: Maybe<Int>;
+  level_gte?: Maybe<Int>;
+  skill?: Maybe<SkillWhereInput>;
+  owner?: Maybe<ID_Input>;
+  owner_not?: Maybe<ID_Input>;
+  owner_in?: Maybe<ID_Input[] | ID_Input>;
+  owner_not_in?: Maybe<ID_Input[] | ID_Input>;
+  owner_lt?: Maybe<ID_Input>;
+  owner_lte?: Maybe<ID_Input>;
+  owner_gt?: Maybe<ID_Input>;
+  owner_gte?: Maybe<ID_Input>;
+  owner_contains?: Maybe<ID_Input>;
+  owner_not_contains?: Maybe<ID_Input>;
+  owner_starts_with?: Maybe<ID_Input>;
+  owner_not_starts_with?: Maybe<ID_Input>;
+  owner_ends_with?: Maybe<ID_Input>;
+  owner_not_ends_with?: Maybe<ID_Input>;
+  AND?: Maybe<UserSkillWhereInput[] | UserSkillWhereInput>;
+  OR?: Maybe<UserSkillWhereInput[] | UserSkillWhereInput>;
+  NOT?: Maybe<UserSkillWhereInput[] | UserSkillWhereInput>;
+}
+
 export interface ActivitySkillUpdateInput {
   level?: Maybe<Int>;
   skill?: Maybe<SkillUpdateOneRequiredInput>;
-}
-
-export interface ProjectUpdateOneRequiredInput {
-  create?: Maybe<ProjectCreateInput>;
-  update?: Maybe<ProjectUpdateDataInput>;
-  upsert?: Maybe<ProjectUpsertNestedInput>;
-  connect?: Maybe<ProjectWhereUniqueInput>;
-}
-
-export type ProjectWhereUniqueInput = AtLeastOne<{
-  id: Maybe<ID_Input>;
-  name?: Maybe<String>;
-}>;
-
-export interface SkillSubscriptionWhereInput {
-  mutation_in?: Maybe<MutationType[] | MutationType>;
-  updatedFields_contains?: Maybe<String>;
-  updatedFields_contains_every?: Maybe<String[] | String>;
-  updatedFields_contains_some?: Maybe<String[] | String>;
-  node?: Maybe<SkillWhereInput>;
-  AND?: Maybe<SkillSubscriptionWhereInput[] | SkillSubscriptionWhereInput>;
-  OR?: Maybe<SkillSubscriptionWhereInput[] | SkillSubscriptionWhereInput>;
-  NOT?: Maybe<SkillSubscriptionWhereInput[] | SkillSubscriptionWhereInput>;
-}
-
-export interface ActivityUpdateManyMutationInput {
-  name?: Maybe<String>;
-  userId?: Maybe<ID_Input>;
-  startDate?: Maybe<DateTimeInput>;
-  endDate?: Maybe<DateTimeInput>;
-}
-
-export interface ProfileSubscriptionWhereInput {
-  mutation_in?: Maybe<MutationType[] | MutationType>;
-  updatedFields_contains?: Maybe<String>;
-  updatedFields_contains_every?: Maybe<String[] | String>;
-  updatedFields_contains_some?: Maybe<String[] | String>;
-  node?: Maybe<ProfileWhereInput>;
-  AND?: Maybe<ProfileSubscriptionWhereInput[] | ProfileSubscriptionWhereInput>;
-  OR?: Maybe<ProfileSubscriptionWhereInput[] | ProfileSubscriptionWhereInput>;
-  NOT?: Maybe<ProfileSubscriptionWhereInput[] | ProfileSubscriptionWhereInput>;
-}
-
-export interface ActivitySkillUpdateManyDataInput {
-  level?: Maybe<Int>;
-}
-
-export interface ActivitySkillSubscriptionWhereInput {
-  mutation_in?: Maybe<MutationType[] | MutationType>;
-  updatedFields_contains?: Maybe<String>;
-  updatedFields_contains_every?: Maybe<String[] | String>;
-  updatedFields_contains_some?: Maybe<String[] | String>;
-  node?: Maybe<ActivitySkillWhereInput>;
-  AND?: Maybe<
-    ActivitySkillSubscriptionWhereInput[] | ActivitySkillSubscriptionWhereInput
-  >;
-  OR?: Maybe<
-    ActivitySkillSubscriptionWhereInput[] | ActivitySkillSubscriptionWhereInput
-  >;
-  NOT?: Maybe<
-    ActivitySkillSubscriptionWhereInput[] | ActivitySkillSubscriptionWhereInput
-  >;
-}
-
-export interface ActivitySkillUpdateManyWithWhereNestedInput {
-  where: ActivitySkillScalarWhereInput;
-  data: ActivitySkillUpdateManyDataInput;
-}
-
-export type ActivitySkillWhereUniqueInput = AtLeastOne<{
-  id: Maybe<ID_Input>;
-}>;
-
-export interface ActivitySkillScalarWhereInput {
-  id?: Maybe<ID_Input>;
-  id_not?: Maybe<ID_Input>;
-  id_in?: Maybe<ID_Input[] | ID_Input>;
-  id_not_in?: Maybe<ID_Input[] | ID_Input>;
-  id_lt?: Maybe<ID_Input>;
-  id_lte?: Maybe<ID_Input>;
-  id_gt?: Maybe<ID_Input>;
-  id_gte?: Maybe<ID_Input>;
-  id_contains?: Maybe<ID_Input>;
-  id_not_contains?: Maybe<ID_Input>;
-  id_starts_with?: Maybe<ID_Input>;
-  id_not_starts_with?: Maybe<ID_Input>;
-  id_ends_with?: Maybe<ID_Input>;
-  id_not_ends_with?: Maybe<ID_Input>;
-  level?: Maybe<Int>;
-  level_not?: Maybe<Int>;
-  level_in?: Maybe<Int[] | Int>;
-  level_not_in?: Maybe<Int[] | Int>;
-  level_lt?: Maybe<Int>;
-  level_lte?: Maybe<Int>;
-  level_gt?: Maybe<Int>;
-  level_gte?: Maybe<Int>;
-  AND?: Maybe<ActivitySkillScalarWhereInput[] | ActivitySkillScalarWhereInput>;
-  OR?: Maybe<ActivitySkillScalarWhereInput[] | ActivitySkillScalarWhereInput>;
-  NOT?: Maybe<ActivitySkillScalarWhereInput[] | ActivitySkillScalarWhereInput>;
-}
-
-export interface SkillUpdateInput {
-  name?: Maybe<String>;
-}
-
-export type SkillWhereUniqueInput = AtLeastOne<{
-  id: Maybe<ID_Input>;
-  name?: Maybe<String>;
-}>;
-
-export type OwnerSkillWhereUniqueInput = AtLeastOne<{
-  id: Maybe<ID_Input>;
-}>;
-
-export interface ActivitySkillUpsertWithWhereUniqueNestedInput {
-  where: ActivitySkillWhereUniqueInput;
-  update: ActivitySkillUpdateDataInput;
-  create: ActivitySkillCreateInput;
-}
-
-export interface OwnerSkillWhereInput {
-  id?: Maybe<ID_Input>;
-  id_not?: Maybe<ID_Input>;
-  id_in?: Maybe<ID_Input[] | ID_Input>;
-  id_not_in?: Maybe<ID_Input[] | ID_Input>;
-  id_lt?: Maybe<ID_Input>;
-  id_lte?: Maybe<ID_Input>;
-  id_gt?: Maybe<ID_Input>;
-  id_gte?: Maybe<ID_Input>;
-  id_contains?: Maybe<ID_Input>;
-  id_not_contains?: Maybe<ID_Input>;
-  id_starts_with?: Maybe<ID_Input>;
-  id_not_starts_with?: Maybe<ID_Input>;
-  id_ends_with?: Maybe<ID_Input>;
-  id_not_ends_with?: Maybe<ID_Input>;
-  skill?: Maybe<SkillWhereInput>;
-  userId?: Maybe<ID_Input>;
-  userId_not?: Maybe<ID_Input>;
-  userId_in?: Maybe<ID_Input[] | ID_Input>;
-  userId_not_in?: Maybe<ID_Input[] | ID_Input>;
-  userId_lt?: Maybe<ID_Input>;
-  userId_lte?: Maybe<ID_Input>;
-  userId_gt?: Maybe<ID_Input>;
-  userId_gte?: Maybe<ID_Input>;
-  userId_contains?: Maybe<ID_Input>;
-  userId_not_contains?: Maybe<ID_Input>;
-  userId_starts_with?: Maybe<ID_Input>;
-  userId_not_starts_with?: Maybe<ID_Input>;
-  userId_ends_with?: Maybe<ID_Input>;
-  userId_not_ends_with?: Maybe<ID_Input>;
-  level?: Maybe<Int>;
-  level_not?: Maybe<Int>;
-  level_in?: Maybe<Int[] | Int>;
-  level_not_in?: Maybe<Int[] | Int>;
-  level_lt?: Maybe<Int>;
-  level_lte?: Maybe<Int>;
-  level_gt?: Maybe<Int>;
-  level_gte?: Maybe<Int>;
-  AND?: Maybe<OwnerSkillWhereInput[] | OwnerSkillWhereInput>;
-  OR?: Maybe<OwnerSkillWhereInput[] | OwnerSkillWhereInput>;
-  NOT?: Maybe<OwnerSkillWhereInput[] | OwnerSkillWhereInput>;
-}
-
-export interface SkillUpsertNestedInput {
-  update: SkillUpdateDataInput;
-  create: SkillCreateInput;
+  owner?: Maybe<ActivityUpdateOneRequiredWithoutSkillsInput>;
 }
 
 export interface ProfileUpdateManyMutationInput {
   firstName?: Maybe<String>;
   lastName?: Maybe<String>;
   title?: Maybe<String>;
-  userId?: Maybe<ID_Input>;
+  user?: Maybe<ID_Input>;
 }
 
 export interface SkillUpdateDataInput {
   name?: Maybe<String>;
 }
 
-export interface ProfileCreateInput {
-  id?: Maybe<ID_Input>;
-  firstName: String;
-  lastName: String;
+export interface ProfileUpdateInput {
+  firstName?: Maybe<String>;
+  lastName?: Maybe<String>;
   title?: Maybe<String>;
-  userId: ID_Input;
-}
-
-export interface SkillUpdateOneRequiredInput {
-  create?: Maybe<SkillCreateInput>;
-  update?: Maybe<SkillUpdateDataInput>;
-  upsert?: Maybe<SkillUpsertNestedInput>;
-  connect?: Maybe<SkillWhereUniqueInput>;
-}
-
-export interface OwnerSkillUpdateManyMutationInput {
-  userId?: Maybe<ID_Input>;
-  level?: Maybe<Int>;
-}
-
-export interface OwnerSkillUpdateInput {
-  skill?: Maybe<SkillUpdateOneRequiredInput>;
-  userId?: Maybe<ID_Input>;
-  level?: Maybe<Int>;
+  user?: Maybe<ID_Input>;
 }
 
 export interface ProjectWhereInput {
@@ -724,20 +516,20 @@ export interface ProjectWhereInput {
   description_not_starts_with?: Maybe<String>;
   description_ends_with?: Maybe<String>;
   description_not_ends_with?: Maybe<String>;
-  managerId?: Maybe<ID_Input>;
-  managerId_not?: Maybe<ID_Input>;
-  managerId_in?: Maybe<ID_Input[] | ID_Input>;
-  managerId_not_in?: Maybe<ID_Input[] | ID_Input>;
-  managerId_lt?: Maybe<ID_Input>;
-  managerId_lte?: Maybe<ID_Input>;
-  managerId_gt?: Maybe<ID_Input>;
-  managerId_gte?: Maybe<ID_Input>;
-  managerId_contains?: Maybe<ID_Input>;
-  managerId_not_contains?: Maybe<ID_Input>;
-  managerId_starts_with?: Maybe<ID_Input>;
-  managerId_not_starts_with?: Maybe<ID_Input>;
-  managerId_ends_with?: Maybe<ID_Input>;
-  managerId_not_ends_with?: Maybe<ID_Input>;
+  manager?: Maybe<ID_Input>;
+  manager_not?: Maybe<ID_Input>;
+  manager_in?: Maybe<ID_Input[] | ID_Input>;
+  manager_not_in?: Maybe<ID_Input[] | ID_Input>;
+  manager_lt?: Maybe<ID_Input>;
+  manager_lte?: Maybe<ID_Input>;
+  manager_gt?: Maybe<ID_Input>;
+  manager_gte?: Maybe<ID_Input>;
+  manager_contains?: Maybe<ID_Input>;
+  manager_not_contains?: Maybe<ID_Input>;
+  manager_starts_with?: Maybe<ID_Input>;
+  manager_not_starts_with?: Maybe<ID_Input>;
+  manager_ends_with?: Maybe<ID_Input>;
+  manager_not_ends_with?: Maybe<ID_Input>;
   startDate?: Maybe<DateTimeInput>;
   startDate_not?: Maybe<DateTimeInput>;
   startDate_in?: Maybe<DateTimeInput[] | DateTimeInput>;
@@ -754,80 +546,101 @@ export interface ProjectWhereInput {
   endDate_lte?: Maybe<DateTimeInput>;
   endDate_gt?: Maybe<DateTimeInput>;
   endDate_gte?: Maybe<DateTimeInput>;
+  activities_every?: Maybe<ActivityWhereInput>;
+  activities_some?: Maybe<ActivityWhereInput>;
+  activities_none?: Maybe<ActivityWhereInput>;
   AND?: Maybe<ProjectWhereInput[] | ProjectWhereInput>;
   OR?: Maybe<ProjectWhereInput[] | ProjectWhereInput>;
   NOT?: Maybe<ProjectWhereInput[] | ProjectWhereInput>;
 }
 
-export interface ActivityCreateInput {
+export interface ProfileCreateInput {
   id?: Maybe<ID_Input>;
-  name: String;
-  project: ProjectCreateOneInput;
-  userId: ID_Input;
-  startDate: DateTimeInput;
-  endDate?: Maybe<DateTimeInput>;
-  skills?: Maybe<ActivitySkillCreateManyInput>;
+  firstName: String;
+  lastName: String;
+  title?: Maybe<String>;
+  user: ID_Input;
 }
 
-export interface OwnerSkillSubscriptionWhereInput {
+export interface SkillSubscriptionWhereInput {
   mutation_in?: Maybe<MutationType[] | MutationType>;
   updatedFields_contains?: Maybe<String>;
   updatedFields_contains_every?: Maybe<String[] | String>;
   updatedFields_contains_some?: Maybe<String[] | String>;
-  node?: Maybe<OwnerSkillWhereInput>;
+  node?: Maybe<SkillWhereInput>;
+  AND?: Maybe<SkillSubscriptionWhereInput[] | SkillSubscriptionWhereInput>;
+  OR?: Maybe<SkillSubscriptionWhereInput[] | SkillSubscriptionWhereInput>;
+  NOT?: Maybe<SkillSubscriptionWhereInput[] | SkillSubscriptionWhereInput>;
+}
+
+export interface ActivitySkillUpdateManyMutationInput {
+  level?: Maybe<Int>;
+}
+
+export interface ProfileSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<ProfileWhereInput>;
+  AND?: Maybe<ProfileSubscriptionWhereInput[] | ProfileSubscriptionWhereInput>;
+  OR?: Maybe<ProfileSubscriptionWhereInput[] | ProfileSubscriptionWhereInput>;
+  NOT?: Maybe<ProfileSubscriptionWhereInput[] | ProfileSubscriptionWhereInput>;
+}
+
+export interface ActivitySubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<ActivityWhereInput>;
   AND?: Maybe<
-    OwnerSkillSubscriptionWhereInput[] | OwnerSkillSubscriptionWhereInput
+    ActivitySubscriptionWhereInput[] | ActivitySubscriptionWhereInput
   >;
-  OR?: Maybe<
-    OwnerSkillSubscriptionWhereInput[] | OwnerSkillSubscriptionWhereInput
-  >;
+  OR?: Maybe<ActivitySubscriptionWhereInput[] | ActivitySubscriptionWhereInput>;
   NOT?: Maybe<
-    OwnerSkillSubscriptionWhereInput[] | OwnerSkillSubscriptionWhereInput
+    ActivitySubscriptionWhereInput[] | ActivitySubscriptionWhereInput
   >;
 }
 
-export interface ProjectCreateOneInput {
-  create?: Maybe<ProjectCreateInput>;
-  connect?: Maybe<ProjectWhereUniqueInput>;
-}
+export type ActivitySkillWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+}>;
 
-export interface SkillUpdateManyMutationInput {
-  name?: Maybe<String>;
-}
-
-export interface ProjectCreateInput {
+export interface ActivityCreateInput {
   id?: Maybe<ID_Input>;
   name: String;
-  description: String;
-  managerId: ID_Input;
+  project: ProjectCreateOneWithoutActivitiesInput;
+  user: ID_Input;
   startDate: DateTimeInput;
   endDate?: Maybe<DateTimeInput>;
+  skills?: Maybe<ActivitySkillCreateManyWithoutOwnerInput>;
 }
 
-export interface ProjectUpdateInput {
-  name?: Maybe<String>;
-  description?: Maybe<String>;
-  managerId?: Maybe<ID_Input>;
-  startDate?: Maybe<DateTimeInput>;
-  endDate?: Maybe<DateTimeInput>;
-}
-
-export interface ActivitySkillUpdateDataInput {
-  level?: Maybe<Int>;
-  skill?: Maybe<SkillUpdateOneRequiredInput>;
-}
-
-export interface ProfileUpdateInput {
-  firstName?: Maybe<String>;
-  lastName?: Maybe<String>;
-  title?: Maybe<String>;
-  userId?: Maybe<ID_Input>;
-}
-
-export interface ActivitySkillCreateInput {
+export interface UserSkillCreateInput {
   id?: Maybe<ID_Input>;
   level: Int;
   skill: SkillCreateOneInput;
+  owner: ID_Input;
+}
+
+export interface ProjectCreateOneWithoutActivitiesInput {
+  create?: Maybe<ProjectCreateWithoutActivitiesInput>;
+  connect?: Maybe<ProjectWhereUniqueInput>;
+}
+
+export type ProfileWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+  user?: Maybe<ID_Input>;
+}>;
+
+export interface ProjectCreateWithoutActivitiesInput {
+  id?: Maybe<ID_Input>;
+  name: String;
+  description: String;
+  manager: ID_Input;
+  startDate: DateTimeInput;
+  endDate?: Maybe<DateTimeInput>;
 }
 
 export interface ProfileWhereInput {
@@ -887,20 +700,20 @@ export interface ProfileWhereInput {
   title_not_starts_with?: Maybe<String>;
   title_ends_with?: Maybe<String>;
   title_not_ends_with?: Maybe<String>;
-  userId?: Maybe<ID_Input>;
-  userId_not?: Maybe<ID_Input>;
-  userId_in?: Maybe<ID_Input[] | ID_Input>;
-  userId_not_in?: Maybe<ID_Input[] | ID_Input>;
-  userId_lt?: Maybe<ID_Input>;
-  userId_lte?: Maybe<ID_Input>;
-  userId_gt?: Maybe<ID_Input>;
-  userId_gte?: Maybe<ID_Input>;
-  userId_contains?: Maybe<ID_Input>;
-  userId_not_contains?: Maybe<ID_Input>;
-  userId_starts_with?: Maybe<ID_Input>;
-  userId_not_starts_with?: Maybe<ID_Input>;
-  userId_ends_with?: Maybe<ID_Input>;
-  userId_not_ends_with?: Maybe<ID_Input>;
+  user?: Maybe<ID_Input>;
+  user_not?: Maybe<ID_Input>;
+  user_in?: Maybe<ID_Input[] | ID_Input>;
+  user_not_in?: Maybe<ID_Input[] | ID_Input>;
+  user_lt?: Maybe<ID_Input>;
+  user_lte?: Maybe<ID_Input>;
+  user_gt?: Maybe<ID_Input>;
+  user_gte?: Maybe<ID_Input>;
+  user_contains?: Maybe<ID_Input>;
+  user_not_contains?: Maybe<ID_Input>;
+  user_starts_with?: Maybe<ID_Input>;
+  user_not_starts_with?: Maybe<ID_Input>;
+  user_ends_with?: Maybe<ID_Input>;
+  user_not_ends_with?: Maybe<ID_Input>;
   createdAt?: Maybe<DateTimeInput>;
   createdAt_not?: Maybe<DateTimeInput>;
   createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
@@ -922,9 +735,375 @@ export interface ProfileWhereInput {
   NOT?: Maybe<ProfileWhereInput[] | ProfileWhereInput>;
 }
 
+export interface ActivitySkillCreateManyWithoutOwnerInput {
+  create?: Maybe<
+    | ActivitySkillCreateWithoutOwnerInput[]
+    | ActivitySkillCreateWithoutOwnerInput
+  >;
+  connect?: Maybe<
+    ActivitySkillWhereUniqueInput[] | ActivitySkillWhereUniqueInput
+  >;
+}
+
+export interface ProjectUpdateManyMutationInput {
+  name?: Maybe<String>;
+  description?: Maybe<String>;
+  manager?: Maybe<ID_Input>;
+  startDate?: Maybe<DateTimeInput>;
+  endDate?: Maybe<DateTimeInput>;
+}
+
+export interface ActivitySkillCreateWithoutOwnerInput {
+  id?: Maybe<ID_Input>;
+  level: Int;
+  skill: SkillCreateOneInput;
+}
+
+export interface ActivityUpdateManyWithWhereNestedInput {
+  where: ActivityScalarWhereInput;
+  data: ActivityUpdateManyDataInput;
+}
+
 export interface SkillCreateOneInput {
   create?: Maybe<SkillCreateInput>;
   connect?: Maybe<SkillWhereUniqueInput>;
+}
+
+export interface ActivityScalarWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  name?: Maybe<String>;
+  name_not?: Maybe<String>;
+  name_in?: Maybe<String[] | String>;
+  name_not_in?: Maybe<String[] | String>;
+  name_lt?: Maybe<String>;
+  name_lte?: Maybe<String>;
+  name_gt?: Maybe<String>;
+  name_gte?: Maybe<String>;
+  name_contains?: Maybe<String>;
+  name_not_contains?: Maybe<String>;
+  name_starts_with?: Maybe<String>;
+  name_not_starts_with?: Maybe<String>;
+  name_ends_with?: Maybe<String>;
+  name_not_ends_with?: Maybe<String>;
+  user?: Maybe<ID_Input>;
+  user_not?: Maybe<ID_Input>;
+  user_in?: Maybe<ID_Input[] | ID_Input>;
+  user_not_in?: Maybe<ID_Input[] | ID_Input>;
+  user_lt?: Maybe<ID_Input>;
+  user_lte?: Maybe<ID_Input>;
+  user_gt?: Maybe<ID_Input>;
+  user_gte?: Maybe<ID_Input>;
+  user_contains?: Maybe<ID_Input>;
+  user_not_contains?: Maybe<ID_Input>;
+  user_starts_with?: Maybe<ID_Input>;
+  user_not_starts_with?: Maybe<ID_Input>;
+  user_ends_with?: Maybe<ID_Input>;
+  user_not_ends_with?: Maybe<ID_Input>;
+  startDate?: Maybe<DateTimeInput>;
+  startDate_not?: Maybe<DateTimeInput>;
+  startDate_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  startDate_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  startDate_lt?: Maybe<DateTimeInput>;
+  startDate_lte?: Maybe<DateTimeInput>;
+  startDate_gt?: Maybe<DateTimeInput>;
+  startDate_gte?: Maybe<DateTimeInput>;
+  endDate?: Maybe<DateTimeInput>;
+  endDate_not?: Maybe<DateTimeInput>;
+  endDate_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  endDate_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  endDate_lt?: Maybe<DateTimeInput>;
+  endDate_lte?: Maybe<DateTimeInput>;
+  endDate_gt?: Maybe<DateTimeInput>;
+  endDate_gte?: Maybe<DateTimeInput>;
+  AND?: Maybe<ActivityScalarWhereInput[] | ActivityScalarWhereInput>;
+  OR?: Maybe<ActivityScalarWhereInput[] | ActivityScalarWhereInput>;
+  NOT?: Maybe<ActivityScalarWhereInput[] | ActivityScalarWhereInput>;
+}
+
+export interface SkillCreateInput {
+  id?: Maybe<ID_Input>;
+  name: String;
+}
+
+export interface ActivityUpdateWithoutProjectDataInput {
+  name?: Maybe<String>;
+  user?: Maybe<ID_Input>;
+  startDate?: Maybe<DateTimeInput>;
+  endDate?: Maybe<DateTimeInput>;
+  skills?: Maybe<ActivitySkillUpdateManyWithoutOwnerInput>;
+}
+
+export interface ActivityUpdateInput {
+  name?: Maybe<String>;
+  project?: Maybe<ProjectUpdateOneRequiredWithoutActivitiesInput>;
+  user?: Maybe<ID_Input>;
+  startDate?: Maybe<DateTimeInput>;
+  endDate?: Maybe<DateTimeInput>;
+  skills?: Maybe<ActivitySkillUpdateManyWithoutOwnerInput>;
+}
+
+export type SkillWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+  name?: Maybe<String>;
+}>;
+
+export interface ProjectUpdateOneRequiredWithoutActivitiesInput {
+  create?: Maybe<ProjectCreateWithoutActivitiesInput>;
+  update?: Maybe<ProjectUpdateWithoutActivitiesDataInput>;
+  upsert?: Maybe<ProjectUpsertWithoutActivitiesInput>;
+  connect?: Maybe<ProjectWhereUniqueInput>;
+}
+
+export interface ProjectUpdateInput {
+  name?: Maybe<String>;
+  description?: Maybe<String>;
+  manager?: Maybe<ID_Input>;
+  startDate?: Maybe<DateTimeInput>;
+  endDate?: Maybe<DateTimeInput>;
+  activities?: Maybe<ActivityUpdateManyWithoutProjectInput>;
+}
+
+export interface ProjectUpdateWithoutActivitiesDataInput {
+  name?: Maybe<String>;
+  description?: Maybe<String>;
+  manager?: Maybe<ID_Input>;
+  startDate?: Maybe<DateTimeInput>;
+  endDate?: Maybe<DateTimeInput>;
+}
+
+export interface ActivityCreateManyWithoutProjectInput {
+  create?: Maybe<
+    ActivityCreateWithoutProjectInput[] | ActivityCreateWithoutProjectInput
+  >;
+  connect?: Maybe<ActivityWhereUniqueInput[] | ActivityWhereUniqueInput>;
+}
+
+export interface ProjectUpsertWithoutActivitiesInput {
+  update: ProjectUpdateWithoutActivitiesDataInput;
+  create: ProjectCreateWithoutActivitiesInput;
+}
+
+export interface ProjectCreateInput {
+  id?: Maybe<ID_Input>;
+  name: String;
+  description: String;
+  manager: ID_Input;
+  startDate: DateTimeInput;
+  endDate?: Maybe<DateTimeInput>;
+  activities?: Maybe<ActivityCreateManyWithoutProjectInput>;
+}
+
+export interface ActivityUpsertWithoutSkillsInput {
+  update: ActivityUpdateWithoutSkillsDataInput;
+  create: ActivityCreateWithoutSkillsInput;
+}
+
+export interface UserSkillSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<UserSkillWhereInput>;
+  AND?: Maybe<
+    UserSkillSubscriptionWhereInput[] | UserSkillSubscriptionWhereInput
+  >;
+  OR?: Maybe<
+    UserSkillSubscriptionWhereInput[] | UserSkillSubscriptionWhereInput
+  >;
+  NOT?: Maybe<
+    UserSkillSubscriptionWhereInput[] | UserSkillSubscriptionWhereInput
+  >;
+}
+
+export interface ActivitySkillUpdateWithWhereUniqueWithoutOwnerInput {
+  where: ActivitySkillWhereUniqueInput;
+  data: ActivitySkillUpdateWithoutOwnerDataInput;
+}
+
+export interface ActivitySkillSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<ActivitySkillWhereInput>;
+  AND?: Maybe<
+    ActivitySkillSubscriptionWhereInput[] | ActivitySkillSubscriptionWhereInput
+  >;
+  OR?: Maybe<
+    ActivitySkillSubscriptionWhereInput[] | ActivitySkillSubscriptionWhereInput
+  >;
+  NOT?: Maybe<
+    ActivitySkillSubscriptionWhereInput[] | ActivitySkillSubscriptionWhereInput
+  >;
+}
+
+export interface ActivitySkillUpdateWithoutOwnerDataInput {
+  level?: Maybe<Int>;
+  skill?: Maybe<SkillUpdateOneRequiredInput>;
+}
+
+export interface UserSkillUpdateInput {
+  level?: Maybe<Int>;
+  skill?: Maybe<SkillUpdateOneRequiredInput>;
+  owner?: Maybe<ID_Input>;
+}
+
+export interface SkillUpdateOneRequiredInput {
+  create?: Maybe<SkillCreateInput>;
+  update?: Maybe<SkillUpdateDataInput>;
+  upsert?: Maybe<SkillUpsertNestedInput>;
+  connect?: Maybe<SkillWhereUniqueInput>;
+}
+
+export interface SkillUpdateInput {
+  name?: Maybe<String>;
+}
+
+export interface SkillWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  name?: Maybe<String>;
+  name_not?: Maybe<String>;
+  name_in?: Maybe<String[] | String>;
+  name_not_in?: Maybe<String[] | String>;
+  name_lt?: Maybe<String>;
+  name_lte?: Maybe<String>;
+  name_gt?: Maybe<String>;
+  name_gte?: Maybe<String>;
+  name_contains?: Maybe<String>;
+  name_not_contains?: Maybe<String>;
+  name_starts_with?: Maybe<String>;
+  name_not_starts_with?: Maybe<String>;
+  name_ends_with?: Maybe<String>;
+  name_not_ends_with?: Maybe<String>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  updatedAt?: Maybe<DateTimeInput>;
+  updatedAt_not?: Maybe<DateTimeInput>;
+  updatedAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  updatedAt_lt?: Maybe<DateTimeInput>;
+  updatedAt_lte?: Maybe<DateTimeInput>;
+  updatedAt_gt?: Maybe<DateTimeInput>;
+  updatedAt_gte?: Maybe<DateTimeInput>;
+  AND?: Maybe<SkillWhereInput[] | SkillWhereInput>;
+  OR?: Maybe<SkillWhereInput[] | SkillWhereInput>;
+  NOT?: Maybe<SkillWhereInput[] | SkillWhereInput>;
+}
+
+export interface ActivityUpdateManyDataInput {
+  name?: Maybe<String>;
+  user?: Maybe<ID_Input>;
+  startDate?: Maybe<DateTimeInput>;
+  endDate?: Maybe<DateTimeInput>;
+}
+
+export interface SkillUpsertNestedInput {
+  update: SkillUpdateDataInput;
+  create: SkillCreateInput;
+}
+
+export interface ActivityUpsertWithWhereUniqueWithoutProjectInput {
+  where: ActivityWhereUniqueInput;
+  update: ActivityUpdateWithoutProjectDataInput;
+  create: ActivityCreateWithoutProjectInput;
+}
+
+export interface ActivitySkillUpsertWithWhereUniqueWithoutOwnerInput {
+  where: ActivitySkillWhereUniqueInput;
+  update: ActivitySkillUpdateWithoutOwnerDataInput;
+  create: ActivitySkillCreateWithoutOwnerInput;
+}
+
+export interface ActivityUpdateManyWithoutProjectInput {
+  create?: Maybe<
+    ActivityCreateWithoutProjectInput[] | ActivityCreateWithoutProjectInput
+  >;
+  delete?: Maybe<ActivityWhereUniqueInput[] | ActivityWhereUniqueInput>;
+  connect?: Maybe<ActivityWhereUniqueInput[] | ActivityWhereUniqueInput>;
+  set?: Maybe<ActivityWhereUniqueInput[] | ActivityWhereUniqueInput>;
+  disconnect?: Maybe<ActivityWhereUniqueInput[] | ActivityWhereUniqueInput>;
+  update?: Maybe<
+    | ActivityUpdateWithWhereUniqueWithoutProjectInput[]
+    | ActivityUpdateWithWhereUniqueWithoutProjectInput
+  >;
+  upsert?: Maybe<
+    | ActivityUpsertWithWhereUniqueWithoutProjectInput[]
+    | ActivityUpsertWithWhereUniqueWithoutProjectInput
+  >;
+  deleteMany?: Maybe<ActivityScalarWhereInput[] | ActivityScalarWhereInput>;
+  updateMany?: Maybe<
+    | ActivityUpdateManyWithWhereNestedInput[]
+    | ActivityUpdateManyWithWhereNestedInput
+  >;
+}
+
+export interface ActivitySkillScalarWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  level?: Maybe<Int>;
+  level_not?: Maybe<Int>;
+  level_in?: Maybe<Int[] | Int>;
+  level_not_in?: Maybe<Int[] | Int>;
+  level_lt?: Maybe<Int>;
+  level_lte?: Maybe<Int>;
+  level_gt?: Maybe<Int>;
+  level_gte?: Maybe<Int>;
+  AND?: Maybe<ActivitySkillScalarWhereInput[] | ActivitySkillScalarWhereInput>;
+  OR?: Maybe<ActivitySkillScalarWhereInput[] | ActivitySkillScalarWhereInput>;
+  NOT?: Maybe<ActivitySkillScalarWhereInput[] | ActivitySkillScalarWhereInput>;
+}
+
+export type UserSkillWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+}>;
+
+export interface ActivitySkillUpdateManyWithWhereNestedInput {
+  where: ActivitySkillScalarWhereInput;
+  data: ActivitySkillUpdateManyDataInput;
 }
 
 export interface ProjectSubscriptionWhereInput {
@@ -938,30 +1117,104 @@ export interface ProjectSubscriptionWhereInput {
   NOT?: Maybe<ProjectSubscriptionWhereInput[] | ProjectSubscriptionWhereInput>;
 }
 
-export interface SkillCreateInput {
+export interface ActivitySkillUpdateManyDataInput {
+  level?: Maybe<Int>;
+}
+
+export interface SkillUpdateManyMutationInput {
+  name?: Maybe<String>;
+}
+
+export interface ActivityUpdateManyMutationInput {
+  name?: Maybe<String>;
+  user?: Maybe<ID_Input>;
+  startDate?: Maybe<DateTimeInput>;
+  endDate?: Maybe<DateTimeInput>;
+}
+
+export type ProjectWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+  name?: Maybe<String>;
+}>;
+
+export interface ActivityUpdateWithoutSkillsDataInput {
+  name?: Maybe<String>;
+  project?: Maybe<ProjectUpdateOneRequiredWithoutActivitiesInput>;
+  user?: Maybe<ID_Input>;
+  startDate?: Maybe<DateTimeInput>;
+  endDate?: Maybe<DateTimeInput>;
+}
+
+export interface ActivityCreateWithoutProjectInput {
   id?: Maybe<ID_Input>;
   name: String;
+  user: ID_Input;
+  startDate: DateTimeInput;
+  endDate?: Maybe<DateTimeInput>;
+  skills?: Maybe<ActivitySkillCreateManyWithoutOwnerInput>;
 }
 
-export interface ProjectUpdateManyMutationInput {
-  name?: Maybe<String>;
-  description?: Maybe<String>;
-  managerId?: Maybe<ID_Input>;
-  startDate?: Maybe<DateTimeInput>;
+export interface ActivityCreateWithoutSkillsInput {
+  id?: Maybe<ID_Input>;
+  name: String;
+  project: ProjectCreateOneWithoutActivitiesInput;
+  user: ID_Input;
+  startDate: DateTimeInput;
   endDate?: Maybe<DateTimeInput>;
 }
 
-export interface ProjectUpsertNestedInput {
-  update: ProjectUpdateDataInput;
-  create: ProjectCreateInput;
+export interface ActivityCreateOneWithoutSkillsInput {
+  create?: Maybe<ActivityCreateWithoutSkillsInput>;
+  connect?: Maybe<ActivityWhereUniqueInput>;
 }
 
-export interface ProjectUpdateDataInput {
-  name?: Maybe<String>;
-  description?: Maybe<String>;
-  managerId?: Maybe<ID_Input>;
-  startDate?: Maybe<DateTimeInput>;
-  endDate?: Maybe<DateTimeInput>;
+export interface ActivitySkillCreateInput {
+  id?: Maybe<ID_Input>;
+  level: Int;
+  skill: SkillCreateOneInput;
+  owner: ActivityCreateOneWithoutSkillsInput;
+}
+
+export interface ActivityUpdateOneRequiredWithoutSkillsInput {
+  create?: Maybe<ActivityCreateWithoutSkillsInput>;
+  update?: Maybe<ActivityUpdateWithoutSkillsDataInput>;
+  upsert?: Maybe<ActivityUpsertWithoutSkillsInput>;
+  connect?: Maybe<ActivityWhereUniqueInput>;
+}
+
+export interface ActivitySkillWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  level?: Maybe<Int>;
+  level_not?: Maybe<Int>;
+  level_in?: Maybe<Int[] | Int>;
+  level_not_in?: Maybe<Int[] | Int>;
+  level_lt?: Maybe<Int>;
+  level_lte?: Maybe<Int>;
+  level_gt?: Maybe<Int>;
+  level_gte?: Maybe<Int>;
+  skill?: Maybe<SkillWhereInput>;
+  owner?: Maybe<ActivityWhereInput>;
+  AND?: Maybe<ActivitySkillWhereInput[] | ActivitySkillWhereInput>;
+  OR?: Maybe<ActivitySkillWhereInput[] | ActivitySkillWhereInput>;
+  NOT?: Maybe<ActivitySkillWhereInput[] | ActivitySkillWhereInput>;
+}
+
+export interface ActivityUpdateWithWhereUniqueWithoutProjectInput {
+  where: ActivityWhereUniqueInput;
+  data: ActivityUpdateWithoutProjectDataInput;
 }
 
 export interface ActivityWhereInput {
@@ -994,20 +1247,20 @@ export interface ActivityWhereInput {
   name_ends_with?: Maybe<String>;
   name_not_ends_with?: Maybe<String>;
   project?: Maybe<ProjectWhereInput>;
-  userId?: Maybe<ID_Input>;
-  userId_not?: Maybe<ID_Input>;
-  userId_in?: Maybe<ID_Input[] | ID_Input>;
-  userId_not_in?: Maybe<ID_Input[] | ID_Input>;
-  userId_lt?: Maybe<ID_Input>;
-  userId_lte?: Maybe<ID_Input>;
-  userId_gt?: Maybe<ID_Input>;
-  userId_gte?: Maybe<ID_Input>;
-  userId_contains?: Maybe<ID_Input>;
-  userId_not_contains?: Maybe<ID_Input>;
-  userId_starts_with?: Maybe<ID_Input>;
-  userId_not_starts_with?: Maybe<ID_Input>;
-  userId_ends_with?: Maybe<ID_Input>;
-  userId_not_ends_with?: Maybe<ID_Input>;
+  user?: Maybe<ID_Input>;
+  user_not?: Maybe<ID_Input>;
+  user_in?: Maybe<ID_Input[] | ID_Input>;
+  user_not_in?: Maybe<ID_Input[] | ID_Input>;
+  user_lt?: Maybe<ID_Input>;
+  user_lte?: Maybe<ID_Input>;
+  user_gt?: Maybe<ID_Input>;
+  user_gte?: Maybe<ID_Input>;
+  user_contains?: Maybe<ID_Input>;
+  user_not_contains?: Maybe<ID_Input>;
+  user_starts_with?: Maybe<ID_Input>;
+  user_not_starts_with?: Maybe<ID_Input>;
+  user_ends_with?: Maybe<ID_Input>;
+  user_not_ends_with?: Maybe<ID_Input>;
   startDate?: Maybe<DateTimeInput>;
   startDate_not?: Maybe<DateTimeInput>;
   startDate_in?: Maybe<DateTimeInput[] | DateTimeInput>;
@@ -1032,110 +1285,79 @@ export interface ActivityWhereInput {
   NOT?: Maybe<ActivityWhereInput[] | ActivityWhereInput>;
 }
 
-export interface ActivitySkillUpdateWithWhereUniqueNestedInput {
-  where: ActivitySkillWhereUniqueInput;
-  data: ActivitySkillUpdateDataInput;
-}
-
-export interface ActivitySkillWhereInput {
-  id?: Maybe<ID_Input>;
-  id_not?: Maybe<ID_Input>;
-  id_in?: Maybe<ID_Input[] | ID_Input>;
-  id_not_in?: Maybe<ID_Input[] | ID_Input>;
-  id_lt?: Maybe<ID_Input>;
-  id_lte?: Maybe<ID_Input>;
-  id_gt?: Maybe<ID_Input>;
-  id_gte?: Maybe<ID_Input>;
-  id_contains?: Maybe<ID_Input>;
-  id_not_contains?: Maybe<ID_Input>;
-  id_starts_with?: Maybe<ID_Input>;
-  id_not_starts_with?: Maybe<ID_Input>;
-  id_ends_with?: Maybe<ID_Input>;
-  id_not_ends_with?: Maybe<ID_Input>;
+export interface UserSkillUpdateManyMutationInput {
   level?: Maybe<Int>;
-  level_not?: Maybe<Int>;
-  level_in?: Maybe<Int[] | Int>;
-  level_not_in?: Maybe<Int[] | Int>;
-  level_lt?: Maybe<Int>;
-  level_lte?: Maybe<Int>;
-  level_gt?: Maybe<Int>;
-  level_gte?: Maybe<Int>;
-  skill?: Maybe<SkillWhereInput>;
-  AND?: Maybe<ActivitySkillWhereInput[] | ActivitySkillWhereInput>;
-  OR?: Maybe<ActivitySkillWhereInput[] | ActivitySkillWhereInput>;
-  NOT?: Maybe<ActivitySkillWhereInput[] | ActivitySkillWhereInput>;
+  owner?: Maybe<ID_Input>;
 }
-
-export interface ActivitySubscriptionWhereInput {
-  mutation_in?: Maybe<MutationType[] | MutationType>;
-  updatedFields_contains?: Maybe<String>;
-  updatedFields_contains_every?: Maybe<String[] | String>;
-  updatedFields_contains_some?: Maybe<String[] | String>;
-  node?: Maybe<ActivityWhereInput>;
-  AND?: Maybe<
-    ActivitySubscriptionWhereInput[] | ActivitySubscriptionWhereInput
-  >;
-  OR?: Maybe<ActivitySubscriptionWhereInput[] | ActivitySubscriptionWhereInput>;
-  NOT?: Maybe<
-    ActivitySubscriptionWhereInput[] | ActivitySubscriptionWhereInput
-  >;
-}
-
-export interface OwnerSkillCreateInput {
-  id?: Maybe<ID_Input>;
-  skill: SkillCreateOneInput;
-  userId: ID_Input;
-  level: Int;
-}
-
-export type ProfileWhereUniqueInput = AtLeastOne<{
-  id: Maybe<ID_Input>;
-  userId?: Maybe<ID_Input>;
-}>;
 
 export interface NodeNode {
   id: ID_Output;
 }
 
-export interface SkillPreviousValues {
+export interface UserSkillPreviousValues {
   id: ID_Output;
-  name: String;
+  level: Int;
+  owner: ID_Output;
+}
+
+export interface UserSkillPreviousValuesPromise
+  extends Promise<UserSkillPreviousValues>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  level: () => Promise<Int>;
+  owner: () => Promise<ID_Output>;
+}
+
+export interface UserSkillPreviousValuesSubscription
+  extends Promise<AsyncIterator<UserSkillPreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  level: () => Promise<AsyncIterator<Int>>;
+  owner: () => Promise<AsyncIterator<ID_Output>>;
+}
+
+export interface Profile {
+  id: ID_Output;
+  firstName: String;
+  lastName: String;
+  title?: String;
+  user: ID_Output;
   createdAt: DateTimeOutput;
   updatedAt: DateTimeOutput;
 }
 
-export interface SkillPreviousValuesPromise
-  extends Promise<SkillPreviousValues>,
-    Fragmentable {
+export interface ProfilePromise extends Promise<Profile>, Fragmentable {
   id: () => Promise<ID_Output>;
-  name: () => Promise<String>;
+  firstName: () => Promise<String>;
+  lastName: () => Promise<String>;
+  title: () => Promise<String>;
+  user: () => Promise<ID_Output>;
   createdAt: () => Promise<DateTimeOutput>;
   updatedAt: () => Promise<DateTimeOutput>;
 }
 
-export interface SkillPreviousValuesSubscription
-  extends Promise<AsyncIterator<SkillPreviousValues>>,
+export interface ProfileSubscription
+  extends Promise<AsyncIterator<Profile>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
-  name: () => Promise<AsyncIterator<String>>;
+  firstName: () => Promise<AsyncIterator<String>>;
+  lastName: () => Promise<AsyncIterator<String>>;
+  title: () => Promise<AsyncIterator<String>>;
+  user: () => Promise<AsyncIterator<ID_Output>>;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
 
-export interface AggregateActivitySkill {
-  count: Int;
-}
-
-export interface AggregateActivitySkillPromise
-  extends Promise<AggregateActivitySkill>,
+export interface ProfileNullablePromise
+  extends Promise<Profile | null>,
     Fragmentable {
-  count: () => Promise<Int>;
-}
-
-export interface AggregateActivitySkillSubscription
-  extends Promise<AsyncIterator<AggregateActivitySkill>>,
-    Fragmentable {
-  count: () => Promise<AsyncIterator<Int>>;
+  id: () => Promise<ID_Output>;
+  firstName: () => Promise<String>;
+  lastName: () => Promise<String>;
+  title: () => Promise<String>;
+  user: () => Promise<ID_Output>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
 }
 
 export interface Skill {
@@ -1170,6 +1392,22 @@ export interface SkillNullablePromise
   updatedAt: () => Promise<DateTimeOutput>;
 }
 
+export interface AggregateActivitySkill {
+  count: Int;
+}
+
+export interface AggregateActivitySkillPromise
+  extends Promise<AggregateActivitySkill>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateActivitySkillSubscription
+  extends Promise<AsyncIterator<AggregateActivitySkill>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
 export interface ActivitySkillEdge {
   node: ActivitySkill;
   cursor: String;
@@ -1189,33 +1427,36 @@ export interface ActivitySkillEdgeSubscription
   cursor: () => Promise<AsyncIterator<String>>;
 }
 
-export interface ActivitySkill {
-  id: ID_Output;
-  level: Int;
+export interface BatchPayload {
+  count: Long;
 }
 
-export interface ActivitySkillPromise
-  extends Promise<ActivitySkill>,
+export interface BatchPayloadPromise
+  extends Promise<BatchPayload>,
     Fragmentable {
-  id: () => Promise<ID_Output>;
-  level: () => Promise<Int>;
-  skill: <T = SkillPromise>() => T;
+  count: () => Promise<Long>;
 }
 
-export interface ActivitySkillSubscription
-  extends Promise<AsyncIterator<ActivitySkill>>,
+export interface BatchPayloadSubscription
+  extends Promise<AsyncIterator<BatchPayload>>,
     Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  level: () => Promise<AsyncIterator<Int>>;
-  skill: <T = SkillSubscription>() => T;
+  count: () => Promise<AsyncIterator<Long>>;
 }
 
-export interface ActivitySkillNullablePromise
-  extends Promise<ActivitySkill | null>,
+export interface AggregateUserSkill {
+  count: Int;
+}
+
+export interface AggregateUserSkillPromise
+  extends Promise<AggregateUserSkill>,
     Fragmentable {
-  id: () => Promise<ID_Output>;
-  level: () => Promise<Int>;
-  skill: <T = SkillPromise>() => T;
+  count: () => Promise<Int>;
+}
+
+export interface AggregateUserSkillSubscription
+  extends Promise<AsyncIterator<AggregateUserSkill>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
 }
 
 export interface ActivitySkillConnection {
@@ -1239,20 +1480,25 @@ export interface ActivitySkillConnectionSubscription
   aggregate: <T = AggregateActivitySkillSubscription>() => T;
 }
 
-export interface AggregateSkill {
-  count: Int;
+export interface UserSkillConnection {
+  pageInfo: PageInfo;
+  edges: UserSkillEdge[];
 }
 
-export interface AggregateSkillPromise
-  extends Promise<AggregateSkill>,
+export interface UserSkillConnectionPromise
+  extends Promise<UserSkillConnection>,
     Fragmentable {
-  count: () => Promise<Int>;
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<UserSkillEdge>>() => T;
+  aggregate: <T = AggregateUserSkillPromise>() => T;
 }
 
-export interface AggregateSkillSubscription
-  extends Promise<AsyncIterator<AggregateSkill>>,
+export interface UserSkillConnectionSubscription
+  extends Promise<AsyncIterator<UserSkillConnection>>,
     Fragmentable {
-  count: () => Promise<AsyncIterator<Int>>;
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<UserSkillEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateUserSkillSubscription>() => T;
 }
 
 export interface AggregateActivity {
@@ -1271,31 +1517,77 @@ export interface AggregateActivitySubscription
   count: () => Promise<AsyncIterator<Int>>;
 }
 
-export interface SkillConnection {
-  pageInfo: PageInfo;
-  edges: SkillEdge[];
+export interface UserSkill {
+  id: ID_Output;
+  level: Int;
+  owner: ID_Output;
 }
 
-export interface SkillConnectionPromise
-  extends Promise<SkillConnection>,
-    Fragmentable {
-  pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<SkillEdge>>() => T;
-  aggregate: <T = AggregateSkillPromise>() => T;
+export interface UserSkillPromise extends Promise<UserSkill>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  level: () => Promise<Int>;
+  skill: <T = SkillPromise>() => T;
+  owner: () => Promise<ID_Output>;
 }
 
-export interface SkillConnectionSubscription
-  extends Promise<AsyncIterator<SkillConnection>>,
+export interface UserSkillSubscription
+  extends Promise<AsyncIterator<UserSkill>>,
     Fragmentable {
-  pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<SkillEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateSkillSubscription>() => T;
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  level: () => Promise<AsyncIterator<Int>>;
+  skill: <T = SkillSubscription>() => T;
+  owner: () => Promise<AsyncIterator<ID_Output>>;
+}
+
+export interface UserSkillNullablePromise
+  extends Promise<UserSkill | null>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  level: () => Promise<Int>;
+  skill: <T = SkillPromise>() => T;
+  owner: () => Promise<ID_Output>;
+}
+
+export interface ActivityEdge {
+  node: Activity;
+  cursor: String;
+}
+
+export interface ActivityEdgePromise
+  extends Promise<ActivityEdge>,
+    Fragmentable {
+  node: <T = ActivityPromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface ActivityEdgeSubscription
+  extends Promise<AsyncIterator<ActivityEdge>>,
+    Fragmentable {
+  node: <T = ActivitySubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface SkillEdge {
+  node: Skill;
+  cursor: String;
+}
+
+export interface SkillEdgePromise extends Promise<SkillEdge>, Fragmentable {
+  node: <T = SkillPromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface SkillEdgeSubscription
+  extends Promise<AsyncIterator<SkillEdge>>,
+    Fragmentable {
+  node: <T = SkillSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
 }
 
 export interface Activity {
   id: ID_Output;
   name: String;
-  userId: ID_Output;
+  user: ID_Output;
   startDate: DateTimeOutput;
   endDate?: DateTimeOutput;
 }
@@ -1304,7 +1596,7 @@ export interface ActivityPromise extends Promise<Activity>, Fragmentable {
   id: () => Promise<ID_Output>;
   name: () => Promise<String>;
   project: <T = ProjectPromise>() => T;
-  userId: () => Promise<ID_Output>;
+  user: () => Promise<ID_Output>;
   startDate: () => Promise<DateTimeOutput>;
   endDate: () => Promise<DateTimeOutput>;
   skills: <T = FragmentableArray<ActivitySkill>>(args?: {
@@ -1324,7 +1616,7 @@ export interface ActivitySubscription
   id: () => Promise<AsyncIterator<ID_Output>>;
   name: () => Promise<AsyncIterator<String>>;
   project: <T = ProjectSubscription>() => T;
-  userId: () => Promise<AsyncIterator<ID_Output>>;
+  user: () => Promise<AsyncIterator<ID_Output>>;
   startDate: () => Promise<AsyncIterator<DateTimeOutput>>;
   endDate: () => Promise<AsyncIterator<DateTimeOutput>>;
   skills: <T = Promise<AsyncIterator<ActivitySkillSubscription>>>(args?: {
@@ -1344,7 +1636,7 @@ export interface ActivityNullablePromise
   id: () => Promise<ID_Output>;
   name: () => Promise<String>;
   project: <T = ProjectPromise>() => T;
-  userId: () => Promise<ID_Output>;
+  user: () => Promise<ID_Output>;
   startDate: () => Promise<DateTimeOutput>;
   endDate: () => Promise<DateTimeOutput>;
   skills: <T = FragmentableArray<ActivitySkill>>(args?: {
@@ -1358,20 +1650,71 @@ export interface ActivityNullablePromise
   }) => T;
 }
 
-export interface AggregateProject {
-  count: Int;
+export interface Project {
+  id: ID_Output;
+  name: String;
+  description: String;
+  manager: ID_Output;
+  startDate: DateTimeOutput;
+  endDate?: DateTimeOutput;
 }
 
-export interface AggregateProjectPromise
-  extends Promise<AggregateProject>,
-    Fragmentable {
-  count: () => Promise<Int>;
+export interface ProjectPromise extends Promise<Project>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  name: () => Promise<String>;
+  description: () => Promise<String>;
+  manager: () => Promise<ID_Output>;
+  startDate: () => Promise<DateTimeOutput>;
+  endDate: () => Promise<DateTimeOutput>;
+  activities: <T = FragmentableArray<Activity>>(args?: {
+    where?: ActivityWhereInput;
+    orderBy?: ActivityOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
 }
 
-export interface AggregateProjectSubscription
-  extends Promise<AsyncIterator<AggregateProject>>,
+export interface ProjectSubscription
+  extends Promise<AsyncIterator<Project>>,
     Fragmentable {
-  count: () => Promise<AsyncIterator<Int>>;
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  name: () => Promise<AsyncIterator<String>>;
+  description: () => Promise<AsyncIterator<String>>;
+  manager: () => Promise<AsyncIterator<ID_Output>>;
+  startDate: () => Promise<AsyncIterator<DateTimeOutput>>;
+  endDate: () => Promise<AsyncIterator<DateTimeOutput>>;
+  activities: <T = Promise<AsyncIterator<ActivitySubscription>>>(args?: {
+    where?: ActivityWhereInput;
+    orderBy?: ActivityOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+}
+
+export interface ProjectNullablePromise
+  extends Promise<Project | null>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  name: () => Promise<String>;
+  description: () => Promise<String>;
+  manager: () => Promise<ID_Output>;
+  startDate: () => Promise<DateTimeOutput>;
+  endDate: () => Promise<DateTimeOutput>;
+  activities: <T = FragmentableArray<Activity>>(args?: {
+    where?: ActivityWhereInput;
+    orderBy?: ActivityOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
 }
 
 export interface ActivitySubscriptionPayload {
@@ -1399,31 +1742,27 @@ export interface ActivitySubscriptionPayloadSubscription
   previousValues: <T = ActivityPreviousValuesSubscription>() => T;
 }
 
-export interface ProjectConnection {
-  pageInfo: PageInfo;
-  edges: ProjectEdge[];
+export interface ProjectEdge {
+  node: Project;
+  cursor: String;
 }
 
-export interface ProjectConnectionPromise
-  extends Promise<ProjectConnection>,
-    Fragmentable {
-  pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<ProjectEdge>>() => T;
-  aggregate: <T = AggregateProjectPromise>() => T;
+export interface ProjectEdgePromise extends Promise<ProjectEdge>, Fragmentable {
+  node: <T = ProjectPromise>() => T;
+  cursor: () => Promise<String>;
 }
 
-export interface ProjectConnectionSubscription
-  extends Promise<AsyncIterator<ProjectConnection>>,
+export interface ProjectEdgeSubscription
+  extends Promise<AsyncIterator<ProjectEdge>>,
     Fragmentable {
-  pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<ProjectEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateProjectSubscription>() => T;
+  node: <T = ProjectSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
 }
 
 export interface ActivityPreviousValues {
   id: ID_Output;
   name: String;
-  userId: ID_Output;
+  user: ID_Output;
   startDate: DateTimeOutput;
   endDate?: DateTimeOutput;
 }
@@ -1433,7 +1772,7 @@ export interface ActivityPreviousValuesPromise
     Fragmentable {
   id: () => Promise<ID_Output>;
   name: () => Promise<String>;
-  userId: () => Promise<ID_Output>;
+  user: () => Promise<ID_Output>;
   startDate: () => Promise<DateTimeOutput>;
   endDate: () => Promise<DateTimeOutput>;
 }
@@ -1443,60 +1782,76 @@ export interface ActivityPreviousValuesSubscription
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
   name: () => Promise<AsyncIterator<String>>;
-  userId: () => Promise<AsyncIterator<ID_Output>>;
+  user: () => Promise<AsyncIterator<ID_Output>>;
   startDate: () => Promise<AsyncIterator<DateTimeOutput>>;
   endDate: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
 
-export interface BatchPayload {
-  count: Long;
+export interface SkillPreviousValues {
+  id: ID_Output;
+  name: String;
+  createdAt: DateTimeOutput;
+  updatedAt: DateTimeOutput;
 }
 
-export interface BatchPayloadPromise
-  extends Promise<BatchPayload>,
+export interface SkillPreviousValuesPromise
+  extends Promise<SkillPreviousValues>,
     Fragmentable {
-  count: () => Promise<Long>;
+  id: () => Promise<ID_Output>;
+  name: () => Promise<String>;
+  createdAt: () => Promise<DateTimeOutput>;
+  updatedAt: () => Promise<DateTimeOutput>;
 }
 
-export interface BatchPayloadSubscription
-  extends Promise<AsyncIterator<BatchPayload>>,
+export interface SkillPreviousValuesSubscription
+  extends Promise<AsyncIterator<SkillPreviousValues>>,
     Fragmentable {
-  count: () => Promise<AsyncIterator<Long>>;
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  name: () => Promise<AsyncIterator<String>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
 
-export interface ActivityEdge {
-  node: Activity;
+export interface SkillSubscriptionPayload {
+  mutation: MutationType;
+  node: Skill;
+  updatedFields: String[];
+  previousValues: SkillPreviousValues;
+}
+
+export interface SkillSubscriptionPayloadPromise
+  extends Promise<SkillSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = SkillPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = SkillPreviousValuesPromise>() => T;
+}
+
+export interface SkillSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<SkillSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = SkillSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = SkillPreviousValuesSubscription>() => T;
+}
+
+export interface ProfileEdge {
+  node: Profile;
   cursor: String;
 }
 
-export interface ActivityEdgePromise
-  extends Promise<ActivityEdge>,
-    Fragmentable {
-  node: <T = ActivityPromise>() => T;
+export interface ProfileEdgePromise extends Promise<ProfileEdge>, Fragmentable {
+  node: <T = ProfilePromise>() => T;
   cursor: () => Promise<String>;
 }
 
-export interface ActivityEdgeSubscription
-  extends Promise<AsyncIterator<ActivityEdge>>,
+export interface ProfileEdgeSubscription
+  extends Promise<AsyncIterator<ProfileEdge>>,
     Fragmentable {
-  node: <T = ActivitySubscription>() => T;
+  node: <T = ProfileSubscription>() => T;
   cursor: () => Promise<AsyncIterator<String>>;
-}
-
-export interface AggregateProfile {
-  count: Int;
-}
-
-export interface AggregateProfilePromise
-  extends Promise<AggregateProfile>,
-    Fragmentable {
-  count: () => Promise<Int>;
-}
-
-export interface AggregateProfileSubscription
-  extends Promise<AsyncIterator<AggregateProfile>>,
-    Fragmentable {
-  count: () => Promise<AsyncIterator<Int>>;
 }
 
 export interface ActivitySkillSubscriptionPayload {
@@ -1524,25 +1879,29 @@ export interface ActivitySkillSubscriptionPayloadSubscription
   previousValues: <T = ActivitySkillPreviousValuesSubscription>() => T;
 }
 
-export interface ProfileConnection {
-  pageInfo: PageInfo;
-  edges: ProfileEdge[];
+export interface UserSkillSubscriptionPayload {
+  mutation: MutationType;
+  node: UserSkill;
+  updatedFields: String[];
+  previousValues: UserSkillPreviousValues;
 }
 
-export interface ProfileConnectionPromise
-  extends Promise<ProfileConnection>,
+export interface UserSkillSubscriptionPayloadPromise
+  extends Promise<UserSkillSubscriptionPayload>,
     Fragmentable {
-  pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<ProfileEdge>>() => T;
-  aggregate: <T = AggregateProfilePromise>() => T;
+  mutation: () => Promise<MutationType>;
+  node: <T = UserSkillPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = UserSkillPreviousValuesPromise>() => T;
 }
 
-export interface ProfileConnectionSubscription
-  extends Promise<AsyncIterator<ProfileConnection>>,
+export interface UserSkillSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<UserSkillSubscriptionPayload>>,
     Fragmentable {
-  pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<ProfileEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateProfileSubscription>() => T;
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = UserSkillSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = UserSkillPreviousValuesSubscription>() => T;
 }
 
 export interface ActivitySkillPreviousValues {
@@ -1564,179 +1923,178 @@ export interface ActivitySkillPreviousValuesSubscription
   level: () => Promise<AsyncIterator<Int>>;
 }
 
-export interface Profile {
+export interface ActivitySkill {
   id: ID_Output;
-  firstName: String;
-  lastName: String;
-  title?: String;
-  userId: ID_Output;
-  createdAt: DateTimeOutput;
-  updatedAt: DateTimeOutput;
-}
-
-export interface ProfilePromise extends Promise<Profile>, Fragmentable {
-  id: () => Promise<ID_Output>;
-  firstName: () => Promise<String>;
-  lastName: () => Promise<String>;
-  title: () => Promise<String>;
-  userId: () => Promise<ID_Output>;
-  createdAt: () => Promise<DateTimeOutput>;
-  updatedAt: () => Promise<DateTimeOutput>;
-}
-
-export interface ProfileSubscription
-  extends Promise<AsyncIterator<Profile>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  firstName: () => Promise<AsyncIterator<String>>;
-  lastName: () => Promise<AsyncIterator<String>>;
-  title: () => Promise<AsyncIterator<String>>;
-  userId: () => Promise<AsyncIterator<ID_Output>>;
-  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-}
-
-export interface ProfileNullablePromise
-  extends Promise<Profile | null>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  firstName: () => Promise<String>;
-  lastName: () => Promise<String>;
-  title: () => Promise<String>;
-  userId: () => Promise<ID_Output>;
-  createdAt: () => Promise<DateTimeOutput>;
-  updatedAt: () => Promise<DateTimeOutput>;
-}
-
-export interface OwnerSkillEdge {
-  node: OwnerSkill;
-  cursor: String;
-}
-
-export interface OwnerSkillEdgePromise
-  extends Promise<OwnerSkillEdge>,
-    Fragmentable {
-  node: <T = OwnerSkillPromise>() => T;
-  cursor: () => Promise<String>;
-}
-
-export interface OwnerSkillEdgeSubscription
-  extends Promise<AsyncIterator<OwnerSkillEdge>>,
-    Fragmentable {
-  node: <T = OwnerSkillSubscription>() => T;
-  cursor: () => Promise<AsyncIterator<String>>;
-}
-
-export interface OwnerSkill {
-  id: ID_Output;
-  userId: ID_Output;
   level: Int;
 }
 
-export interface OwnerSkillPromise extends Promise<OwnerSkill>, Fragmentable {
+export interface ActivitySkillPromise
+  extends Promise<ActivitySkill>,
+    Fragmentable {
   id: () => Promise<ID_Output>;
-  skill: <T = SkillPromise>() => T;
-  userId: () => Promise<ID_Output>;
   level: () => Promise<Int>;
+  skill: <T = SkillPromise>() => T;
+  owner: <T = ActivityPromise>() => T;
 }
 
-export interface OwnerSkillSubscription
-  extends Promise<AsyncIterator<OwnerSkill>>,
+export interface ActivitySkillSubscription
+  extends Promise<AsyncIterator<ActivitySkill>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
-  skill: <T = SkillSubscription>() => T;
-  userId: () => Promise<AsyncIterator<ID_Output>>;
   level: () => Promise<AsyncIterator<Int>>;
+  skill: <T = SkillSubscription>() => T;
+  owner: <T = ActivitySubscription>() => T;
 }
 
-export interface OwnerSkillNullablePromise
-  extends Promise<OwnerSkill | null>,
+export interface ActivitySkillNullablePromise
+  extends Promise<ActivitySkill | null>,
     Fragmentable {
   id: () => Promise<ID_Output>;
-  skill: <T = SkillPromise>() => T;
-  userId: () => Promise<ID_Output>;
   level: () => Promise<Int>;
+  skill: <T = SkillPromise>() => T;
+  owner: <T = ActivityPromise>() => T;
 }
 
-export interface OwnerSkillSubscriptionPayload {
+export interface PageInfo {
+  hasNextPage: Boolean;
+  hasPreviousPage: Boolean;
+  startCursor?: String;
+  endCursor?: String;
+}
+
+export interface PageInfoPromise extends Promise<PageInfo>, Fragmentable {
+  hasNextPage: () => Promise<Boolean>;
+  hasPreviousPage: () => Promise<Boolean>;
+  startCursor: () => Promise<String>;
+  endCursor: () => Promise<String>;
+}
+
+export interface PageInfoSubscription
+  extends Promise<AsyncIterator<PageInfo>>,
+    Fragmentable {
+  hasNextPage: () => Promise<AsyncIterator<Boolean>>;
+  hasPreviousPage: () => Promise<AsyncIterator<Boolean>>;
+  startCursor: () => Promise<AsyncIterator<String>>;
+  endCursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface SkillConnection {
+  pageInfo: PageInfo;
+  edges: SkillEdge[];
+}
+
+export interface SkillConnectionPromise
+  extends Promise<SkillConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<SkillEdge>>() => T;
+  aggregate: <T = AggregateSkillPromise>() => T;
+}
+
+export interface SkillConnectionSubscription
+  extends Promise<AsyncIterator<SkillConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<SkillEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateSkillSubscription>() => T;
+}
+
+export interface ProfileSubscriptionPayload {
   mutation: MutationType;
-  node: OwnerSkill;
+  node: Profile;
   updatedFields: String[];
-  previousValues: OwnerSkillPreviousValues;
+  previousValues: ProfilePreviousValues;
 }
 
-export interface OwnerSkillSubscriptionPayloadPromise
-  extends Promise<OwnerSkillSubscriptionPayload>,
+export interface ProfileSubscriptionPayloadPromise
+  extends Promise<ProfileSubscriptionPayload>,
     Fragmentable {
   mutation: () => Promise<MutationType>;
-  node: <T = OwnerSkillPromise>() => T;
+  node: <T = ProfilePromise>() => T;
   updatedFields: () => Promise<String[]>;
-  previousValues: <T = OwnerSkillPreviousValuesPromise>() => T;
+  previousValues: <T = ProfilePreviousValuesPromise>() => T;
 }
 
-export interface OwnerSkillSubscriptionPayloadSubscription
-  extends Promise<AsyncIterator<OwnerSkillSubscriptionPayload>>,
+export interface ProfileSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<ProfileSubscriptionPayload>>,
     Fragmentable {
   mutation: () => Promise<AsyncIterator<MutationType>>;
-  node: <T = OwnerSkillSubscription>() => T;
+  node: <T = ProfileSubscription>() => T;
   updatedFields: () => Promise<AsyncIterator<String[]>>;
-  previousValues: <T = OwnerSkillPreviousValuesSubscription>() => T;
+  previousValues: <T = ProfilePreviousValuesSubscription>() => T;
 }
 
-export interface SkillEdge {
-  node: Skill;
-  cursor: String;
+export interface ProjectConnection {
+  pageInfo: PageInfo;
+  edges: ProjectEdge[];
 }
 
-export interface SkillEdgePromise extends Promise<SkillEdge>, Fragmentable {
-  node: <T = SkillPromise>() => T;
-  cursor: () => Promise<String>;
-}
-
-export interface SkillEdgeSubscription
-  extends Promise<AsyncIterator<SkillEdge>>,
+export interface ProjectConnectionPromise
+  extends Promise<ProjectConnection>,
     Fragmentable {
-  node: <T = SkillSubscription>() => T;
-  cursor: () => Promise<AsyncIterator<String>>;
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<ProjectEdge>>() => T;
+  aggregate: <T = AggregateProjectPromise>() => T;
 }
 
-export interface OwnerSkillPreviousValues {
+export interface ProjectConnectionSubscription
+  extends Promise<AsyncIterator<ProjectConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<ProjectEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateProjectSubscription>() => T;
+}
+
+export interface ProfileConnection {
+  pageInfo: PageInfo;
+  edges: ProfileEdge[];
+}
+
+export interface ProfileConnectionPromise
+  extends Promise<ProfileConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<ProfileEdge>>() => T;
+  aggregate: <T = AggregateProfilePromise>() => T;
+}
+
+export interface ProfileConnectionSubscription
+  extends Promise<AsyncIterator<ProfileConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<ProfileEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateProfileSubscription>() => T;
+}
+
+export interface ProjectPreviousValues {
   id: ID_Output;
-  userId: ID_Output;
-  level: Int;
+  name: String;
+  description: String;
+  manager: ID_Output;
+  startDate: DateTimeOutput;
+  endDate?: DateTimeOutput;
 }
 
-export interface OwnerSkillPreviousValuesPromise
-  extends Promise<OwnerSkillPreviousValues>,
+export interface ProjectPreviousValuesPromise
+  extends Promise<ProjectPreviousValues>,
     Fragmentable {
   id: () => Promise<ID_Output>;
-  userId: () => Promise<ID_Output>;
-  level: () => Promise<Int>;
+  name: () => Promise<String>;
+  description: () => Promise<String>;
+  manager: () => Promise<ID_Output>;
+  startDate: () => Promise<DateTimeOutput>;
+  endDate: () => Promise<DateTimeOutput>;
 }
 
-export interface OwnerSkillPreviousValuesSubscription
-  extends Promise<AsyncIterator<OwnerSkillPreviousValues>>,
+export interface ProjectPreviousValuesSubscription
+  extends Promise<AsyncIterator<ProjectPreviousValues>>,
     Fragmentable {
   id: () => Promise<AsyncIterator<ID_Output>>;
-  userId: () => Promise<AsyncIterator<ID_Output>>;
-  level: () => Promise<AsyncIterator<Int>>;
-}
-
-export interface ProjectEdge {
-  node: Project;
-  cursor: String;
-}
-
-export interface ProjectEdgePromise extends Promise<ProjectEdge>, Fragmentable {
-  node: <T = ProjectPromise>() => T;
-  cursor: () => Promise<String>;
-}
-
-export interface ProjectEdgeSubscription
-  extends Promise<AsyncIterator<ProjectEdge>>,
-    Fragmentable {
-  node: <T = ProjectSubscription>() => T;
-  cursor: () => Promise<AsyncIterator<String>>;
+  name: () => Promise<AsyncIterator<String>>;
+  description: () => Promise<AsyncIterator<String>>;
+  manager: () => Promise<AsyncIterator<ID_Output>>;
+  startDate: () => Promise<AsyncIterator<DateTimeOutput>>;
+  endDate: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
 
 export interface ProjectSubscriptionPayload {
@@ -1785,35 +2143,12 @@ export interface ActivityConnectionSubscription
   aggregate: <T = AggregateActivitySubscription>() => T;
 }
 
-export interface PageInfo {
-  hasNextPage: Boolean;
-  hasPreviousPage: Boolean;
-  startCursor?: String;
-  endCursor?: String;
-}
-
-export interface PageInfoPromise extends Promise<PageInfo>, Fragmentable {
-  hasNextPage: () => Promise<Boolean>;
-  hasPreviousPage: () => Promise<Boolean>;
-  startCursor: () => Promise<String>;
-  endCursor: () => Promise<String>;
-}
-
-export interface PageInfoSubscription
-  extends Promise<AsyncIterator<PageInfo>>,
-    Fragmentable {
-  hasNextPage: () => Promise<AsyncIterator<Boolean>>;
-  hasPreviousPage: () => Promise<AsyncIterator<Boolean>>;
-  startCursor: () => Promise<AsyncIterator<String>>;
-  endCursor: () => Promise<AsyncIterator<String>>;
-}
-
 export interface ProfilePreviousValues {
   id: ID_Output;
   firstName: String;
   lastName: String;
   title?: String;
-  userId: ID_Output;
+  user: ID_Output;
   createdAt: DateTimeOutput;
   updatedAt: DateTimeOutput;
 }
@@ -1825,7 +2160,7 @@ export interface ProfilePreviousValuesPromise
   firstName: () => Promise<String>;
   lastName: () => Promise<String>;
   title: () => Promise<String>;
-  userId: () => Promise<ID_Output>;
+  user: () => Promise<ID_Output>;
   createdAt: () => Promise<DateTimeOutput>;
   updatedAt: () => Promise<DateTimeOutput>;
 }
@@ -1837,192 +2172,95 @@ export interface ProfilePreviousValuesSubscription
   firstName: () => Promise<AsyncIterator<String>>;
   lastName: () => Promise<AsyncIterator<String>>;
   title: () => Promise<AsyncIterator<String>>;
-  userId: () => Promise<AsyncIterator<ID_Output>>;
+  user: () => Promise<AsyncIterator<ID_Output>>;
   createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
   updatedAt: () => Promise<AsyncIterator<DateTimeOutput>>;
 }
 
-export interface ProfileSubscriptionPayload {
-  mutation: MutationType;
-  node: Profile;
-  updatedFields: String[];
-  previousValues: ProfilePreviousValues;
-}
-
-export interface ProfileSubscriptionPayloadPromise
-  extends Promise<ProfileSubscriptionPayload>,
-    Fragmentable {
-  mutation: () => Promise<MutationType>;
-  node: <T = ProfilePromise>() => T;
-  updatedFields: () => Promise<String[]>;
-  previousValues: <T = ProfilePreviousValuesPromise>() => T;
-}
-
-export interface ProfileSubscriptionPayloadSubscription
-  extends Promise<AsyncIterator<ProfileSubscriptionPayload>>,
-    Fragmentable {
-  mutation: () => Promise<AsyncIterator<MutationType>>;
-  node: <T = ProfileSubscription>() => T;
-  updatedFields: () => Promise<AsyncIterator<String[]>>;
-  previousValues: <T = ProfilePreviousValuesSubscription>() => T;
-}
-
-export interface ProfileEdge {
-  node: Profile;
+export interface UserSkillEdge {
+  node: UserSkill;
   cursor: String;
 }
 
-export interface ProfileEdgePromise extends Promise<ProfileEdge>, Fragmentable {
-  node: <T = ProfilePromise>() => T;
+export interface UserSkillEdgePromise
+  extends Promise<UserSkillEdge>,
+    Fragmentable {
+  node: <T = UserSkillPromise>() => T;
   cursor: () => Promise<String>;
 }
 
-export interface ProfileEdgeSubscription
-  extends Promise<AsyncIterator<ProfileEdge>>,
+export interface UserSkillEdgeSubscription
+  extends Promise<AsyncIterator<UserSkillEdge>>,
     Fragmentable {
-  node: <T = ProfileSubscription>() => T;
+  node: <T = UserSkillSubscription>() => T;
   cursor: () => Promise<AsyncIterator<String>>;
 }
 
-export interface Project {
-  id: ID_Output;
-  name: String;
-  description: String;
-  managerId: ID_Output;
-  startDate: DateTimeOutput;
-  endDate?: DateTimeOutput;
-}
-
-export interface ProjectPromise extends Promise<Project>, Fragmentable {
-  id: () => Promise<ID_Output>;
-  name: () => Promise<String>;
-  description: () => Promise<String>;
-  managerId: () => Promise<ID_Output>;
-  startDate: () => Promise<DateTimeOutput>;
-  endDate: () => Promise<DateTimeOutput>;
-}
-
-export interface ProjectSubscription
-  extends Promise<AsyncIterator<Project>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  name: () => Promise<AsyncIterator<String>>;
-  description: () => Promise<AsyncIterator<String>>;
-  managerId: () => Promise<AsyncIterator<ID_Output>>;
-  startDate: () => Promise<AsyncIterator<DateTimeOutput>>;
-  endDate: () => Promise<AsyncIterator<DateTimeOutput>>;
-}
-
-export interface ProjectNullablePromise
-  extends Promise<Project | null>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  name: () => Promise<String>;
-  description: () => Promise<String>;
-  managerId: () => Promise<ID_Output>;
-  startDate: () => Promise<DateTimeOutput>;
-  endDate: () => Promise<DateTimeOutput>;
-}
-
-export interface SkillSubscriptionPayload {
-  mutation: MutationType;
-  node: Skill;
-  updatedFields: String[];
-  previousValues: SkillPreviousValues;
-}
-
-export interface SkillSubscriptionPayloadPromise
-  extends Promise<SkillSubscriptionPayload>,
-    Fragmentable {
-  mutation: () => Promise<MutationType>;
-  node: <T = SkillPromise>() => T;
-  updatedFields: () => Promise<String[]>;
-  previousValues: <T = SkillPreviousValuesPromise>() => T;
-}
-
-export interface SkillSubscriptionPayloadSubscription
-  extends Promise<AsyncIterator<SkillSubscriptionPayload>>,
-    Fragmentable {
-  mutation: () => Promise<AsyncIterator<MutationType>>;
-  node: <T = SkillSubscription>() => T;
-  updatedFields: () => Promise<AsyncIterator<String[]>>;
-  previousValues: <T = SkillPreviousValuesSubscription>() => T;
-}
-
-export interface ProjectPreviousValues {
-  id: ID_Output;
-  name: String;
-  description: String;
-  managerId: ID_Output;
-  startDate: DateTimeOutput;
-  endDate?: DateTimeOutput;
-}
-
-export interface ProjectPreviousValuesPromise
-  extends Promise<ProjectPreviousValues>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  name: () => Promise<String>;
-  description: () => Promise<String>;
-  managerId: () => Promise<ID_Output>;
-  startDate: () => Promise<DateTimeOutput>;
-  endDate: () => Promise<DateTimeOutput>;
-}
-
-export interface ProjectPreviousValuesSubscription
-  extends Promise<AsyncIterator<ProjectPreviousValues>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  name: () => Promise<AsyncIterator<String>>;
-  description: () => Promise<AsyncIterator<String>>;
-  managerId: () => Promise<AsyncIterator<ID_Output>>;
-  startDate: () => Promise<AsyncIterator<DateTimeOutput>>;
-  endDate: () => Promise<AsyncIterator<DateTimeOutput>>;
-}
-
-export interface OwnerSkillConnection {
-  pageInfo: PageInfo;
-  edges: OwnerSkillEdge[];
-}
-
-export interface OwnerSkillConnectionPromise
-  extends Promise<OwnerSkillConnection>,
-    Fragmentable {
-  pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<OwnerSkillEdge>>() => T;
-  aggregate: <T = AggregateOwnerSkillPromise>() => T;
-}
-
-export interface OwnerSkillConnectionSubscription
-  extends Promise<AsyncIterator<OwnerSkillConnection>>,
-    Fragmentable {
-  pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<OwnerSkillEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateOwnerSkillSubscription>() => T;
-}
-
-export interface AggregateOwnerSkill {
+export interface AggregateProfile {
   count: Int;
 }
 
-export interface AggregateOwnerSkillPromise
-  extends Promise<AggregateOwnerSkill>,
+export interface AggregateProfilePromise
+  extends Promise<AggregateProfile>,
     Fragmentable {
   count: () => Promise<Int>;
 }
 
-export interface AggregateOwnerSkillSubscription
-  extends Promise<AsyncIterator<AggregateOwnerSkill>>,
+export interface AggregateProfileSubscription
+  extends Promise<AsyncIterator<AggregateProfile>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface AggregateProject {
+  count: Int;
+}
+
+export interface AggregateProjectPromise
+  extends Promise<AggregateProject>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateProjectSubscription
+  extends Promise<AsyncIterator<AggregateProject>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface AggregateSkill {
+  count: Int;
+}
+
+export interface AggregateSkillPromise
+  extends Promise<AggregateSkill>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateSkillSubscription
+  extends Promise<AsyncIterator<AggregateSkill>>,
     Fragmentable {
   count: () => Promise<AsyncIterator<Int>>;
 }
 
 /*
-The `Boolean` scalar type represents `true` or `false`.
+The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1.
 */
-export type Boolean = boolean;
+export type Int = number;
 
 export type Long = string;
+
+/*
+The `ID` scalar type represents a unique identifier, often used to refetch an object or as key for a cache. The ID type appears in a JSON response as a String; however, it is not intended to be human-readable. When expected as an input type, any string (such as `"4"`) or integer (such as `4`) input value will be accepted as an ID.
+*/
+export type ID_Input = string | number;
+export type ID_Output = string;
+
+/*
+The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.
+*/
+export type String = string;
 
 /*
 DateTime scalar input type, allowing Date
@@ -2035,20 +2273,9 @@ DateTime scalar output type, which is always a string
 export type DateTimeOutput = string;
 
 /*
-The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1.
+The `Boolean` scalar type represents `true` or `false`.
 */
-export type Int = number;
-
-/*
-The `ID` scalar type represents a unique identifier, often used to refetch an object or as key for a cache. The ID type appears in a JSON response as a String; however, it is not intended to be human-readable. When expected as an input type, any string (such as `"4"`) or integer (such as `4`) input value will be accepted as an ID.
-*/
-export type ID_Input = string | number;
-export type ID_Output = string;
-
-/*
-The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.
-*/
-export type String = string;
+export type Boolean = boolean;
 
 /**
  * Model Metadata
@@ -2068,7 +2295,7 @@ export const models: Model[] = [
     embedded: false
   },
   {
-    name: "OwnerSkill",
+    name: "UserSkill",
     embedded: false
   },
   {

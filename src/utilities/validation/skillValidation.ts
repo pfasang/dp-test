@@ -12,31 +12,21 @@ export const skillTestOutput = Joi.object({
 });
 
 export const ownerSkillCreate = Joi.object({
-    skillId: Joi.string().required(),
-    userId: Joi.string().required(),
-    level: Joi.number().min(1).max(10).integer().required(),
-});
-
-export const activitySkillCreate = Joi.object({
-    skillId: Joi.string().required(),
-    activityId: Joi.string().required(),
+    skill: Joi.string().required(),
+    owner: Joi.string().required(),
     level: Joi.number().min(1).max(10).integer().required(),
 });
 
 export const ownerSkillOutput = Joi.object({
     id: Joi.string().required(),
-    skillId: Joi.string().required(),
-    userId: Joi.string().required(),
-    createdAt: Joi.date().iso(),
-    updatedAt: Joi.date().iso()
+    skill: Joi.string().required(),
+    owner: Joi.string().required(),
 });
 
 export const activitySkillOutput = Joi.object({
     id: Joi.string().required(),
-    skillId: Joi.string().required(),
-    activityId: Joi.string().required(),
-    createdAt: Joi.date().iso(),
-    updatedAt: Joi.date().iso()
+    skill: Joi.string().required(),
+    activity: Joi.string().required(),
 });
 
 export const skillListTestOutput = Joi.array().items(skillTestOutput);
