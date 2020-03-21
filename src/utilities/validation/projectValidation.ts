@@ -20,7 +20,11 @@ export const projectTestOutput = Joi.object({
     id: Joi.string().required(),
     name: Joi.string().min(3).max(30).required(),
     description: Joi.string().min(3).required(),
-    manager: Joi.string().required(),
+    manager: {
+        firstName: Joi.string().min(3).max(30).required(),
+        lastName: Joi.string().min(3).max(30).required(),
+        user: Joi.string().required(),
+    },
     startDate: Joi.date().iso().required(),
     endDate: Joi.date().iso().allow(null)
 });

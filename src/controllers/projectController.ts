@@ -33,7 +33,13 @@ export const createProject = async (req, res) => {
     }
 
     try {
-        const entity: Project = await prisma.createProject(req.body);
+        let {manager, ...data} = req.body;
+        const entity: Project = await prisma.createProject({
+            ...data,
+            manager: {
+                connect: {user: manager}
+            }
+        });
         res.status(201).json(entity);
     } catch (e) {
         return res.status(400).send({error: e});
@@ -49,7 +55,20 @@ export const updateProject = async (req, res) => {
         return res.status(400).send({error: validatedBody.error.details});
     }
     try {
-        const entity: Project = await prisma.updateProject({data: req.body, where: {id: id}});
+        let {manager, ...data} = req.body;
+        if (!manager) {
+            let temp = await prisma.project({id: id}).manager();
+            manager = temp.user;
+        }
+        const entity: Project = await prisma.updateProject({
+            data: {
+                ...data,
+                manager: {
+                    connect: {user: manager}
+                }
+            },
+            where: {id: id}
+        });
         res.status(200).json(entity);
     } catch (e) {
         return res.status(404).send({error: e});

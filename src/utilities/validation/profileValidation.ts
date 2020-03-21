@@ -11,7 +11,7 @@ export const profileTestOutput = Joi.object({
     firstName: Joi.string().min(3).max(30).required(),
     lastName: Joi.string().min(3).max(30).required(),
     title: Joi.string(),
-    user: Joi.number().integer().required(),
+    user: Joi.string().required(),
     skills: Joi.array().items({
         level: Joi.number().min(1).max(10).integer().required(),
         skill: {

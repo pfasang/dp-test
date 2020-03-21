@@ -2,7 +2,7 @@ type Project {
   id: ID! @id
   name: String! @unique
   description: String!
-  manager: ID!
+  manager: Profile!
   startDate: DateTime!
   endDate: DateTime
   activities: [Activity!]! @relation(name: "ActivityProject", onDelete: CASCADE)

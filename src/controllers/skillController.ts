@@ -16,6 +16,17 @@ export const getSkills = async (req, res) => {
     res.status(200).send(skills);
 };
 
+export const getUserSkills = async (req, res) => {
+    //get skill owner ID from url
+    const ownerID = req.params.owner;
+    //get all skills
+    const skills: UserSkill[] = await prisma.userSkills({where: {owner: ownerID}});
+    if (!skills) {
+        return res.status(404).send({error: "Skills not found."});
+    }
+    res.status(200).send(skills);
+};
+
 export const createSkill = async (req, res) => {
     //Validate user input
     const validatedBody = skillInputValidation.validate(req.body);
@@ -59,19 +70,18 @@ export const assignSkill = async (req, res) => {
     }
 
     try {
+        const {skill, owner, ...data} = req.body;
         if (req.body.owner) {
-            let {skill, ...data} = req.body;
             await prisma.createUserSkill({
                 ...data,
                 skill: {
-                    connect: {
-                        id: skill ? skill : ""
-                    }
+                    connect: {id: skill}
+                },
+                owner: {
+                    connect: {user: owner}
                 }
             });
         } else {
-            let {skill, owner, ...data} = req.body;
-            console.log(skill, owner);
             await prisma.createActivitySkill({
                 ...data,
                 skill: {
@@ -84,7 +94,6 @@ export const assignSkill = async (req, res) => {
         }
         return res.status(201).json();
     } catch (e) {
-        console.log(e);
         return res.status(400).send({error: e});
     }
 };

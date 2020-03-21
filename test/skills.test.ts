@@ -206,5 +206,5 @@ describe('Skills tests', () => {
             });
         });
     });
-
+    // TODO get UserSkills tests
 });

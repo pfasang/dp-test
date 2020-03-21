@@ -150,7 +150,7 @@ describe('Project tests', () => {
         describe("Correct DELETE", () => {
             before(async () => {
                 inputBody = {
-                    name: 'toRemoveActivity',
+                    name: 'toRemoveProject',
                     description: 'Euismod Magna Pellentesque Venenatis Ullamcorper',
                     manager: '1',
                     startDate: '2019-05-18',
@@ -165,7 +165,7 @@ describe('Project tests', () => {
 
             it("returns 204", async () => {
                 const res = await chai.request(app)
-                    .del(`${baseUrl}/1`);
+                    .del(`${baseUrl}/${projectID}`);
                 expect(res.status).to.eq(204);
             });
         });

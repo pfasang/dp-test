@@ -22,7 +22,11 @@ fragment DetailProject on Project {
   description
   startDate
   endDate
-  manager
+  manager {
+    user
+    firstName
+    lastName
+  }
   activities {
     id
     name

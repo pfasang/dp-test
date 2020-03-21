@@ -617,6 +617,11 @@ input ProfileCreateInput {
   skills: UserSkillCreateManyWithoutOwnerInput
 }
 
+input ProfileCreateOneInput {
+  create: ProfileCreateInput
+  connect: ProfileWhereUniqueInput
+}
+
 input ProfileCreateOneWithoutActivitiesInput {
   create: ProfileCreateWithoutActivitiesInput
   connect: ProfileWhereUniqueInput
@@ -690,6 +695,14 @@ input ProfileSubscriptionWhereInput {
   NOT: [ProfileSubscriptionWhereInput!]
 }
 
+input ProfileUpdateDataInput {
+  firstName: String
+  lastName: String
+  title: String
+  activities: ActivityUpdateManyWithoutUserInput
+  skills: UserSkillUpdateManyWithoutOwnerInput
+}
+
 input ProfileUpdateInput {
   firstName: String
   lastName: String
@@ -702,6 +715,13 @@ input ProfileUpdateManyMutationInput {
   firstName: String
   lastName: String
   title: String
+}
+
+input ProfileUpdateOneRequiredInput {
+  create: ProfileCreateInput
+  update: ProfileUpdateDataInput
+  upsert: ProfileUpsertNestedInput
+  connect: ProfileWhereUniqueInput
 }
 
 input ProfileUpdateOneRequiredWithoutActivitiesInput {
@@ -730,6 +750,11 @@ input ProfileUpdateWithoutSkillsDataInput {
   lastName: String
   title: String
   activities: ActivityUpdateManyWithoutUserInput
+}
+
+input ProfileUpsertNestedInput {
+  update: ProfileUpdateDataInput!
+  create: ProfileCreateInput!
 }
 
 input ProfileUpsertWithoutActivitiesInput {
@@ -834,7 +859,7 @@ type Project {
   id: ID!
   name: String!
   description: String!
-  manager: ID!
+  manager: Profile!
   startDate: DateTime!
   endDate: DateTime
   activities(where: ActivityWhereInput, orderBy: ActivityOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Activity!]
@@ -850,7 +875,7 @@ input ProjectCreateInput {
   id: ID
   name: String!
   description: String!
-  manager: ID!
+  manager: ProfileCreateOneInput!
   startDate: DateTime!
   endDate: DateTime
   activities: ActivityCreateManyWithoutProjectInput
@@ -865,7 +890,7 @@ input ProjectCreateWithoutActivitiesInput {
   id: ID
   name: String!
   description: String!
-  manager: ID!
+  manager: ProfileCreateOneInput!
   startDate: DateTime!
   endDate: DateTime
 }
@@ -882,8 +907,6 @@ enum ProjectOrderByInput {
   name_DESC
   description_ASC
   description_DESC
-  manager_ASC
-  manager_DESC
   startDate_ASC
   startDate_DESC
   endDate_ASC
@@ -894,7 +917,6 @@ type ProjectPreviousValues {
   id: ID!
   name: String!
   description: String!
-  manager: ID!
   startDate: DateTime!
   endDate: DateTime
 }
@@ -920,7 +942,7 @@ input ProjectSubscriptionWhereInput {
 input ProjectUpdateInput {
   name: String
   description: String
-  manager: ID
+  manager: ProfileUpdateOneRequiredInput
   startDate: DateTime
   endDate: DateTime
   activities: ActivityUpdateManyWithoutProjectInput
@@ -929,7 +951,6 @@ input ProjectUpdateInput {
 input ProjectUpdateManyMutationInput {
   name: String
   description: String
-  manager: ID
   startDate: DateTime
   endDate: DateTime
 }
@@ -944,7 +965,7 @@ input ProjectUpdateOneRequiredWithoutActivitiesInput {
 input ProjectUpdateWithoutActivitiesDataInput {
   name: String
   description: String
-  manager: ID
+  manager: ProfileUpdateOneRequiredInput
   startDate: DateTime
   endDate: DateTime
 }
@@ -997,20 +1018,7 @@ input ProjectWhereInput {
   description_not_starts_with: String
   description_ends_with: String
   description_not_ends_with: String
-  manager: ID
-  manager_not: ID
-  manager_in: [ID!]
-  manager_not_in: [ID!]
-  manager_lt: ID
-  manager_lte: ID
-  manager_gt: ID
-  manager_gte: ID
-  manager_contains: ID
-  manager_not_contains: ID
-  manager_starts_with: ID
-  manager_not_starts_with: ID
-  manager_ends_with: ID
-  manager_not_ends_with: ID
+  manager: ProfileWhereInput
   startDate: DateTime
   startDate_not: DateTime
   startDate_in: [DateTime!]
