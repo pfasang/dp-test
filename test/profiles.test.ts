@@ -172,3 +172,5 @@ describe('Profile tests', () => {
         });
     });
 });
+
+// TODO getUserProfile

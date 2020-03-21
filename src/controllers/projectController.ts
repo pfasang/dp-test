@@ -1,5 +1,6 @@
 import {Project, prisma} from "../generated/prisma-client";
 import {projectInputValidation, projectUpdateInputValidation} from "../utilities/validation/projectValidation";
+import {projectFragment} from "../database/fragments";
 
 const Joi = require('@hapi/joi');
 
@@ -11,6 +12,17 @@ export const getProjects = async (req, res) => {
         return res.status(404).send({error: "Projects not found."});
     }
     res.status(200).send(projects);
+};
+
+export const getProject = async (req, res) => {
+    //get user id number from url
+    const entityID = req.params.id;
+
+    const project: Project = await prisma.project({id: entityID}).$fragment(projectFragment);
+    if (!project) {
+        return res.status(404).send({error: "User Project not found."});
+    }
+    res.status(200).send(project);
 };
 
 export const createProject = async (req, res) => {
