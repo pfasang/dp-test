@@ -1,6 +1,7 @@
 import {prisma, Profile} from "../generated/prisma-client";
 import {userRole} from "../utilities/enums";
 import {profileCreateInputValidation, profileUpdateInputValidation} from "../utilities/validation/profileValidation";
+import {profileFragment} from "../database/fragments";
 
 const Joi = require('@hapi/joi');
 
@@ -9,7 +10,7 @@ export const getUserProfile = async (req, res) => {
     //get user id number from url
     const userID = req.params.user;
     //get user profile with given ID
-    const userProfile: Profile = await prisma.profile({user: userID});
+    const userProfile: Profile = await prisma.profile({user: userID}).$fragment(profileFragment);
     if (!userProfile) {
         return res.status(404).send({error: "User Profile not found."});
     }
@@ -30,7 +31,7 @@ export const createProfile = async (req, res) => {
     }
     req.body.user = userID;
     try {
-        const newProfile: Profile = await prisma.createProfile(req.body);
+        const newProfile: Profile = await prisma.createProfile(req.body).$fragment(profileFragment);
         res.status(201).json(newProfile);
     } catch (e) {
         return res.status(404).send({error: e});
@@ -46,7 +47,7 @@ export const updateProfile = async (req, res) => {
         return res.status(400).send({error: validatedBody.error.details});
     }
     try {
-        const profile: Profile = await prisma.updateProfile({data: req.body, where: {user: userID}});
+        const profile: Profile = await prisma.updateProfile({data: req.body, where: {user: userID}}).$fragment(profileFragment);
         res.status(200).json(profile);
     } catch (e) {
         return res.status(404).send({error: e});

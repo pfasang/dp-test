@@ -26,7 +26,11 @@ fragment DetailProject on Project {
   activities {
     id
     name
-    user
+    user {
+      user
+      firstName
+      lastName
+    }
     startDate
     endDate
     skills {
@@ -38,4 +42,34 @@ fragment DetailProject on Project {
   }
 }`;
 
+export const profileFragment = `
+fragment Profile on Profile {
+  firstName
+  lastName
+  user
+  title
+  skills {
+    level
+    skill {
+      name
+    }
+  }
+  activities {
+    id
+    name
+    startDate
+    endDate
+    project {
+      name
+    }
+    skills {
+      level
+      skill {
+        name
+      }
+    }
+  }
+  createdAt
+  updatedAt
+}`;
 // TODO profile fragment

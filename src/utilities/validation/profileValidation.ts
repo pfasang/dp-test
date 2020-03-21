@@ -1,4 +1,5 @@
 import * as Joi from '@hapi/joi'
+import {activityOutput} from "./activityValidation";
 
 export const profileCreateInputValidation = Joi.object({
     firstName: Joi.string().min(3).max(30).required(),
@@ -7,11 +8,17 @@ export const profileCreateInputValidation = Joi.object({
 });
 
 export const profileTestOutput = Joi.object({
-    id: Joi.string().required(),
     firstName: Joi.string().min(3).max(30).required(),
     lastName: Joi.string().min(3).max(30).required(),
     title: Joi.string(),
     user: Joi.number().integer().required(),
+    skills: Joi.array().items({
+        level: Joi.number().min(1).max(10).integer().required(),
+        skill: {
+            name: Joi.string().min(3).max(30).required(),
+        }
+    }),
+    activities: Joi.array().items(activityOutput),
     createdAt: Joi.date().iso(),
     updatedAt: Joi.date().iso()
 });

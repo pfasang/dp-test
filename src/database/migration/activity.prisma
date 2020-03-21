@@ -2,7 +2,7 @@ type Activity {
   id: ID! @id
   name: String!
   project: Project! @relation(link: INLINE, name: "ActivityProject")
-  user: ID!
+  user: Profile! @relation(link: INLINE, name: "ActivityProfile")
   startDate: DateTime!
   endDate: DateTime
   skills: [ActivitySkill] @relation(name: "ActivitySkill", onDelete: CASCADE)

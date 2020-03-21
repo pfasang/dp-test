@@ -5,7 +5,9 @@ const activities = [
         project: {
             connect: {id: '1'}
         },
-        user: '1',
+        user: {
+            connect: {user: '1'}
+        },
         startDate: "2015-11-22",
         endDate: "2015-12-20",
     },
@@ -15,7 +17,9 @@ const activities = [
         project: {
             connect: {id: '6'}
         },
-        user: '2',
+        user: {
+            connect: {user: '2'}
+        },
         startDate: "2018-01-07",
     },
     {
@@ -24,7 +28,9 @@ const activities = [
         project: {
             connect: {id: '1'}
         },
-        user: '5',
+        user: {
+            connect: {user: '5'}
+        },
         startDate: "2020-02-15",
         endDate: "2020-03-02",
     },
@@ -34,7 +40,9 @@ const activities = [
         project: {
             connect: {id: '3'}
         },
-        user: '4',
+        user: {
+            connect: {user: '4'}
+        },
         startDate: "2019-09-27",
     },
     {
@@ -43,7 +51,9 @@ const activities = [
         project: {
             connect: {id: '6'}
         },
-        user: '2',
+        user: {
+            connect: {user: '2'}
+        },
         startDate: "2020-01-05",
     },
     {
@@ -52,7 +62,9 @@ const activities = [
         project: {
             connect: {id: '2'}
         },
-        user: '3',
+        user: {
+            connect: {user: '3'}
+        },
         startDate: "2017-11-22",
         endDate: "2019-07-16",
     },

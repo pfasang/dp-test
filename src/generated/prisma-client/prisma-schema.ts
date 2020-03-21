@@ -6,7 +6,7 @@ export const typeDefs = /* GraphQL */ `type Activity {
   id: ID!
   name: String!
   project: Project!
-  user: ID!
+  user: Profile!
   startDate: DateTime!
   endDate: DateTime
   skills(where: ActivitySkillWhereInput, orderBy: ActivitySkillOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [ActivitySkill!]
@@ -22,7 +22,7 @@ input ActivityCreateInput {
   id: ID
   name: String!
   project: ProjectCreateOneWithoutActivitiesInput!
-  user: ID!
+  user: ProfileCreateOneWithoutActivitiesInput!
   startDate: DateTime!
   endDate: DateTime
   skills: ActivitySkillCreateManyWithoutOwnerInput
@@ -30,6 +30,11 @@ input ActivityCreateInput {
 
 input ActivityCreateManyWithoutProjectInput {
   create: [ActivityCreateWithoutProjectInput!]
+  connect: [ActivityWhereUniqueInput!]
+}
+
+input ActivityCreateManyWithoutUserInput {
+  create: [ActivityCreateWithoutUserInput!]
   connect: [ActivityWhereUniqueInput!]
 }
 
@@ -41,7 +46,7 @@ input ActivityCreateOneWithoutSkillsInput {
 input ActivityCreateWithoutProjectInput {
   id: ID
   name: String!
-  user: ID!
+  user: ProfileCreateOneWithoutActivitiesInput!
   startDate: DateTime!
   endDate: DateTime
   skills: ActivitySkillCreateManyWithoutOwnerInput
@@ -51,9 +56,18 @@ input ActivityCreateWithoutSkillsInput {
   id: ID
   name: String!
   project: ProjectCreateOneWithoutActivitiesInput!
-  user: ID!
+  user: ProfileCreateOneWithoutActivitiesInput!
   startDate: DateTime!
   endDate: DateTime
+}
+
+input ActivityCreateWithoutUserInput {
+  id: ID
+  name: String!
+  project: ProjectCreateOneWithoutActivitiesInput!
+  startDate: DateTime!
+  endDate: DateTime
+  skills: ActivitySkillCreateManyWithoutOwnerInput
 }
 
 type ActivityEdge {
@@ -66,8 +80,6 @@ enum ActivityOrderByInput {
   id_DESC
   name_ASC
   name_DESC
-  user_ASC
-  user_DESC
   startDate_ASC
   startDate_DESC
   endDate_ASC
@@ -77,7 +89,6 @@ enum ActivityOrderByInput {
 type ActivityPreviousValues {
   id: ID!
   name: String!
-  user: ID!
   startDate: DateTime!
   endDate: DateTime
 }
@@ -111,20 +122,6 @@ input ActivityScalarWhereInput {
   name_not_starts_with: String
   name_ends_with: String
   name_not_ends_with: String
-  user: ID
-  user_not: ID
-  user_in: [ID!]
-  user_not_in: [ID!]
-  user_lt: ID
-  user_lte: ID
-  user_gt: ID
-  user_gte: ID
-  user_contains: ID
-  user_not_contains: ID
-  user_starts_with: ID
-  user_not_starts_with: ID
-  user_ends_with: ID
-  user_not_ends_with: ID
   startDate: DateTime
   startDate_not: DateTime
   startDate_in: [DateTime!]
@@ -342,7 +339,7 @@ input ActivitySubscriptionWhereInput {
 input ActivityUpdateInput {
   name: String
   project: ProjectUpdateOneRequiredWithoutActivitiesInput
-  user: ID
+  user: ProfileUpdateOneRequiredWithoutActivitiesInput
   startDate: DateTime
   endDate: DateTime
   skills: ActivitySkillUpdateManyWithoutOwnerInput
@@ -350,14 +347,12 @@ input ActivityUpdateInput {
 
 input ActivityUpdateManyDataInput {
   name: String
-  user: ID
   startDate: DateTime
   endDate: DateTime
 }
 
 input ActivityUpdateManyMutationInput {
   name: String
-  user: ID
   startDate: DateTime
   endDate: DateTime
 }
@@ -370,6 +365,18 @@ input ActivityUpdateManyWithoutProjectInput {
   disconnect: [ActivityWhereUniqueInput!]
   update: [ActivityUpdateWithWhereUniqueWithoutProjectInput!]
   upsert: [ActivityUpsertWithWhereUniqueWithoutProjectInput!]
+  deleteMany: [ActivityScalarWhereInput!]
+  updateMany: [ActivityUpdateManyWithWhereNestedInput!]
+}
+
+input ActivityUpdateManyWithoutUserInput {
+  create: [ActivityCreateWithoutUserInput!]
+  delete: [ActivityWhereUniqueInput!]
+  connect: [ActivityWhereUniqueInput!]
+  set: [ActivityWhereUniqueInput!]
+  disconnect: [ActivityWhereUniqueInput!]
+  update: [ActivityUpdateWithWhereUniqueWithoutUserInput!]
+  upsert: [ActivityUpsertWithWhereUniqueWithoutUserInput!]
   deleteMany: [ActivityScalarWhereInput!]
   updateMany: [ActivityUpdateManyWithWhereNestedInput!]
 }
@@ -388,7 +395,7 @@ input ActivityUpdateOneRequiredWithoutSkillsInput {
 
 input ActivityUpdateWithoutProjectDataInput {
   name: String
-  user: ID
+  user: ProfileUpdateOneRequiredWithoutActivitiesInput
   startDate: DateTime
   endDate: DateTime
   skills: ActivitySkillUpdateManyWithoutOwnerInput
@@ -397,14 +404,27 @@ input ActivityUpdateWithoutProjectDataInput {
 input ActivityUpdateWithoutSkillsDataInput {
   name: String
   project: ProjectUpdateOneRequiredWithoutActivitiesInput
-  user: ID
+  user: ProfileUpdateOneRequiredWithoutActivitiesInput
   startDate: DateTime
   endDate: DateTime
+}
+
+input ActivityUpdateWithoutUserDataInput {
+  name: String
+  project: ProjectUpdateOneRequiredWithoutActivitiesInput
+  startDate: DateTime
+  endDate: DateTime
+  skills: ActivitySkillUpdateManyWithoutOwnerInput
 }
 
 input ActivityUpdateWithWhereUniqueWithoutProjectInput {
   where: ActivityWhereUniqueInput!
   data: ActivityUpdateWithoutProjectDataInput!
+}
+
+input ActivityUpdateWithWhereUniqueWithoutUserInput {
+  where: ActivityWhereUniqueInput!
+  data: ActivityUpdateWithoutUserDataInput!
 }
 
 input ActivityUpsertWithoutSkillsInput {
@@ -416,6 +436,12 @@ input ActivityUpsertWithWhereUniqueWithoutProjectInput {
   where: ActivityWhereUniqueInput!
   update: ActivityUpdateWithoutProjectDataInput!
   create: ActivityCreateWithoutProjectInput!
+}
+
+input ActivityUpsertWithWhereUniqueWithoutUserInput {
+  where: ActivityWhereUniqueInput!
+  update: ActivityUpdateWithoutUserDataInput!
+  create: ActivityCreateWithoutUserInput!
 }
 
 input ActivityWhereInput {
@@ -448,20 +474,7 @@ input ActivityWhereInput {
   name_ends_with: String
   name_not_ends_with: String
   project: ProjectWhereInput
-  user: ID
-  user_not: ID
-  user_in: [ID!]
-  user_not_in: [ID!]
-  user_lt: ID
-  user_lte: ID
-  user_gt: ID
-  user_gte: ID
-  user_contains: ID
-  user_not_contains: ID
-  user_starts_with: ID
-  user_not_starts_with: ID
-  user_ends_with: ID
-  user_not_ends_with: ID
+  user: ProfileWhereInput
   startDate: DateTime
   startDate_not: DateTime
   startDate_in: [DateTime!]
@@ -579,13 +592,14 @@ type PageInfo {
 }
 
 type Profile {
-  id: ID!
   firstName: String!
   lastName: String!
   title: String
   user: ID!
   createdAt: DateTime!
   updatedAt: DateTime!
+  activities(where: ActivityWhereInput, orderBy: ActivityOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Activity!]
+  skills(where: UserSkillWhereInput, orderBy: UserSkillOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [UserSkill!]
 }
 
 type ProfileConnection {
@@ -595,11 +609,38 @@ type ProfileConnection {
 }
 
 input ProfileCreateInput {
-  id: ID
   firstName: String!
   lastName: String!
   title: String
-  user: ID!
+  user: ID
+  activities: ActivityCreateManyWithoutUserInput
+  skills: UserSkillCreateManyWithoutOwnerInput
+}
+
+input ProfileCreateOneWithoutActivitiesInput {
+  create: ProfileCreateWithoutActivitiesInput
+  connect: ProfileWhereUniqueInput
+}
+
+input ProfileCreateOneWithoutSkillsInput {
+  create: ProfileCreateWithoutSkillsInput
+  connect: ProfileWhereUniqueInput
+}
+
+input ProfileCreateWithoutActivitiesInput {
+  firstName: String!
+  lastName: String!
+  title: String
+  user: ID
+  skills: UserSkillCreateManyWithoutOwnerInput
+}
+
+input ProfileCreateWithoutSkillsInput {
+  firstName: String!
+  lastName: String!
+  title: String
+  user: ID
+  activities: ActivityCreateManyWithoutUserInput
 }
 
 type ProfileEdge {
@@ -608,8 +649,6 @@ type ProfileEdge {
 }
 
 enum ProfileOrderByInput {
-  id_ASC
-  id_DESC
   firstName_ASC
   firstName_DESC
   lastName_ASC
@@ -625,7 +664,6 @@ enum ProfileOrderByInput {
 }
 
 type ProfilePreviousValues {
-  id: ID!
   firstName: String!
   lastName: String!
   title: String
@@ -656,31 +694,55 @@ input ProfileUpdateInput {
   firstName: String
   lastName: String
   title: String
-  user: ID
+  activities: ActivityUpdateManyWithoutUserInput
+  skills: UserSkillUpdateManyWithoutOwnerInput
 }
 
 input ProfileUpdateManyMutationInput {
   firstName: String
   lastName: String
   title: String
-  user: ID
+}
+
+input ProfileUpdateOneRequiredWithoutActivitiesInput {
+  create: ProfileCreateWithoutActivitiesInput
+  update: ProfileUpdateWithoutActivitiesDataInput
+  upsert: ProfileUpsertWithoutActivitiesInput
+  connect: ProfileWhereUniqueInput
+}
+
+input ProfileUpdateOneRequiredWithoutSkillsInput {
+  create: ProfileCreateWithoutSkillsInput
+  update: ProfileUpdateWithoutSkillsDataInput
+  upsert: ProfileUpsertWithoutSkillsInput
+  connect: ProfileWhereUniqueInput
+}
+
+input ProfileUpdateWithoutActivitiesDataInput {
+  firstName: String
+  lastName: String
+  title: String
+  skills: UserSkillUpdateManyWithoutOwnerInput
+}
+
+input ProfileUpdateWithoutSkillsDataInput {
+  firstName: String
+  lastName: String
+  title: String
+  activities: ActivityUpdateManyWithoutUserInput
+}
+
+input ProfileUpsertWithoutActivitiesInput {
+  update: ProfileUpdateWithoutActivitiesDataInput!
+  create: ProfileCreateWithoutActivitiesInput!
+}
+
+input ProfileUpsertWithoutSkillsInput {
+  update: ProfileUpdateWithoutSkillsDataInput!
+  create: ProfileCreateWithoutSkillsInput!
 }
 
 input ProfileWhereInput {
-  id: ID
-  id_not: ID
-  id_in: [ID!]
-  id_not_in: [ID!]
-  id_lt: ID
-  id_lte: ID
-  id_gt: ID
-  id_gte: ID
-  id_contains: ID
-  id_not_contains: ID
-  id_starts_with: ID
-  id_not_starts_with: ID
-  id_ends_with: ID
-  id_not_ends_with: ID
   firstName: String
   firstName_not: String
   firstName_in: [String!]
@@ -753,13 +815,18 @@ input ProfileWhereInput {
   updatedAt_lte: DateTime
   updatedAt_gt: DateTime
   updatedAt_gte: DateTime
+  activities_every: ActivityWhereInput
+  activities_some: ActivityWhereInput
+  activities_none: ActivityWhereInput
+  skills_every: UserSkillWhereInput
+  skills_some: UserSkillWhereInput
+  skills_none: UserSkillWhereInput
   AND: [ProfileWhereInput!]
   OR: [ProfileWhereInput!]
   NOT: [ProfileWhereInput!]
 }
 
 input ProfileWhereUniqueInput {
-  id: ID
   user: ID
 }
 
@@ -1151,7 +1218,7 @@ type UserSkill {
   id: ID!
   level: Int!
   skill: Skill!
-  owner: ID!
+  owner: Profile!
 }
 
 type UserSkillConnection {
@@ -1164,7 +1231,18 @@ input UserSkillCreateInput {
   id: ID
   level: Int!
   skill: SkillCreateOneInput!
-  owner: ID!
+  owner: ProfileCreateOneWithoutSkillsInput!
+}
+
+input UserSkillCreateManyWithoutOwnerInput {
+  create: [UserSkillCreateWithoutOwnerInput!]
+  connect: [UserSkillWhereUniqueInput!]
+}
+
+input UserSkillCreateWithoutOwnerInput {
+  id: ID
+  level: Int!
+  skill: SkillCreateOneInput!
 }
 
 type UserSkillEdge {
@@ -1177,14 +1255,39 @@ enum UserSkillOrderByInput {
   id_DESC
   level_ASC
   level_DESC
-  owner_ASC
-  owner_DESC
 }
 
 type UserSkillPreviousValues {
   id: ID!
   level: Int!
-  owner: ID!
+}
+
+input UserSkillScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  level: Int
+  level_not: Int
+  level_in: [Int!]
+  level_not_in: [Int!]
+  level_lt: Int
+  level_lte: Int
+  level_gt: Int
+  level_gte: Int
+  AND: [UserSkillScalarWhereInput!]
+  OR: [UserSkillScalarWhereInput!]
+  NOT: [UserSkillScalarWhereInput!]
 }
 
 type UserSkillSubscriptionPayload {
@@ -1208,12 +1311,48 @@ input UserSkillSubscriptionWhereInput {
 input UserSkillUpdateInput {
   level: Int
   skill: SkillUpdateOneRequiredInput
-  owner: ID
+  owner: ProfileUpdateOneRequiredWithoutSkillsInput
+}
+
+input UserSkillUpdateManyDataInput {
+  level: Int
 }
 
 input UserSkillUpdateManyMutationInput {
   level: Int
-  owner: ID
+}
+
+input UserSkillUpdateManyWithoutOwnerInput {
+  create: [UserSkillCreateWithoutOwnerInput!]
+  delete: [UserSkillWhereUniqueInput!]
+  connect: [UserSkillWhereUniqueInput!]
+  set: [UserSkillWhereUniqueInput!]
+  disconnect: [UserSkillWhereUniqueInput!]
+  update: [UserSkillUpdateWithWhereUniqueWithoutOwnerInput!]
+  upsert: [UserSkillUpsertWithWhereUniqueWithoutOwnerInput!]
+  deleteMany: [UserSkillScalarWhereInput!]
+  updateMany: [UserSkillUpdateManyWithWhereNestedInput!]
+}
+
+input UserSkillUpdateManyWithWhereNestedInput {
+  where: UserSkillScalarWhereInput!
+  data: UserSkillUpdateManyDataInput!
+}
+
+input UserSkillUpdateWithoutOwnerDataInput {
+  level: Int
+  skill: SkillUpdateOneRequiredInput
+}
+
+input UserSkillUpdateWithWhereUniqueWithoutOwnerInput {
+  where: UserSkillWhereUniqueInput!
+  data: UserSkillUpdateWithoutOwnerDataInput!
+}
+
+input UserSkillUpsertWithWhereUniqueWithoutOwnerInput {
+  where: UserSkillWhereUniqueInput!
+  update: UserSkillUpdateWithoutOwnerDataInput!
+  create: UserSkillCreateWithoutOwnerInput!
 }
 
 input UserSkillWhereInput {
@@ -1240,20 +1379,7 @@ input UserSkillWhereInput {
   level_gt: Int
   level_gte: Int
   skill: SkillWhereInput
-  owner: ID
-  owner_not: ID
-  owner_in: [ID!]
-  owner_not_in: [ID!]
-  owner_lt: ID
-  owner_lte: ID
-  owner_gt: ID
-  owner_gte: ID
-  owner_contains: ID
-  owner_not_contains: ID
-  owner_starts_with: ID
-  owner_not_starts_with: ID
-  owner_ends_with: ID
-  owner_not_ends_with: ID
+  owner: ProfileWhereInput
   AND: [UserSkillWhereInput!]
   OR: [UserSkillWhereInput!]
   NOT: [UserSkillWhereInput!]

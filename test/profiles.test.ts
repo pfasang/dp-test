@@ -15,7 +15,7 @@ const baseUrl = '/profile';
 const jsonType = 'application/json';
 
 describe('Profile tests', () => {
-    describe('GET profile by ADMIN', () => {
+    describe('GET user profile by ADMIN', () => {
         describe('Correct GET profile', () => {
             it('returns 200', async () => {
                 const res = await chai.request(app)

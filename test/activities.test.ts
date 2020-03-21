@@ -137,7 +137,7 @@ describe('Activity tests', () => {
         describe("Wrong fields", () => {
             before(async () => {
                 inputBody = {
-                    name: "activityWrongFields",
+                    name: "activityUpdateWrongFields",
                     project: '4',
                     user: '4',
                     startDate: '2019-09-23',

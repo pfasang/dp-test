@@ -1,4 +1,4 @@
-import {Activity, prisma, Project} from "../generated/prisma-client";
+import {Activity, prisma} from "../generated/prisma-client";
 import {activityInputValidation, activityUpdateInputValidation} from "../utilities/validation/activityValidation";
 import {activityFragment} from "../database/fragments"
 
@@ -20,7 +20,7 @@ export const getUserActivities = async (req, res) => {
     const id = req.params.user;
     //get all activities
 
-    const userActivities: Activity[] = await prisma.activities({where: {user: id}}).$fragment(activityFragment);
+    const userActivities: Activity[] = await prisma.profile({user: id}).activities().$fragment(activityFragment);
     if (!userActivities) {
         return res.status(404).send({error: "Error in getting user activities."});
     }
@@ -35,12 +35,15 @@ export const createActivity = async (req, res) => {
     }
 
     try {
-        let {project, ...data} = req.body;
+        let {project, user, ...data} = req.body;
         const entity: Activity = await prisma.createActivity(
             {
                 ...data,
                 project: {
                     connect: {id: project}
+                },
+                user: {
+                    connect: {user: user}
                 }
             }).$fragment(activityFragment);
         res.status(201).json(entity);
@@ -58,9 +61,19 @@ export const updateActivity = async (req, res) => {
         return res.status(400).send({error: validatedBody.error.details});
     }
     try {
+        let {user, ...data} = req.body;
+        if (!user) {
+            let temp = await prisma.activity({id: activityID}).user();
+            user = temp.user;
+        }
         const entity: Activity = await prisma.updateActivity(
             {
-                data: req.body,
+                data: {
+                    ...data,
+                    user: {
+                        connect: {user: user}
+                    }
+                },
                 where: {id: activityID}
             }).$fragment(activityFragment);
         return res.status(200).json(entity);

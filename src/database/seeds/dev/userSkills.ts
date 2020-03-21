@@ -4,7 +4,9 @@ const userSkills = [
         skill: {
             connect: {id: '2'}
         },
-        owner: '1',
+        owner: {
+            connect: {user: '1'}
+        },
         level: 1,
     },
     {
@@ -12,7 +14,9 @@ const userSkills = [
         skill: {
             connect: {id: '3'}
         },
-        owner: '2',
+        owner: {
+            connect: {user: '2'}
+        },
         level: 1,
     },
     {
@@ -20,7 +24,9 @@ const userSkills = [
         skill: {
             connect: {id: '5'}
         },
-        owner: '3',
+        owner: {
+            connect: {user: '3'}
+        },
         level: 3,
     },
     {
@@ -28,7 +34,9 @@ const userSkills = [
         skill: {
             connect: {id: '5'}
         },
-        owner: '4',
+        owner: {
+            connect: {user: '4'}
+        },
         level: 1,
     },
     {
@@ -36,7 +44,9 @@ const userSkills = [
         skill: {
             connect: {id: '1'}
         },
-        owner: '5',
+        owner: {
+            connect: {user: '5'}
+        },
         level: 1,
     },
     {
@@ -44,7 +54,9 @@ const userSkills = [
         skill: {
             connect: {id: '1'}
         },
-        owner: '6',
+        owner: {
+            connect: {user: '6'}
+        },
         level: 3,
     },
     {
@@ -52,7 +64,9 @@ const userSkills = [
         skill: {
             connect: {id: '2'}
         },
-        owner: '7',
+        owner: {
+            connect: {user: '7'}
+        },
         level: 2,
     },
     {
@@ -60,7 +74,9 @@ const userSkills = [
         skill: {
             connect: {id: '4'}
         },
-        owner: '8',
+        owner: {
+            connect: {user: '8'}
+        },
         level: 2,
     },
     {
@@ -68,7 +84,9 @@ const userSkills = [
         skill: {
             connect: {id: '4'}
         },
-        owner: '9',
+        owner: {
+            connect: {user: '9'}
+        },
         level: 1,
     },
     {
@@ -76,7 +94,9 @@ const userSkills = [
         skill: {
             connect: {id: '1'}
         },
-        owner: '10',
+        owner: {
+            connect: {user: '10'}
+        } ,
         level: 1,
     }
 ];

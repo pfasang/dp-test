@@ -1,9 +1,10 @@
 type Profile {
-  id: ID! @id
   firstName: String!
   lastName: String!
   title: String
-  user: ID! @unique
+  user: ID! @id
   createdAt: DateTime! @createdAt
   updatedAt: DateTime! @updatedAt
+  activities: [Activity!]! @relation(name: "ActivityProfile")
+  skills: [UserSkill!]! @relation(name: "SkillProfile")
 }
