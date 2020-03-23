@@ -6,6 +6,15 @@ import {profileFragment} from "../database/fragments";
 const Joi = require('@hapi/joi');
 
 
+export const getAllProfiles = async (req, res) => {
+
+    const entities: Profile[] = await prisma.profiles();
+    if (!entities) {
+        return res.status(404).send({error: "Profiles not found."});
+    }
+    res.status(200).send(entities);
+};
+
 export const getUserProfile = async (req, res) => {
     //get user id number from url
     const userID = req.params.user;

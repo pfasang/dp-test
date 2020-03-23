@@ -173,4 +173,4 @@ describe('Profile tests', () => {
     });
 });
 
-// TODO getUserProfile
+// TODO getUserProfile, getAllProfiles

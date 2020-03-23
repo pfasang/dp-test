@@ -48,3 +48,5 @@ const seedProjects = async () => {
 };
 
 export {seedProfiles, seedSkills, seedUserSkills, seedActivitySkills, seedActivities, seedProjects};
+
+// TODO change camelCase style of db attributes to bem like
