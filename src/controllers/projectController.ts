@@ -1,13 +1,13 @@
 import {Project, prisma} from "../generated/prisma-client";
 import {projectInputValidation, projectUpdateInputValidation} from "../utilities/validation/projectValidation";
-import {projectFragment} from "../database/fragments";
+import {allProjectsFragment, projectFragment} from "../database/fragments";
 
 const Joi = require('@hapi/joi');
 
 
 export const getProjects = async (req, res) => {
     //get all activities
-    const projects: Project[] = await prisma.projects();
+    const projects: Project[] = await prisma.projects().$fragment(allProjectsFragment);
     if (!projects) {
         return res.status(404).send({error: "Projects not found."});
     }

@@ -46,6 +46,20 @@ fragment DetailProject on Project {
   }
 }`;
 
+export const allProjectsFragment = `
+fragment AllProjects on Project {
+  id
+  name
+  description
+  startDate
+  endDate
+  manager {
+    user
+    firstName
+    lastName
+  }
+}`;
+
 export const profileFragment = `
 fragment Profile on Profile {
   firstName
