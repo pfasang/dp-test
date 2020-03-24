@@ -9,9 +9,9 @@ const chaiHttp = require('chai-http');
 chai.use(chaiHttp);
 const expect = chai.expect, validAdminUsername = 'john.doe@latasna.com', validAdminPassword = '12345678',
     validUsername = 'jozef.dressel@latasna.com', validPassword = '12345678';
-let res, adminToken: string, userToken: string, userID: number, adminUser, inputBody, createRes;
+let res, adminToken: string, userToken: string, userID: string, adminUser, inputBody, createRes;
 
-const baseUrl = '/profile';
+const baseUrl = '/profiles';
 const jsonType = 'application/json';
 
 describe('Profile tests', () => {
@@ -31,19 +31,18 @@ describe('Profile tests', () => {
 
     describe('POST Create Profile', () => {
 
-        describe('Correct create', () => {
+        describe('Correct Create', () => {
             before(async () => {
-
                 inputBody = {
                     firstName: 'Correct',
                     lastName: 'Create',
                     title: 'Mgr.',
+                    user: '11',
                 };
-                userID = 11;
             });
             it('returns 201', async () => {
                 const res = await chai.request(app)
-                    .post(`${baseUrl}/${userID}`)
+                    .post(baseUrl)
                     .send(inputBody);
                 expect(res.body.error).to.eq(undefined);
                 expect(res.status).to.eq(201);
@@ -54,10 +53,17 @@ describe('Profile tests', () => {
         });
 
         describe('User profile already exists', () => {
-            const userID = 1;
+            before(async () => {
+                inputBody = {
+                    firstName: 'Profile',
+                    lastName: 'Exists',
+                    user: '11',
+                };
+            });
             it('returns 404', async () => {
                 const res = await chai.request(app)
-                    .post(`${baseUrl}/${userID}`);
+                    .post(baseUrl)
+                    .send(inputBody);
                 expect(res.status).to.eq(404);
                 expect(res.type).to.eq(jsonType);
                 expect(res.body.error).to.not.eq(undefined);
@@ -65,16 +71,17 @@ describe('Profile tests', () => {
         });
 
         describe('Validation Error', () => {
-            const inputBody = {
-                firstName: '',
-                lastName: 'Missing FirstName',
-                title: 'Mgr.',
-            };
-            const userID = 12;
-
+            before(async () => {
+                 inputBody = {
+                    firstName: '',
+                    lastName: 'Missing FirstName',
+                    title: 'Mgr.',
+                    user: '12',
+                };
+            });
             it('returns 400', async () => {
                 const res = await chai.request(app)
-                    .post(`${baseUrl}/${userID}`)
+                    .post(baseUrl)
                     .send(inputBody);
                 expect(res.status).to.eq(400);
                 expect(res.type).to.eq(jsonType);
@@ -84,90 +91,96 @@ describe('Profile tests', () => {
     });
 
     describe("PUT Update Profile", () => {
-        describe("Correct Update", () => {
+        describe("Correct UPDATE", () => {
             before(async () => {
-                const userID = 20;
+                userID = '20';
                 inputBody = {
                     firstName: 'Correct',
                     lastName: 'ToUpdate',
                     title: 'Mgr.',
+                    user: userID,
                 };
                 createRes = await chai.request(app)
-                    .post(`${baseUrl}/${userID}`)
+                    .post(baseUrl)
                     .send(inputBody);
-                inputBody.lastName = "Update"
+                expect(createRes.status).to.eq(201);
+                expect(createRes.type).to.eq(jsonType);
             });
-            describe("Correct UPDATE", () => {
-                it("returns 200", async () => {
-                    const res = await
-                        chai.request(app)
-                            .patch(`${baseUrl}/${userID}`)
-                            .send(inputBody);
-                    const {error} = profileTestOutput.validate(res.body);
-                    expect(error).to.eq(undefined);
-                    expect(res.status).to.eq(200);
-                    expect(res.type).to.eq(jsonType);
-                });
-            });
-
-            describe("Wrong ID in URL", () => {
-                before(() => {
-                    inputBody = {
-                        firstName: 'WrongID',
-                        lastName: 'Update',
-                    };
-                });
-
-                it("returns 404", async () => {
-                    const res = await chai.request(app)
-                        .patch(`${baseUrl}/0`)
-                        .send(inputBody);
-                    expect(res.status).to.eq(404);
-                    expect(res.type).to.eq(jsonType);
-                    expect(res.body.error).to.not.eq(undefined);
-                });
-            });
-
-            describe("Wrong fields", () => {
-                before(async () => {
-                    inputBody = {
-                        firstName: 'WrongFields',
-                        lastName: 'Update',
-                    };
-                    createRes = await chai.request(app)
-                        .post(baseUrl)
-                        .send(inputBody);
-                    userID = createRes.body.id;
-                });
-                it("returns 400", async () => {
-                    const res = await chai.request(app)
+            it("returns 200", async () => {
+                const res = await
+                    chai.request(app)
                         .patch(`${baseUrl}/${userID}`)
-                        .send({title: 5444});
-                    expect(res.status).to.eq(400);
-                    expect(res.type).to.eq(jsonType);
-                    expect(res.body.error).to.not.eq(undefined);
-                });
+                        .send({lastName: "Update"});
+                const {error} = profileTestOutput.validate(res.body);
+                expect(error).to.eq(undefined);
+                expect(res.status).to.eq(200);
+                expect(res.type).to.eq(jsonType);
+            });
+        });
+
+        describe("Wrong ID in URL", () => {
+            before(() => {
+                inputBody = {
+                    firstName: 'WrongID',
+                    lastName: 'toUpdate',
+                };
             });
 
-            xdescribe("Wrong Permission", () => {
-                before(async () => {
-                    inputBody = {
-                        firstName: 'WrongPermission',
-                        lastName: 'Update',
-                    };
-                    createRes = await chai.request(app)
-                        .post(baseUrl)
-                        .send(inputBody);
-                    userID = createRes.body.id;
-                });
-                it("returns 403", async () => {
-                    const res = await chai.request(app)
-                        .patch(`${baseUrl}/${userID}`)
-                        .send(inputBody);
-                    expect(res.status).to.eq(403);
-                    expect(res.type).to.eq(jsonType);
-                    expect(res.body.error).to.not.eq(undefined);
-                });
+            it("returns 404", async () => {
+                const res = await chai.request(app)
+                    .patch(`${baseUrl}/0`)
+                    .send({lastName: "Update"});
+                expect(res.status).to.eq(404);
+                expect(res.type).to.eq(jsonType);
+                expect(res.body.error).to.not.eq(undefined);
+            });
+        });
+
+        describe("Wrong fields", () => {
+            before(async () => {
+                userID = '22';
+                inputBody = {
+                    firstName: 'WrongFields',
+                    lastName: 'Update',
+                    user: userID,
+                };
+                createRes = await chai.request(app)
+                    .post(baseUrl)
+                    .send(inputBody);
+                expect(createRes.status).to.eq(201);
+                expect(createRes.type).to.eq(jsonType);
+            });
+            it("returns 400", async () => {
+                const res = await chai.request(app)
+                    .patch(`${baseUrl}/${userID}`)
+                    .send({title: 5444});
+                expect(res.status).to.eq(400);
+                expect(res.type).to.eq(jsonType);
+                expect(res.body.error).to.not.eq(undefined);
+            });
+        });
+
+        xdescribe("Wrong Permission", () => {
+            before(async () => {
+                userID = '23';
+                inputBody = {
+                    firstName: 'WrongPermission',
+                    lastName: 'Update',
+                    user: userID,
+                };
+                createRes = await chai.request(app)
+                    .post(baseUrl)
+                    .send(inputBody);
+                expect(createRes.status).to.eq(201);
+                expect(createRes.type).to.eq(jsonType);
+            });
+            it("returns 403", async () => {
+                const res = await chai.request(app)
+                    .patch(`${baseUrl}/${userID}`)
+                    .send(inputBody);
+                expect(res.status).to.eq(403);
+                expect(res.type).to.eq(jsonType);
+                expect(res.body.error).to.not.eq(undefined);
             });
         });
     });

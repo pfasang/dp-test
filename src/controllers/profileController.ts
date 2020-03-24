@@ -28,7 +28,7 @@ export const getUserProfile = async (req, res) => {
 
 export const createProfile = async (req, res) => {
     //get user id number from url
-    const userID = req.params.user;
+    const userID = req.body.user;
     const userProfile: Profile = await prisma.profile({user: userID});
     if (userProfile) {
         return res.status(404).send({error: "Profile of selected user already exists."});
@@ -36,9 +36,8 @@ export const createProfile = async (req, res) => {
     //Validate user input
     const validatedBody = profileCreateInputValidation.validate(req.body);
     if (validatedBody.error) {
-        return res.status(400).send({error: "Validation error."});
+        return res.status(400).send({error: `Validation error: ${validatedBody.error}`});
     }
-    req.body.user = userID;
     try {
         const newProfile: Profile = await prisma.createProfile(req.body).$fragment(profileFragment);
         res.status(201).json(newProfile);
@@ -56,7 +55,10 @@ export const updateProfile = async (req, res) => {
         return res.status(400).send({error: validatedBody.error.details});
     }
     try {
-        const profile: Profile = await prisma.updateProfile({data: req.body, where: {user: userID}}).$fragment(profileFragment);
+        const profile: Profile = await prisma.updateProfile({
+            data: req.body,
+            where: {user: userID}
+        }).$fragment(profileFragment);
         res.status(200).json(profile);
     } catch (e) {
         return res.status(404).send({error: e});

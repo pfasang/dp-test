@@ -92,6 +92,8 @@ describe('Skills tests', () => {
                     .post(baseUrl)
                     .send(inputBody);
                 skillID = createRes.body.id;
+                expect(createRes.status).to.eq(201);
+                expect(createRes.type).to.eq(jsonType);
             });
             describe("Correct UPDATE", () => {
                 it("returns 200", async () => {
@@ -132,6 +134,8 @@ describe('Skills tests', () => {
                         .post(baseUrl)
                         .send(inputBody);
                     skillID = createRes.body.id;
+                    expect(createRes.status).to.eq(201);
+                    expect(createRes.type).to.eq(jsonType);
                 });
                 it("returns 400", async () => {
                     const res = await chai.request(app)
@@ -157,7 +161,8 @@ describe('Skills tests', () => {
                         .send({
                             name: "SkillUpdateSameName",
                         });
-
+                    expect(createRes.status).to.eq(201);
+                    expect(createRes.type).to.eq(jsonType);
                     skillID = createRes.body.id;
                 });
                 it("returns 404", async () => {

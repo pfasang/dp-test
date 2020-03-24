@@ -11,7 +11,7 @@ const router = express.Router();
 
 router.get("/profiles", getAllProfiles);
 router.get("/profiles/:user", getUserProfile);
-router.post("/profiles/:user", createProfile);
+router.post("/profiles/", createProfile);
 router.patch("/profiles/:user", updateProfile);
 //router.get("/profiles/:user/skills", getUserSkills);
 

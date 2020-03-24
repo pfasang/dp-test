@@ -2,6 +2,7 @@ import * as Joi from '@hapi/joi'
 import {activityOutput} from "./activityValidation";
 
 export const profileCreateInputValidation = Joi.object({
+    user: Joi.string().required(),
     firstName: Joi.string().min(3).max(30).required(),
     lastName: Joi.string().min(3).max(30).required(),
     title: Joi.string(),
