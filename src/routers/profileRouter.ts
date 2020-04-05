@@ -3,9 +3,8 @@ import {
     createProfile,
     getAllProfiles,
     getUserProfile,
-    updateProfile,
+    updateProfile, updateUserSkills,
 } from "../controllers/profileController";
-import {getUserSkills} from "../controllers/skillController";
 
 const router = express.Router();
 
@@ -13,6 +12,7 @@ router.get("/profiles", getAllProfiles);
 router.get("/profiles/:user", getUserProfile);
 router.post("/profiles/", createProfile);
 router.patch("/profiles/:user", updateProfile);
+router.patch("/profiles/:user/skills", updateUserSkills);
 //router.get("/profiles/:user/skills", getUserSkills);
 
 export default router;

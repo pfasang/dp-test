@@ -1,5 +1,5 @@
 import * as Joi from '@hapi/joi'
-import {activityOutput} from "./activityValidation";
+import { activityOutput } from "./activityValidation";
 
 export const profileCreateInputValidation = Joi.object({
     user: Joi.string().required(),
@@ -16,6 +16,7 @@ export const profileTestOutput = Joi.object({
     skills: Joi.array().items({
         level: Joi.number().min(1).max(10).integer().required(),
         skill: {
+            id: Joi.string().required(),
             name: Joi.string().min(3).max(30).required(),
         }
     }),
@@ -29,5 +30,12 @@ export const profileUpdateInputValidation = Joi.object({
     lastName: Joi.string().min(3).max(30),
     title: Joi.string(),
 });
+
+export const updateUserSkillsValidation = Joi.array().items(
+    Joi.object({
+        id: Joi.string().required(),
+        level: Joi.number().min(1).max(10).integer().required(),
+    })
+);
 
 export const profileListTestOutput = Joi.array().items(profileTestOutput);

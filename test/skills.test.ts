@@ -211,5 +211,24 @@ describe('Skills tests', () => {
             });
         });
     });
-    // TODO get UserSkills tests
+
+    describe('PATCH Update Skill', () => {
+        describe('Correct skill update', () => {
+            before(async () => {
+                inputBody = [{
+                    id: "2",
+                    level: 1,
+                }];
+            });
+            it('returns 200', async () => {
+                const res = await chai.request(app)
+                    .patch(`/profiles/7/skills`)
+                    .send(inputBody);
+                expect(res.status).to.eq(200);
+                expect(res.body.error).to.eq(undefined);
+            });
+        });
+    });
+
+    // TODO get UserSkills tests, updateUserSkills wrong cases
 });

@@ -10,6 +10,7 @@ fragment UserActivities on Activity {
   skills {
     level
     skill {
+      id
       name
     }
   }
@@ -40,6 +41,7 @@ fragment DetailProject on Project {
     skills {
       level
       skill {
+        id
         name
       }
     }
@@ -69,6 +71,7 @@ fragment Profile on Profile {
   skills {
     level
     skill {
+      id
       name
     }
   }
@@ -83,6 +86,7 @@ fragment Profile on Profile {
     skills {
       level
       skill {
+        id
         name
       }
     }

@@ -1,7 +1,11 @@
-import {prisma, Profile} from "../generated/prisma-client";
-import {userRole} from "../utilities/enums";
-import {profileCreateInputValidation, profileUpdateInputValidation} from "../utilities/validation/profileValidation";
-import {profileFragment} from "../database/fragments";
+import { prisma, Profile, UserSkill } from "../generated/prisma-client";
+import { userRole } from "../utilities/enums";
+import {
+    profileCreateInputValidation,
+    profileUpdateInputValidation,
+    updateUserSkillsValidation
+} from "../utilities/validation/profileValidation";
+import { profileFragment } from "../database/fragments";
 
 const Joi = require('@hapi/joi');
 
@@ -65,15 +69,31 @@ export const updateProfile = async (req, res) => {
     }
 };
 
-export const authorPermission = async (req, res, next) => {
+export const updateUserSkills = async (req, res) => {
     //get user id number from url
     const userID = req.params.user;
-
-    const user = req.user;
-    if (user.userRole != userRole.admin) {
-        if (user.id != userID) {
-            return res.status(403).send({error: 'User doesn\'t have permission.'});
-        }
+    //Validate user input
+    const validatedBody = updateUserSkillsValidation.validate(req.body);
+    if (validatedBody.error) {
+        return res.status(400).send({error: validatedBody.error.details});
     }
-    next();
+    try {
+        await prisma.deleteManyUserSkills({owner: {user: userID}});
+        for (let skill of req.body) {
+            await prisma.createUserSkill({
+                skill: {
+                    connect: {id: skill.id}
+                },
+                owner: {
+                    connect: {user: userID}
+                },
+                level: skill.level,
+            });
+        }
+        res.status(200).json();
+    } catch (e) {
+        console.log(e);
+        return res.status(404).send({error: e});
+    }
 };
+

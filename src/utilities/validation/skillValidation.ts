@@ -23,10 +23,4 @@ export const ownerSkillOutput = Joi.object({
     owner: Joi.string().required(),
 });
 
-export const activitySkillOutput = Joi.object({
-    id: Joi.string().required(),
-    skill: Joi.string().required(),
-    activity: Joi.string().required(),
-});
-
 export const skillListTestOutput = Joi.array().items(skillTestOutput);
