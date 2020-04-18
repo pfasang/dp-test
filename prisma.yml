@@ -1,4 +1,4 @@
-endpoint: http://localhost:4467
+endpoint: ${env:PRISMA_ENDPOINT}
 datamodel:
   - src/database/migration/profile.prisma
   - src/database/migration/skill.prisma

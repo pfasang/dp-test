@@ -5,8 +5,7 @@ const bodyParser = require("body-parser");
 import * as router from "./routers";
 
 const app = express();
-
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 4080;
 
 app.get('/', (req, res) => res.send('Hello World!.'));
 app
@@ -17,7 +16,8 @@ app
     .use(router.activityRouter)
     .use(router.projectRouter)
 
-app.listen(port);
-console.log(`App is running on port: ${port}`);
+app.listen(port,()=>{
+    console.log(`App is running on port: ${port}`);
+});
 
 export {app, port};

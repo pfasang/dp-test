@@ -1,5 +1,15 @@
 version: '3'
 services:
+  web:
+    build: .
+    depends_on:
+      - prisma
+    env_file: .env  # env variables
+    ports:
+      - "5000:${PORT}"
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
   prisma:
     image: prismagraphql/prisma:1.34
     restart: always
