@@ -4,46 +4,48 @@ const {ownerSkills} = require("./dev/userSkills");
 const {activitySkills} = require("./dev/activitySkills");
 const {activities} = require("./dev/activities");
 const {projects} = require("./dev/projects");
-import {prisma} from '../../generated/prisma-client'
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient();
 
 const seedProfiles = async () => {
-    await prisma.deleteManyProfiles();
     for (const item of profiles) {
-        await prisma.createProfile(item);
+        await prisma.profile.delete({where:{user:item.user}});
+        await prisma.profile.create({data: item});
     }
 };
 
 const seedSkills = async () => {
-    await prisma.deleteManySkills();
+    await prisma.skill.deleteMany({});
     for (const item of skills) {
-        await prisma.createSkill(item);
+        await prisma.skill.create({data: item});
     }
 };
 
 const seedUserSkills = async () => {
-    await prisma.deleteManyUserSkills();
+    await prisma.userSkill.deleteMany({});
     for (const item of ownerSkills) {
-        await prisma.createUserSkill(item);
+        await prisma.userSkill.create({data: item});
     }
 };
 
 const seedActivitySkills = async () => {
-    await prisma.deleteManyActivitySkills();
+    await prisma.activitySkill.deleteMany({});
     for (const item of activitySkills) {
-        await prisma.createActivitySkill(item);
+        await prisma.activitySkill.create({data: item});
     }
 };
 
 const seedActivities = async () => {
-    await prisma.deleteManyActivities();
+    await prisma.activity.deleteMany({});
     for (const item of activities) {
-        await prisma.createActivity(item);
+        await prisma.activity.create({data: item});
     }
 };
 const seedProjects = async () => {
-    await prisma.deleteManyProjects();
+    await prisma.project.deleteMany({});
     for (const item of projects) {
-        await prisma.createProject(item);
+        await prisma.project.create({data: item});
     }
 };
 

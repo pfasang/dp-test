@@ -1,18 +1,19 @@
-import { prisma, Profile, UserSkill } from "../generated/prisma-client";
 import { userRole } from "../utilities/enums";
 import {
     profileCreateInputValidation,
     profileUpdateInputValidation,
     updateUserSkillsValidation
 } from "../utilities/validation/profileValidation";
-import { profileFragment } from "../database/fragments";
+import { activityFragment, profileFragment } from "../database/fragments";
+import { PrismaClient } from '@prisma/client'
 
+const prisma = new PrismaClient();
 const Joi = require('@hapi/joi');
 
 
 export const getAllProfiles = async (req, res) => {
 
-    const entities: Profile[] = await prisma.profiles();
+    const entities = await prisma.profile.findMany();
     if (!entities) {
         return res.status(404).send({error: "Profiles not found."});
     }
@@ -23,7 +24,10 @@ export const getUserProfile = async (req, res) => {
     //get user id number from url
     const userID = req.params.user;
     //get user profile with given ID
-    const userProfile: Profile = await prisma.profile({user: userID}).$fragment(profileFragment);
+    const userProfile = await prisma.profile.findOne({
+        where: {user: userID},
+        include: profileFragment
+    });
     if (!userProfile) {
         return res.status(404).send({error: "User Profile not found."});
     }
@@ -33,7 +37,7 @@ export const getUserProfile = async (req, res) => {
 export const createProfile = async (req, res) => {
     //get user id number from url
     const userID = req.body.user;
-    const userProfile: Profile = await prisma.profile({user: userID});
+    const userProfile = await prisma.profile.findOne({where: {user: userID}});
     if (userProfile) {
         return res.status(404).send({error: "Profile of selected user already exists."});
     }
@@ -43,7 +47,10 @@ export const createProfile = async (req, res) => {
         return res.status(400).send({error: `Validation error: ${validatedBody.error}`});
     }
     try {
-        const newProfile: Profile = await prisma.createProfile(req.body).$fragment(profileFragment);
+        const newProfile = await prisma.profile.create({
+            data: {...req.body},
+            include: profileFragment
+        });
         res.status(201).json(newProfile);
     } catch (e) {
         return res.status(404).send({error: e});
@@ -59,10 +66,11 @@ export const updateProfile = async (req, res) => {
         return res.status(400).send({error: validatedBody.error.details});
     }
     try {
-        const profile: Profile = await prisma.updateProfile({
+        const profile = await prisma.profile.update({
             data: req.body,
-            where: {user: userID}
-        }).$fragment(profileFragment);
+            where: {user: userID},
+            include: profileFragment
+        });
         res.status(200).json(profile);
     } catch (e) {
         return res.status(404).send({error: e});
@@ -78,16 +86,22 @@ export const updateUserSkills = async (req, res) => {
         return res.status(400).send({error: validatedBody.error.details});
     }
     try {
-        await prisma.deleteManyUserSkills({owner: {user: userID}});
+        await prisma.userSkill.deleteMany({
+            where: {
+                owner: {user: userID}
+            }
+        });
         for (let skill of req.body) {
-            await prisma.createUserSkill({
-                skill: {
-                    connect: {id: skill.id}
-                },
-                owner: {
-                    connect: {user: userID}
-                },
-                level: skill.level,
+            await prisma.userSkill.create({
+                data: {
+                    skill: {
+                        connect: {id: skill.id}
+                    },
+                    owner: {
+                        connect: {user: userID}
+                    },
+                    level: skill.level,
+                }
             });
         }
         res.status(200).json();

@@ -8,8 +8,8 @@ const activities = [
         user: {
             connect: {user: '1'}
         },
-        startDate: "2015-11-22",
-        endDate: "2015-12-20",
+        startDate: "2015-11-22T00:00:00.123Z",
+        endDate: "2015-12-20T00:00:00.123Z",
     },
     {
         id: '2',
@@ -20,7 +20,7 @@ const activities = [
         user: {
             connect: {user: '2'}
         },
-        startDate: "2018-01-07",
+        startDate: "2018-11-22T00:00:00.123Z",
     },
     {
         id: '3',
@@ -31,8 +31,8 @@ const activities = [
         user: {
             connect: {user: '5'}
         },
-        startDate: "2020-02-15",
-        endDate: "2020-03-02",
+        startDate: "2020-02-15T00:00:00.123Z",
+        endDate: "2020-03-02T00:00:00.123Z",
     },
     {
         id: '4',
@@ -43,7 +43,7 @@ const activities = [
         user: {
             connect: {user: '4'}
         },
-        startDate: "2019-09-27",
+        startDate: "2019-09-27T00:00:00.123Z",
     },
     {
         id: '5',
@@ -54,7 +54,7 @@ const activities = [
         user: {
             connect: {user: '2'}
         },
-        startDate: "2020-01-05",
+        startDate: "2020-01-05T00:00:00.123Z",
     },
     {
         id: '6',
@@ -65,8 +65,8 @@ const activities = [
         user: {
             connect: {user: '3'}
         },
-        startDate: "2017-11-22",
-        endDate: "2019-07-16",
+        startDate: "2017-11-22T00:00:00.123Z",
+        endDate: "2019-07-16T00:00:00.123Z",
     },
 ];
 

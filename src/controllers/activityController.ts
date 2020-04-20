@@ -1,14 +1,14 @@
-import {Activity, prisma} from "../generated/prisma-client";
-import {activityInputValidation, activityUpdateInputValidation} from "../utilities/validation/activityValidation";
-import {activityFragment} from "../database/fragments"
+import { activityInputValidation, activityUpdateInputValidation } from "../utilities/validation/activityValidation";
+import { activityFragment } from "../database/fragments"
+import { PrismaClient } from '@prisma/client'
 
-
+const prisma = new PrismaClient();
 const Joi = require('@hapi/joi');
 
 
 export const getActivities = async (req, res) => {
     //get all activities
-    const activities: Activity[] = await prisma.activities().$fragment(activityFragment);
+    const activities = await prisma.activity.findMany({include: activityFragment});
     if (!activities) {
         return res.status(404).send({error: "Activities not found."});
     }
@@ -20,7 +20,7 @@ export const getUserActivities = async (req, res) => {
     const id = req.params.user;
     //get all activities
 
-    const userActivities: Activity[] = await prisma.profile({user: id}).activities().$fragment(activityFragment);
+    const userActivities = await prisma.profile.findOne({where: {user: id}}).activities({include: activityFragment});
     if (!userActivities) {
         return res.status(404).send({error: "Error in getting user activities."});
     }
@@ -36,8 +36,8 @@ export const createActivity = async (req, res) => {
 
     try {
         let {project, user, ...data} = req.body;
-        const entity: Activity = await prisma.createActivity(
-            {
+        const entity = await prisma.activity.create({
+            data: {
                 ...data,
                 project: {
                     connect: {id: project}
@@ -45,7 +45,9 @@ export const createActivity = async (req, res) => {
                 user: {
                     connect: {user: user}
                 }
-            }).$fragment(activityFragment);
+            },
+            include: activityFragment
+        });
         res.status(201).json(entity);
     } catch (e) {
         return res.status(404).send({error: e});
@@ -63,10 +65,15 @@ export const updateActivity = async (req, res) => {
     try {
         let {user, ...data} = req.body;
         if (!user) {
-            let temp = await prisma.activity({id: activityID}).user();
+            let temp = await prisma.activity.findOne({
+                where: {
+                    id: activityID
+                }
+            }).user();
+            // @ts-ignore
             user = temp.user;
         }
-        const entity: Activity = await prisma.updateActivity(
+        const entity = await prisma.activity.update(
             {
                 data: {
                     ...data,
@@ -74,8 +81,9 @@ export const updateActivity = async (req, res) => {
                         connect: {user: user}
                     }
                 },
-                where: {id: activityID}
-            }).$fragment(activityFragment);
+                where: {id: activityID},
+                include: activityFragment
+            });
         return res.status(200).json(entity);
     } catch (e) {
         return res.status(404).send({error: e});
@@ -86,7 +94,7 @@ export const deleteActivity = async (req, res) => {
     //get activity ID number from url
     const activityID = req.params.id;
     try {
-        const entity: Activity = await prisma.deleteActivity({id: activityID});
+        const entity = await prisma.activity.delete({where:{id: activityID}});
         res.status(204).json(entity);
     } catch (e) {
         return res.status(404).send({error: e});

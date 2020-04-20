@@ -1,0 +1,17 @@
+{
+  "version": "0.3.14-fixed",
+  "steps": [
+    {
+      "tag": "UpdateField",
+      "model": "Project",
+      "field": "manager",
+      "arity": "Optional"
+    },
+    {
+      "tag": "UpdateField",
+      "model": "Project",
+      "field": "managerId",
+      "arity": "Optional"
+    }
+  ]
+}

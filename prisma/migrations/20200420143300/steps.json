@@ -1,0 +1,41 @@
+{
+  "version": "0.3.14-fixed",
+  "steps": [
+    {
+      "tag": "UpdateField",
+      "model": "ActivitySkill",
+      "field": "skill",
+      "arity": "Optional"
+    },
+    {
+      "tag": "UpdateField",
+      "model": "ActivitySkill",
+      "field": "skillId",
+      "arity": "Optional"
+    },
+    {
+      "tag": "UpdateField",
+      "model": "UserSkill",
+      "field": "skill",
+      "arity": "Optional"
+    },
+    {
+      "tag": "UpdateField",
+      "model": "UserSkill",
+      "field": "skillId",
+      "arity": "Optional"
+    },
+    {
+      "tag": "UpdateField",
+      "model": "UserSkill",
+      "field": "owner",
+      "arity": "Optional"
+    },
+    {
+      "tag": "UpdateField",
+      "model": "UserSkill",
+      "field": "ownerId",
+      "arity": "Optional"
+    }
+  ]
+}

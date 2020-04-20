@@ -1,0 +1,29 @@
+{
+  "version": "0.3.14-fixed",
+  "steps": [
+    {
+      "tag": "UpdateField",
+      "model": "Activity",
+      "field": "project",
+      "arity": "Optional"
+    },
+    {
+      "tag": "UpdateField",
+      "model": "Activity",
+      "field": "projectId",
+      "arity": "Optional"
+    },
+    {
+      "tag": "UpdateField",
+      "model": "ActivitySkill",
+      "field": "owner",
+      "arity": "Optional"
+    },
+    {
+      "tag": "UpdateField",
+      "model": "ActivitySkill",
+      "field": "ownerId",
+      "arity": "Optional"
+    }
+  ]
+}

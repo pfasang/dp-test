@@ -12,15 +12,21 @@ services:
           default:
             connector: postgres
             host: postgres
+            database: ${POSTGRES_DB}
             port: 5432
-            user: prisma
-            password: prisma
+            user: ${POSTGRES_USER}
+            password: ${POSTGRES_PASSWORD}
   postgres:
     image: postgres:10.3
+    container_name: linkedin_db
+    env_file: .env  # env variables
+    ports:
+      - '5433:5432'
     restart: always
     environment:
-      POSTGRES_USER: prisma
-      POSTGRES_PASSWORD: prisma
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     volumes:
       - postgres:/var/lib/postgresql/data
 volumes:

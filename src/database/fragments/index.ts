@@ -1,20 +1,21 @@
-export const activityFragment = `
-fragment UserActivities on Activity {
-  id
-  name
-  startDate
-  endDate
-  project {
-    name
-  }
-  skills {
-    level
-    skill {
-      id
-      name
+export const activityFragment = {
+    project: {
+        select: {
+            name: true
+        }
+    },
+    skills: {
+        select: {
+            level: true,
+            skill: {
+                select: {
+                    id: true,
+                    name: true,
+                }
+            }
+        }
     }
-  }
-}`;
+};
 
 export const projectFragment = `
 fragment DetailProject on Project {
@@ -62,36 +63,20 @@ fragment AllProjects on Project {
   }
 }`;
 
-export const profileFragment = `
-fragment Profile on Profile {
-  firstName
-  lastName
-  user
-  title
-  skills {
-    level
-    skill {
-      id
-      name
+export const profileFragment = {
+    skills: {
+        select: {
+            level: true,
+            skill: {
+                select: {
+                    id: true,
+                    name: true,
+                }
+            }
+        }
+    },
+    activities: {
+        include: activityFragment
     }
-  }
-  activities {
-    id
-    name
-    startDate
-    endDate
-    project {
-      name
-    }
-    skills {
-      level
-      skill {
-        id
-        name
-      }
-    }
-  }
-  createdAt
-  updatedAt
-}`;
+};
 // TODO profile fragment
