@@ -17,7 +17,7 @@ COPY --from=builder node_modules node_modules
 
 COPY . .
 
-RUN npm install --global prisma
+RUN npm install -g prisma
 
 RUN apk add --no-cache bash coreutils
 RUN chmod +x ./scripts/

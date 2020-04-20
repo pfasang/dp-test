@@ -1,13 +1,13 @@
 #!/bin/sh
 
 # Wait until prisma is avaliable, and download schemas
-./scripts/wait-for-it.sh prisma:4467
+./scripts/wait-for-it.sh localhost:4467 -- prisma deploy
 
 if [ $DEBUG = 1 ]; then
 
   echo "Running in debug mode"
 
-  prisma deploy && prisma seed --env-file .env && npm run start
+  prisma seed && npm run start
 
 else
 

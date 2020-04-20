@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-
+require('dotenv').config();
 const express = require('express');
 const bodyParser = require("body-parser");
 import * as router from "./routers";
