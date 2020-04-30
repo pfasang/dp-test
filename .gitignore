@@ -15,3 +15,6 @@ node_modules/
 
 # Temporary data sources
 .idea/
+
+.env
+.env.prod
